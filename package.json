@@ -1,0 +1,21 @@
+{
+  "name": "55230-backend-proyecto-isnardi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ProductManager.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maisnardi/55230-Backend-Proyecto-Isnardi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maisnardi/55230-Backend-Proyecto-Isnardi/issues"
+  },
+  "homepage": "https://github.com/maisnardi/55230-Backend-Proyecto-Isnardi#readme"
+}
