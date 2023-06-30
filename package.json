@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/maisnardi/55230-Backend-Proyecto-Isnardi/issues"
   },
-  "homepage": "https://github.com/maisnardi/55230-Backend-Proyecto-Isnardi#readme"
+  "homepage": "https://github.com/maisnardi/55230-Backend-Proyecto-Isnardi#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }

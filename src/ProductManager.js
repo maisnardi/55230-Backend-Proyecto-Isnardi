@@ -1,5 +1,5 @@
 //Importacion de modulos
-import fs from "fs";
+import fs from "fs";    //FileSystem
 
 //Declaracion de clase ProductManager
 class ProductManager{
@@ -153,62 +153,63 @@ class ProductManager{
 }
 
 
+
 //Testing
-const user = new ProductManager("./products.json");
-await user.getProducts();
-await user.addProduct({title: `producto prueba`,
-    description:`Este es un producto prueba`,
-    price:200,
-    thumbnail:`Sin imagen`,
-    code:`abc123`,
-    stock:25
-    })
+// const user = new ProductManager("../products.json");
+// await user.getProducts();
+// await user.addProduct({title: `producto prueba`,
+//     description:`Este es un producto prueba`,
+//     price:200,
+//     thumbnail:`Sin imagen`,
+//     code:`abc123`,
+//     stock:25
+//     })
 
-await user.addProduct({title: "producto prueba2",
-    description:"Este es un producto prueba",
-    price:2002,
-    thumbnail:"Sin imagen",
-    code:"abc2",
-    stock:25})
+// await user.addProduct({title: "producto prueba2",
+//     description:"Este es un producto prueba",
+//     price:2002,
+//     thumbnail:"Sin imagen",
+//     code:"abc2",
+//     stock:25})
 
-await user.addProduct({title: "producto prueba3",
-    description:"Este es un producto prueba",
-    price:200,
-    thumbnail:"Sin imagen",
-    code:"abc3",
-    stock:25})
+// await user.addProduct({title: "producto prueba3",
+//     description:"Este es un producto prueba",
+//     price:200,
+//     thumbnail:"Sin imagen",
+//     code:"abc3",
+//     stock:25})
 
-await user.addProduct({title: "producto prueba4",
-    description:"Este es un producto prueba",
-    price:2002,
-    thumbnail:"Sin imagen",
-    code:"abc4",
-    stock:25})
+// await user.addProduct({title: "producto prueba4",
+//     description:"Este es un producto prueba",
+//     price:2002,
+//     thumbnail:"Sin imagen",
+//     code:"abc4",
+//     stock:25})
 
-await user.addProduct({title: "producto prueba5",
-    description:"Este es un producto prueba",
-    price:200,
-    thumbnail:"Sin imagen",
-    code:"abc5",
-    stock:25})
+// await user.addProduct({title: "producto prueba5",
+//     description:"Este es un producto prueba",
+//     price:200,
+//     thumbnail:"Sin imagen",
+//     code:"abc5",
+//     stock:25})
 
-await user.addProduct({title: "producto prueba6",
-    description:"Este es un producto prueba",
-    price:200,
-    thumbnail:"Sin imagen",
-    code:"abc6",
-    stock:25})
+// await user.addProduct({title: "producto prueba6",
+//     description:"Este es un producto prueba",
+//     price:200,
+//     thumbnail:"Sin imagen",
+//     code:"abc6",
+//     stock:25})
 
-await user.addProduct({title: "producto prueba7",
-    description:"Este es un producto prueba",
-    price:200,
-    thumbnail:"Sin imagen",
-    code:"abc7",
-    stock:25})
+// await user.addProduct({title: "producto prueba7",
+//     description:"Este es un producto prueba",
+//     price:200,
+//     thumbnail:"Sin imagen",
+//     code:"abc7",
+//     stock:25})
 
 
-await user.getProductById(1);
-await user.deleteProduct(6);  
-user.getProductById(6);
+// await user.getProductById(1);
+// await user.deleteProduct(6);  
+// user.getProductById(6);
 
-await user.updateProduct(1, {description: "este es un producto modificado"});
+// await user.updateProduct(1, {description: "este es un producto modificado"});
