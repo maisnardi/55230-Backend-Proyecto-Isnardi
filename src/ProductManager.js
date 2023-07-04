@@ -6,7 +6,7 @@ class ProductManager{
     //declaro el constructor
     constructor(path){
         this.products=[];
-        this.path=path;
+        this.path=`./db/${path}.json`;
     }
 
     //Función privada que saca todos los espacios vacios que estan en los Values y devuelvo el objeto modificado.
@@ -45,6 +45,11 @@ class ProductManager{
          return validate;   
     }
 
+    //Función privada y asincrona de utilidad para guardar en archivo
+    #writeFile = async(product)=>{
+        await fs.promises.writeFile(this.path,JSON.stringify(product));
+    }
+    
     //Función asíncrona que recibe como parametro un producto, realiza 3 verificaciones y si la información esta bien lo carga dentro del array products con un número de ID único.Trabaja con persistencia de archivo.
     addProduct = async(product)=>{
         let data=this.#modelData(product)
@@ -66,7 +71,7 @@ class ProductManager{
                 this.products.push(data)
                 
                 try {
-                    await fs.promises.writeFile(this.path,JSON.stringify(this.products));
+                    await this.#writeFile(this.products);
                     console.log("El producto fue cargado");
                 } catch (error) {
                     console.log(`ERROR al guardar el archivo ${error}`)
@@ -79,12 +84,13 @@ class ProductManager{
 
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products.Trabaja con persistencia de archivo.
     getProducts = async ()=>{
-        console.log("Lista de productos:")
         try{
             const data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
-            console.log(JSON.parse(data))
+            //console.log(data)
+            return data;
         }catch(e){
-            console.log([]);
+            //console.log([]);
+            return [];
         }
     }
 
@@ -92,9 +98,9 @@ class ProductManager{
     getProductById = async (id)=>{
         let data=[];
         try {
-            data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+            data = await this.getProducts();
             const product= data.find(element => element.id===id)
-            product ? console.log(`Producto encontrado: \n ${JSON.stringify(product,null,2)}`) : console.log(`ERROR: Not found ID (${id})`);
+            return product ? product : `ERROR: Not found ID (${id})`;
         } catch (error) {
             console.log(`ERROR: Not found ID (${id})`);
             console.log(`ERROR: ${error}`)
@@ -105,7 +111,7 @@ class ProductManager{
     updateProduct = async (id,object)=>{
         let data=[];
         try {
-            data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+            data = await this.getProducts();
         } catch (error) {
             console.log(`ERROR: ${error}`);
         }        
@@ -119,7 +125,7 @@ class ProductManager{
             data[index].stock = object.stock ?? data[index].stock;
             this.products=data;
             try {
-                await fs.promises.writeFile(this.path,JSON.stringify(this.products));
+                await this.#writeFile(this.products);
                 console.log(`El producto con ID (${id}) fue actualizado`);
             } catch (error) {
                 console.log(`ERROR al actualizar el archivo ${error}`)
@@ -132,7 +138,7 @@ class ProductManager{
     deleteProduct = async (id)=>{
         let data=[];
         try {
-            data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+            data = await this.getProducts();
         } catch (error) {
             console.log(error);
         }        
@@ -141,7 +147,7 @@ class ProductManager{
             data.splice(index,1);
             this.products=data;
             try {
-                await fs.promises.writeFile(this.path,JSON.stringify(this.products));
+                await this.#writeFile(this.products);
                 console.log(`El producto con el ID (${id}) fue eliminado`);
             } catch (error) {
                 console.log(`ERROR: al modificar el archivo`)
@@ -151,11 +157,11 @@ class ProductManager{
         else console.log(`Error: No se pudo eliminar el producto con ID (${id}) porque no existe`)
     }
 }
-
+export default ProductManager;
 
 
 //Testing
-// const user = new ProductManager("../products.json");
+//const user = new ProductManager("products");
 // await user.getProducts();
 // await user.addProduct({title: `producto prueba`,
 //     description:`Este es un producto prueba`,
@@ -208,8 +214,8 @@ class ProductManager{
 //     stock:25})
 
 
-// await user.getProductById(1);
+//await user.getProductById(2);
 // await user.deleteProduct(6);  
-// user.getProductById(6);
 
 // await user.updateProduct(1, {description: "este es un producto modificado"});
+// await user.getProductById(1);
