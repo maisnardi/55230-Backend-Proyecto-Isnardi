@@ -34,11 +34,18 @@ productRouter.get('/:pid', async (req,res)=>{
 })
 
 //Endpoint POST con req.body
-productRouter.post("/", upload.single('photo'),async (req,res)=>{
+productRouter.post("/", upload.array('photo'),async (req,res)=>{
+    const photos=[];
     try {
+        if(req.files)
+        {
+            req.files.forEach((element)=>{
+            photos.push(element.path)
+            })
+         }
         const body ={
             ...req.body,
-            thumbnails: req.file? [req.file.path] : []
+            thumbnails: photos
         }
         const response = await productManager.addProduct(body);
         switch (response) {
@@ -62,13 +69,20 @@ productRouter.post("/", upload.single('photo'),async (req,res)=>{
 })
 
 //Endpoint PUT
-productRouter.put('/:pid', upload.single('photo'),async (req,res)=>{
+productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
     try {
+        const photos =[];
         const {pid} = req.params;
-        //const body = req.body;
+        console.log(req.files)
+        if(req.files)
+        {
+            req.files.forEach((element)=>{
+            photos.push(element.path)
+            })
+         }
         const body ={
             ...req.body,
-            thumbnails: req.file? [req.file.path] : []
+            thumbnails: photos
         }
         const response = await productManager.updateProduct(Number(pid),body);
         response === "updated" ? res.status(200).send({update:true}) : res.status(404).send({error:"ID not found"})

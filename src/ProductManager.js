@@ -134,7 +134,6 @@ class ProductManager{
                 return "updated"
             } catch (error) {
                 console.log(`ERROR al actualizar el archivo ${error}`)
-                
             }
         }
         else console.log(`No existe producto con ID (${id})`)
