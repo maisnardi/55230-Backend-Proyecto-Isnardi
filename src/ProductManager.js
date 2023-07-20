@@ -6,7 +6,7 @@ class ProductManager{
     //declaro el constructor
     constructor(path){
         this.products=[];
-        this.path=path;
+        this.path=`./db/${path}.json`;
     }
 
     //Función privada que saca todos los espacios vacios que estan en los Values y devuelvo el objeto modificado.
@@ -15,16 +15,18 @@ class ProductManager{
             title:data.title?.trim(),
             description:data.description?.trim(),
             price:Number(data?.price)<0 ? Number(data?.price)*-1 : Number(data?.price),
-            thumbnail:data.thumbnail?.trim(),
+            thumbnails:data.thumbnails.length>0? data.thumbnails : ["no product image"],
             code:data.code?.trim(),
-            stock:Number(data?.stock)<0 ? Number(data?.stock)*-1 : Number(data?.stock)
+            stock:Number(data?.stock)<0 ? Number(data?.stock)*-1 : Number(data?.stock),
+            status: data.status==Boolean? data.status : true,
+            category:data.category?.trim()
         }
         return modifiedData;
     }
 
     //Función privada que valida la existencia de todos las Keys obligatorios. Devuelve true si existen todos y false si alguno no existe.
     #validateData = (data)=>{
-        if(!data.title || !data.description || !data.price || !data.thumbnail || !data.code || !data.stock){
+        if(!data.title || !data.description || !data.price || !data.code || !data.stock || !data.status || !data.category){
             return false;
         }
         else{
@@ -45,9 +47,15 @@ class ProductManager{
          return validate;   
     }
 
+    //Función privada y asincrona de utilidad para guardar en archivo
+    #writeFile = async(product)=>{
+        await fs.promises.writeFile(this.path,JSON.stringify(product));
+    }
+    
     //Función asíncrona que recibe como parametro un producto, realiza 3 verificaciones y si la información esta bien lo carga dentro del array products con un número de ID único.Trabaja con persistencia de archivo.
     addProduct = async(product)=>{
-        let data=this.#modelData(product)
+        let status = [{code:200}, {status:{}}];
+        let data = this.#modelData(product)
         try {
             this.products = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
         } catch (error) {
@@ -57,6 +65,7 @@ class ProductManager{
         {
             if(this.#validateCode(data.code)){
                 console.log("El producto ya se encuentra cargado");
+                status = [{code:400}, {error:"The product is already loaded."}];
             }
             else{
                 data={
@@ -66,25 +75,28 @@ class ProductManager{
                 this.products.push(data)
                 
                 try {
-                    await fs.promises.writeFile(this.path,JSON.stringify(this.products));
+                    await this.#writeFile(this.products);
                     console.log("El producto fue cargado");
+                    status = [{code:200}, {posted:"True."}];
                 } catch (error) {
                     console.log(`ERROR al guardar el archivo ${error}`)
+                    status = [{code:500}, {error: "File saving error"}];
                 }
             }
         }else{
             console.log("Campos incompletos, por favor revíselos");
+            status = [{code:400}, {error: "Incomplete fields, please check them."}];
         }
+        return status;
     }
 
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products.Trabaja con persistencia de archivo.
     getProducts = async ()=>{
-        console.log("Lista de productos:")
         try{
             const data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
-            console.log(JSON.parse(data))
+            return data;
         }catch(e){
-            console.log([]);
+            return e;
         }
     }
 
@@ -92,11 +104,11 @@ class ProductManager{
     getProductById = async (id)=>{
         let data=[];
         try {
-            data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+            data = await this.getProducts();
             const product= data.find(element => element.id===id)
-            product ? console.log(`Producto encontrado: \n ${JSON.stringify(product,null,2)}`) : console.log(`ERROR: Not found ID (${id})`);
+            return product ? product : `ERROR: ID (${id}) not found`;
         } catch (error) {
-            console.log(`ERROR: Not found ID (${id})`);
+            console.log(`ERROR: ID (${id}) not found`);
             console.log(`ERROR: ${error}`)
         }        
     }
@@ -105,7 +117,7 @@ class ProductManager{
     updateProduct = async (id,object)=>{
         let data=[];
         try {
-            data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+            data = await this.getProducts();
         } catch (error) {
             console.log(`ERROR: ${error}`);
         }        
@@ -114,25 +126,27 @@ class ProductManager{
             data[index].title = object.title ?? data[index].title;
             data[index].description = object.description ?? data[index].description;
             data[index].price = object.price ?? data[index].price;
-            data[index].thumbnail = object?.thumbnail;
+            data[index].thumbnails = object.thumbnails ?? object.thumbnails;
             data[index].code = object.code ?? data[index].code;
             data[index].stock = object.stock ?? data[index].stock;
             this.products=data;
             try {
-                await fs.promises.writeFile(this.path,JSON.stringify(this.products));
+                await this.#writeFile(this.products);
                 console.log(`El producto con ID (${id}) fue actualizado`);
+                return "updated"
             } catch (error) {
                 console.log(`ERROR al actualizar el archivo ${error}`)
             }
         }
         else console.log(`No existe producto con ID (${id})`)
+        return "badID"
     }
 
     //Función asíncrona que recibe como parametro el ID de un producto y lo elimina del listado del productos.Trabaja con persistencia de archivo.
     deleteProduct = async (id)=>{
         let data=[];
         try {
-            data = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
+            data = await this.getProducts();
         } catch (error) {
             console.log(error);
         }        
@@ -141,7 +155,7 @@ class ProductManager{
             data.splice(index,1);
             this.products=data;
             try {
-                await fs.promises.writeFile(this.path,JSON.stringify(this.products));
+                await this.#writeFile(this.products);
                 console.log(`El producto con el ID (${id}) fue eliminado`);
             } catch (error) {
                 console.log(`ERROR: al modificar el archivo`)
@@ -151,65 +165,79 @@ class ProductManager{
         else console.log(`Error: No se pudo eliminar el producto con ID (${id}) porque no existe`)
     }
 }
-
+export default ProductManager;
 
 
 //Testing
-// const user = new ProductManager("../products.json");
+// const user = new ProductManager("products");
 // await user.getProducts();
 // await user.addProduct({title: `producto prueba`,
 //     description:`Este es un producto prueba`,
 //     price:200,
-//     thumbnail:`Sin imagen`,
+//     thumbnails:`Sin imagen`,
 //     code:`abc123`,
-//     stock:25
+//     stock:25,
+//     status:true,
+//     category:'remera'
 //     })
 
 // await user.addProduct({title: "producto prueba2",
 //     description:"Este es un producto prueba",
 //     price:2002,
-//     thumbnail:"Sin imagen",
+//     thumbnails:"Sin imagen",
 //     code:"abc2",
-//     stock:25})
+//     stock:25,
+//     status:true,
+//     category:'remera'})
 
 // await user.addProduct({title: "producto prueba3",
 //     description:"Este es un producto prueba",
 //     price:200,
-//     thumbnail:"Sin imagen",
+//     thumbnails:"Sin imagen",
 //     code:"abc3",
-//     stock:25})
+//     stock:25,
+//     status:true,
+//     category:'remera'})
 
 // await user.addProduct({title: "producto prueba4",
 //     description:"Este es un producto prueba",
 //     price:2002,
-//     thumbnail:"Sin imagen",
+//     thumbnails:"Sin imagen",
 //     code:"abc4",
-//     stock:25})
+//     stock:25,
+//     status:true,
+//     category:'remera'})
 
 // await user.addProduct({title: "producto prueba5",
 //     description:"Este es un producto prueba",
 //     price:200,
-//     thumbnail:"Sin imagen",
+//     thumbnails:"Sin imagen",
 //     code:"abc5",
-//     stock:25})
+//     stock:25,
+//     status:true,
+//     category:'remera'})
 
 // await user.addProduct({title: "producto prueba6",
 //     description:"Este es un producto prueba",
 //     price:200,
-//     thumbnail:"Sin imagen",
+//     thumbnails:"Sin imagen",
 //     code:"abc6",
-//     stock:25})
+//     stock:25,
+//     status:true,
+//     category:'remera'})
 
 // await user.addProduct({title: "producto prueba7",
 //     description:"Este es un producto prueba",
 //     price:200,
-//     thumbnail:"Sin imagen",
+//     thumbnails:"Sin imagen",
 //     code:"abc7",
-//     stock:25})
+//     stock:25,
+//     status:true,
+//     category:'remera'})
 
 
-// await user.getProductById(1);
+// await user.getProductById(2);
 // await user.deleteProduct(6);  
-// user.getProductById(6);
 
 // await user.updateProduct(1, {description: "este es un producto modificado"});
+// await user.getProductById(1);
