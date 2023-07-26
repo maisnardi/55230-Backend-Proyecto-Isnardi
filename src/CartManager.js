@@ -1,13 +1,13 @@
 //Importacion de modulos
 //import { error } from "console";
 import fs from "fs";    //FileSystem
-
+import __dirname from "./dirname.js";
 //Declaracion de clase CartManager
 class CartManager{
     //declaro el constructor
     constructor(path){
         this.carts=[];
-        this.path=`./db/${path}.json`;
+        this.path=`${__dirname}/db/${path}.json`;
     }
 
     //Función privada y asincrona de utilidad para guardar en archivo

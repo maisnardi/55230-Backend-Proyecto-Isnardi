@@ -1,12 +1,13 @@
 //Importacion de modulos
 import fs from "fs";    //FileSystem
+import __dirname from "./dirname.js";
 
 //Declaracion de clase ProductManager
 class ProductManager{
     //declaro el constructor
     constructor(path){
         this.products=[];
-        this.path=`./db/${path}.json`;
+        this.path=`${__dirname}/db/${path}.json`;
     }
 
     //Función privada que saca todos los espacios vacios que estan en los Values y devuelvo el objeto modificado.
@@ -54,7 +55,7 @@ class ProductManager{
     
     //Función asíncrona que recibe como parametro un producto, realiza 3 verificaciones y si la información esta bien lo carga dentro del array products con un número de ID único.Trabaja con persistencia de archivo.
     addProduct = async(product)=>{
-        let status = [{code:200}, {status:{}}];
+        let status = [{code:200}, {status:{}}, {id:0}];
         let data = this.#modelData(product)
         try {
             this.products = JSON.parse(await fs.promises.readFile(this.path,"utf-8"));
@@ -77,7 +78,7 @@ class ProductManager{
                 try {
                     await this.#writeFile(this.products);
                     console.log("El producto fue cargado");
-                    status = [{code:200}, {posted:"True."}];
+                    status = [{code:200}, {posted:"True."}, {id:data.id}];
                 } catch (error) {
                     console.log(`ERROR al guardar el archivo ${error}`)
                     status = [{code:500}, {error: "File saving error"}];
@@ -144,6 +145,7 @@ class ProductManager{
 
     //Función asíncrona que recibe como parametro el ID de un producto y lo elimina del listado del productos.Trabaja con persistencia de archivo.
     deleteProduct = async (id)=>{
+        let status = [{code:200}, {status:{}}];
         let data=[];
         try {
             data = await this.getProducts();
@@ -157,12 +159,17 @@ class ProductManager{
             try {
                 await this.#writeFile(this.products);
                 console.log(`El producto con el ID (${id}) fue eliminado`);
+                status=[{code:200}, {deleted:"true"}];
             } catch (error) {
                 console.log(`ERROR: al modificar el archivo`)
                 console.log(`ERROR: ${error}`)
             }
         }
-        else console.log(`Error: No se pudo eliminar el producto con ID (${id}) porque no existe`)
+        else {
+            console.log(`Error: No se pudo eliminar el producto con ID (${id}) porque no existe`)
+            status=[{code:404}, {error:"ID not found"}];
+        }
+        return status;
     }
 }
 export default ProductManager;

@@ -9,8 +9,8 @@ import __dirname from "../dirname.js"
 //Configuración de multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    //cb(null, __dirname+"/public/img");
-    cb(null, "../src/public/img");
+    cb(null, __dirname+"/public/img");
+    //cb(null, "../src/public/img");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);

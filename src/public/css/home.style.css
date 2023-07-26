@@ -1,4 +1,4 @@
-h2{
+/* h2{
   color: whitesmoke;
 }
 #allContainer{
@@ -75,4 +75,16 @@ table td:nth-child(8){
 }
 table td:nth-child(9){
   width: 5%;
+} */
+
+.allContainer{
+  display:flex;
+  flex-direction: column;
+}
+
+.formDataContainer{
+  width: 20%;
+}
+.productsContainer{
+max-width: 70%;
 }

@@ -1,5 +1,5 @@
 <script src="/socket.io/socket.io.js"></script>
-<script src="../public/js/socket.js"></script>
+
 <link rel="stylesheet"  href="../../public/css/realtime.style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8,7 +8,17 @@
 <h2>Realtimeproducts</h2>
 <div id="tableContainer">
     <table id="tabla">
-        
-        
+        <tr id="encabezado">
+            <td>ID</td>
+            <td>Category</td>
+            <td>Title</td>
+            <td>Description</td>
+            <td>Price</td>
+            <td>Thumbnails</td>
+            <td>Code</td>
+            <td>Stock</td>
+            <td>Status</td>
+        </tr>
     </table>
 </div>
+<script src="../public/js/socket.js"></script>

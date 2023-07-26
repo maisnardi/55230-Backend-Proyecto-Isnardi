@@ -26,7 +26,6 @@ productRouter.get('/', async (req,res)=>{
 productRouter.get('/:pid', async (req,res)=>{
     try {
         const {pid} = req.params;
-        console.log(pid)
         const product = await productManager.getProductById(Number(pid));    //otra opción await productManager.getProductById(+(id))
         typeof(product) === "string" ? res.status(404).send(product) : res.status(200).send(product);
     } catch(e){
@@ -38,28 +37,33 @@ productRouter.get('/:pid', async (req,res)=>{
 productRouter.post("/", upload.array('photo'),async (req,res)=>{
     try {
         const photos=[];
-        let body;
-        if(req.files)
+        if(req.files.length>0)
         {
             req.files.forEach((element)=>{
             photos.push(element.destination+"/"+element.filename)
-        })
-            body={
-                ...req.body,
-                thumbnails: photos
+            })
+        }
+        if(req.body.thumbnails)
+            if(Array.isArray(req.body.thumbnails)){
+                req.body.thumbnails.forEach((element)=>{
+                    photos.push(element) 
+                });
             }
-        }
-        else{
-            body={...req.body,
-                thumbnails:[req.body.thumbnails]
-            };
-        }
+            else{
+                photos.push(req.body.thumbnails)
+            }     
+        const body={...req.body,
+            thumbnails:photos 
+        };
+        
         const response = await productManager.addProduct(body);
         res.status(response[0].code).send(response[1]);
         
         //Emit de datos socket.io       
-        const products = await productManager.getProducts();
-        req.io.emit("products", products);
+        if(response[1].posted){
+            req.io.emit("newProduct", body, response[2].id);
+        }
+        
     } catch (error) {
         res.status(502).send({error:"true"});
     }
@@ -70,7 +74,6 @@ productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
     try {
         const photos =[];
         const {pid} = req.params;
-        console.log(req.files)
         if(req.files)
         {
             req.files.forEach((element)=>{
@@ -96,13 +99,13 @@ productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
 productRouter.delete('/:pid', async (req,res)=>{
     try {
         const {pid} = req.params;
-        console.log()
-        await productManager.deleteProduct(Number(pid));
-        res.status(200).send({deleted:true});
+        const response = await productManager.deleteProduct(Number(pid));
+        res.status(response[0].code).send(response[1]);
 
-        //Emit de datos socket.io     
-        const products = await productManager.getProducts();
-        req.io.emit("products", products);
+        //Emit de datos socket.io
+        if (!response[1].error){
+            req.io.emit("delete", pid);
+        }
     } catch (error) {
         res.status(502).send({error:true});
     }

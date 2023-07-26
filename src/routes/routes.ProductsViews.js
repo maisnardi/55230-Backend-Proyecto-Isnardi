@@ -49,11 +49,15 @@ productsViewsRouter.post("/", upload.array('photo'),async (req,res)=>{
 
 productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
     try{
+        res.render("realTimeProducts")
         const products = await productManager.getProducts();
-        res.render("realtimeproducts")
         req.io.on('connection', socket=>{
             req.io.emit("products", products)
         })
+        console.log("se enviaron los productos")
+        
+        
+            
     }catch(e){
         res.status(502).send({error:true});
     }
