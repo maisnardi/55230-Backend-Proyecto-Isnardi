@@ -38,8 +38,10 @@ table {
 
 
   table td:nth-child(1){
-    width: 5%;
-
+    width: 15%;
+  }
+  table td:nth-child(2){
+    width: 7%;
   }
   table td:nth-child(5){
     width: 5%;

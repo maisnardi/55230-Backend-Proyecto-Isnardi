@@ -2,7 +2,7 @@
 
 //Importaciones
 import { Router } from "express";   //Router
-import ProductManager from "../ProductManager.js";
+import ProductManager from "../dao/mongo/mongoProductManager.js";
 import { upload } from "../config/multer.js";
 
 //Instanciamos un nuevo productManager.
@@ -13,8 +13,13 @@ const productsViewsRouter = Router();
 //Endpoint GET para mostrar productos en la view home de handlebars 
 productsViewsRouter.get("/home", async (req,res)=>{
     try{
-        const products = await productManager.getProducts();
-        res.render("home",{products:products});    
+        await productManager.getProducts().then(products => {
+            const productsObj = products.map(product => product.toObject())
+            productsObj.forEach((element)=>{
+                console.log(element)})
+            res.render("home", {products: productsObj})
+        });
+        // res.render("home",{products:products});    
     }catch(e){
         res.status(502).send({error:true});
     }
@@ -51,13 +56,11 @@ productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
     try{
         res.render("realTimeProducts")
         const products = await productManager.getProducts();
+        console.log(typeof(products))
         req.io.on('connection', socket=>{
             req.io.emit("products", products)
         })
         console.log("se enviaron los productos")
-        
-        
-            
     }catch(e){
         res.status(502).send({error:true});
     }

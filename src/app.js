@@ -1,13 +1,24 @@
 //Importacion de módulos.
 import express  from "express";     //Express.
 import handlebars from 'express-handlebars'     //Motor de plantillas handlebars.
-import { Server as HTTPServer} from "http";     //Para utilizar io dentro de routes
-import { Server as SocketIO } from "socket.io";     //socket.io
+import { Server as HTTPServer} from "http";     //Para utilizar io dentro de routes.
+import { Server as SocketIO } from "socket.io";     //socket.io.
 import __dirname from "./dirname.js"
-//import de routes   
+import mongoose from "mongoose";    //Mongoose.
+
+//import de routes.   
 import productRouter from "./routes/routes.ProductManager.js";
 import cartRouter from "./routes/routes.CartManager.js";
 import productsViewsRouter from "./routes/routes.ProductsViews.js";
+import chatRouter from "./routes/routes.ChatManager.js";
+
+import ChatManager from "./dao/mongo/mongoChatManager.js"
+const chatManager = new ChatManager();
+
+
+//Conexión con la base de datos externa, Atlas de mongoDB
+const dbConnection = mongoose.connect(`mongodb://usercoder:coder55230@ac-6o744vq-shard-00-00.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-01.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-02.9bmatez.mongodb.net:27017/ecommerce?ssl=true&replicaSet=atlas-55g89c-shard-0&authSource=admin&retryWrites=true&w=majority`)
+dbConnection.then(()=>{console.log(`Conected to MongoDB database`)})
 
 //Declaracion puerto servidor express.
 const PORT = 8080;
@@ -41,11 +52,21 @@ app.set('views',`${__dirname}/views`);          //le decimos donde estan las rut
 app.set('view engine', 'handlebars');           //espcificamos que motor de plantillas vamos a usar.
 
 //Enpoints con handlebars con express y socket.io
-app.use("/", productsViewsRouter );
+app.use("/", productsViewsRouter);
+
+//Endpoint del Chat
+app.use("/chat",chatRouter);
 
 //Comunicaciones websocket
 io.on('connection', socket=>{
     console.log(`Nuevo cliente conectado ID:${socket.id}`);
+    socket.on("message", async (messageData)=>{
+        console.log(`Mensage recibido desde el front${messageData.message}`)
+        console.log(messageData)
+        await chatManager.addMessages(messageData)
+        console.log("Los datos fueron enviados a Atlas")
+        socket.broadcast.emit("newMessage", messageData)
+    })
 })
 
 //Inicializacion de express

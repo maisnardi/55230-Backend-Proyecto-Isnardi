@@ -2,7 +2,7 @@
 
 //Importaciones
 import { Router } from "express";   //Router
-import ProductManager from "../ProductManager.js";
+import ProductManager from "../dao/mongo/mongoProductManager.js";
 import {upload} from "../config/multer.js"
 
 //Instanciamos un nuevo productManager.
@@ -26,7 +26,7 @@ productRouter.get('/', async (req,res)=>{
 productRouter.get('/:pid', async (req,res)=>{
     try {
         const {pid} = req.params;
-        const product = await productManager.getProductById(Number(pid));    //otra opción await productManager.getProductById(+(id))
+        const product = await productManager.getProductById(pid);    //ahora necesito que pid sea un string
         typeof(product) === "string" ? res.status(404).send(product) : res.status(200).send(product);
     } catch(e){
         res.status(502).send({error:true});
@@ -40,7 +40,8 @@ productRouter.post("/", upload.array('photo'),async (req,res)=>{
         if(req.files.length>0)
         {
             req.files.forEach((element)=>{
-            photos.push(element.destination+"/"+element.filename)
+                photos.push(element.filename)
+                //photos.push(element.destination+"/"+element.filename)
             })
         }
         if(req.body.thumbnails)
@@ -84,7 +85,7 @@ productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
             ...req.body,
             thumbnails: photos
         }
-        const response = await productManager.updateProduct(Number(pid),body);
+        const response = await productManager.updateProduct(pid,body);
         response === "updated" ? res.status(200).send({update:true}) : res.status(404).send({error:"ID not found"})
         
         //Emit de datos socket.io     
@@ -99,7 +100,7 @@ productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
 productRouter.delete('/:pid', async (req,res)=>{
     try {
         const {pid} = req.params;
-        const response = await productManager.deleteProduct(Number(pid));
+        const response = await productManager.deleteProduct(pid);
         res.status(response[0].code).send(response[1]);
 
         //Emit de datos socket.io
