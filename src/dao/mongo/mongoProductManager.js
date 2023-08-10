@@ -78,9 +78,9 @@ class ProductManager{
     }
 
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products en ATLAS.
-    getProducts = async ()=>{
+    getProducts = async (limit)=>{
         try{
-            const data = await ProductModel.find();
+            const data = await ProductModel.find().limit(limit);
             return data;
         }catch(e){
             return e;

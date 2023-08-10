@@ -15,8 +15,9 @@ const productRouter = Router();
 productRouter.get('/', async (req,res)=>{
     const {limit} = req.query;
     try{
-        const products = await productManager.getProducts();
-        limit? res.send(products.slice(0,limit)) : res.send(products);        
+        const products = await productManager.getProducts(limit);               //Para uso con mongoProductManager
+        //limit? res.send(products.slice(0,limit)) : res.send(products);        //Para uso con ProductManager (FS)
+        res.send(products);        
     }catch(e){
         res.status(502).send({error:true});
     }
