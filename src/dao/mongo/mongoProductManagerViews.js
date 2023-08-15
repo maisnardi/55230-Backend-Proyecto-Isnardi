@@ -44,6 +44,11 @@ class ProductManager{
         }
          return validate;   
     }
+
+    //Función privada y asincrona de utilidad para guardar en archivo
+    #writeFile = async(product)=>{
+        await fs.promises.writeFile(this.path,JSON.stringify(product));
+    }
     
     //Función asíncrona que recibe como parametro un producto, realiza 3 verificaciones y si la información esta bien lo carga dentro del array products con un número de ID único.Trabaja con persistencia de archivo.
     addProduct = async(product)=>{
@@ -71,6 +76,7 @@ class ProductManager{
         }
         return status;
     }
+
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products en ATLAS.
     getProducts = async (limit)=>{
         try{
@@ -79,66 +85,6 @@ class ProductManager{
         }catch(e){
             return e;
         }
-    }
-
-    //Función asíncrona que devuelve por consola todos los productos cargados en el Array products en ATLAS.
-    getProductsQuery = async (uLimit, uPage, uSort, uCategory, uStock)=>{
-        let result;
-        let data;
-        let query = {}
-        const option = {
-            limit:uLimit, 
-            page:uPage,
-        }
-        if(uCategory) query.category = uCategory;
-        if(uStock) query.stock ={$gte:1};
-        if(uSort){
-            option.sort={price:uSort}
-            try{
-                data = await ProductModel.paginate(query,option);
-                const {docs,totalPages,prevPage,nextPage,page,hasPrevPage,hasNextPage} = data;
-                result = {
-                    status:"success",
-                    payload:docs,
-                    totalPages:totalPages,
-                    prevPage:prevPage,
-                    nextPage:nextPage,
-                    page:page,
-                    hasPrevPage:hasPrevPage,
-                    hasNextPage:hasNextPage,
-                    prevLinkAPI: hasPrevPage ==false? null : `localhost:8080/api/products/?limit=${uLimit}&page=${prevPage}&sort=${uSort}`,
-                    nextLinkAPI: hasNextPage ==false? null : `localhost:8080/api/products/?limit=${uLimit}&page=${nextPage}&sort=${uSort}`,
-                    prevLink: hasPrevPage ==false? null : `?limit=${uLimit}&page=${prevPage}&sort=${uSort}`,
-                    nextLink: hasNextPage ==false? null : `?limit=${uLimit}&page=${nextPage}&sort=${uSort}`
-                }
-                return result;            
-            }catch(e){
-                return result.status="error";
-            }
-        }
-        else{
-            try{
-                data = await ProductModel.paginate(query,option);
-                const {docs,totalPages,prevPage,nextPage,page,hasPrevPage,hasNextPage} = data;
-                result = {
-                    status:"success",
-                    payload:docs,
-                    totalPages:totalPages,
-                    prevPage:prevPage,
-                    nextPage:nextPage,
-                    page:page,
-                    hasPrevPage:hasPrevPage,
-                    hasNextPage:hasNextPage,
-                    prevLinkAPI: hasPrevPage ==false? null : `localhost:8080/api/products/?limit=${uLimit}&page=${prevPage}`,
-                    nextLinkAPI: hasNextPage ==false? null : `localhost:8080/api/products/?limit=${uLimit}&page=${nextPage}`,
-                    prevLink: hasPrevPage ==false? null : `?limit=${uLimit}&page=${prevPage}`,
-                    nextLink: hasNextPage ==false? null : `?limit=${uLimit}&page=${nextPage}`
-                }
-                return result;            
-            }catch(e){
-                return result.status="error";
-            }
-        } 
     }
 
     //Función asíncrona que recibe como parametro un ID de un producto y lo busca dentro del array products en ATLAS. Si existe devuelve por consola el producto, si no arroja un mensaje indicando que el productno no existe. Trabaja con persistencia de archivo.
@@ -198,6 +144,5 @@ class ProductManager{
         }
         return status;
     }
-    }
-
+}
 export default ProductManager;

@@ -1,0 +1,93 @@
+h2{
+    color: whitesmoke;
+  }
+  #allContainer{
+    display: flex;
+  }
+  body{
+    background-color: #007aff;
+    font-family: 'Ubuntu', sans-serif;
+  }
+  #formDataContainer{
+    width: 15%;
+  }
+  #tableContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  table {
+      table-layout: fixed;
+      border-collapse: collapse;
+      background: rgba(255,255,255,0.5);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+  
+      border-radius: 1% 1% 0 0;
+      text-align: center;
+    }
+    
+    td{
+      color: black;
+      border: 1px solid black;
+      overflow: auto;
+    }
+    #encabezado{
+      font-family: 'Ubuntu', 'Regular 400 Italic';
+    }
+    th, td {
+      padding: 10px;
+    }
+  
+    #formContainer{
+      display: flex;
+      align-items: center;
+    }
+  form{
+    display: flex;
+    flex-direction:column;
+  }
+  
+  label{
+   padding: 5px;
+  }
+  
+  #loadButton{
+    margin-top: 5px;
+  }
+  
+  
+  table td:nth-child(1){
+    width: 15%;
+  }
+  table td:nth-child(2){
+    width: 7%;
+  }
+  table td:nth-child(5){
+    width: 5%;
+  }
+  table td:nth-child(6){
+    width: 25%;
+  }
+  table td:nth-child(7){
+    width: 5%;
+  }
+  table td:nth-child(8){
+    width: 5%;
+  }
+  table td:nth-child(9){
+    width: 5%;
+  }
+  
+  
+  .allContainer{
+    display:flex;
+    flex-direction: column;
+  }
+  
+  .formDataContainer{
+    width: 20%;
+  }
+  .productsContainer{
+  max-width: 70%;
+  }

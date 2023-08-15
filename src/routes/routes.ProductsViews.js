@@ -4,6 +4,7 @@
 import { Router } from "express";   //Router
 import ProductManager from "../dao/mongo/mongoProductManager.js";
 import { upload } from "../config/multer.js";
+import productRouter from "./routes.ProductManager.js";
 
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
@@ -15,8 +16,6 @@ productsViewsRouter.get("/home", async (req,res)=>{
     try{
         await productManager.getProducts().then(products => {
             const productsObj = products.map(product => product.toObject())
-            productsObj.forEach((element)=>{
-                console.log(element)})
             res.render("home", {products: productsObj})
         });
         // res.render("home",{products:products});    
@@ -25,7 +24,7 @@ productsViewsRouter.get("/home", async (req,res)=>{
     }
 })
  
-//Endpoint POST con req.body para agregar productos desde el form de localhost:8080/
+//Endpoint POST con req.body para agregar productos desde el form de http://localhost:8080/
 productsViewsRouter.post("/", upload.array('photo'),async (req,res)=>{
     try {
         const photos=[];
@@ -45,23 +44,48 @@ productsViewsRouter.post("/", upload.array('photo'),async (req,res)=>{
 
         //Emit de datos socket.io       
         const products = await productManager.getProducts();
+        console.log(typeof(products))
         req.io.emit("products", products);
         res.redirect("/home");
     } catch (error) {
         res.status(502).send({error:true});
     }
 })
-
+//Endpoint GET para visualizar todos los prodcutos en tiempo real en la vista http://localhost:8080/realtimeproducts
 productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
     try{
         res.render("realTimeProducts")
         const products = await productManager.getProducts();
-        console.log(typeof(products))
         req.io.on('connection', socket=>{
             req.io.emit("products", products)
         })
         console.log("se enviaron los productos")
     }catch(e){
+        res.status(502).send({error:true});
+    }
+})
+
+//Endpoint GET con la vista http://localhost:8080/products  
+productsViewsRouter.get("/products", async (req, res)=>{
+    const {limit=10, page=1 , sort, category, stock} = req.query;
+    try{
+        const products = await productManager.getProductsQuery(limit, page, sort,category, stock)
+        console.log(products)
+        const ObjProducts = products.payload.map((product => product.toObject()))
+        res.render("products", {nlink:products.nextLink,plink:products.prevLink, page:products.page, products:ObjProducts})                  
+    }catch(e){
+        res.status(502).send({error:true});
+    }
+})
+//Endpoint GET con la vista http://localhost:8080/product/:cid  
+productsViewsRouter.get("/product/:cid", async (req, res)=>{
+    try {
+        const {cid} = req.params;
+        const product = await productManager.getProductById(cid)
+        const jsonProduct = product.toJSON()  
+        console.log(jsonProduct)     
+        res.render("product", {product:jsonProduct})
+    } catch (error) {
         res.status(502).send({error:true});
     }
 })

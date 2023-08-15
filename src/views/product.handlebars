@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="../public/css/product.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+
+<h1>Product view:</h1>
+<dir id="allCaontainer">
+    <div id="productsContainer">
+        <h2>Producto:</h2>
+            
+             <table>
+                <tr>
+                    <td>category</td>
+                    <td>title</td>
+                    <td>description</td>
+                    <td>code</td>
+                    <td>price</td>
+                    <td>thumbnails</td>
+                    <td>stock</td>
+                    <td>status</td>
+                </tr>
+                <tr>
+                    <td>{{product.category}}</td>
+                    <td>{{product.title}}</td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.code}}</td>
+                    <td>${{product.price}}</td>
+                    <td>{{product.thumbnails}}</td>
+                    <td>{{product.stock}}</td>
+                    <td>{{product.status}}</td>
+                    <td>
+                        <form action="http://localhost:8080/api/carts/64db9821e72e49374bae40f9/product/{{product._id}}" method="post">
+                            <button  value="" type="submit">Agregar al carrito</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+               
+            </table>
+    </dir> 
+</dir>

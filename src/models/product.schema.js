@@ -1,6 +1,7 @@
 //Importaciones
 import { ObjectId } from "mongodb";
 import mongoose, { model } from "mongoose";    //mongoose
+import mongoosePaginate from "mongoose-paginate-v2"     //Paginate
 
 //Schema de product
 const productSchema = new mongoose.Schema({
@@ -39,7 +40,8 @@ const productSchema = new mongoose.Schema({
         required: true
     }
 })
-
+//Agregamos el plugin de paginate
+productSchema.plugin(mongoosePaginate);
 //Model de product
 const ProductModel = mongoose.model('products',productSchema);
 

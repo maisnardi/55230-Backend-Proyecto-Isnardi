@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="../public/css/carts.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+<h1>Cart view:</h1>
+   <div id="productsContainer">
+        <h2>Carrito: {{cart}}:</h2>
+
+        <div id="tableContainer">
+            <table>
+                <tr>
+                    <td>Quantity</td>
+                    <td>title</td>
+                    <td>category</td>
+                    <td>description</td>
+                    <td>price</td>
+                    <td>thumbnails</td>
+                    <td>code</td>
+                    <td>stock</td>
+                    <td>status</td>
+                </tr>
+                {{#each products}}
+                <tr>
+                    <td>{{this.quantity}}</td>
+                    <td>{{this._id.title}}</td>
+                    <td>{{this._id.category}}</td>
+                    <td>{{this._id.description}}</td>
+                    <td>{{this._id.price}}</td>
+                    <td>{{#each this._id.thumnails}}</td>
+                            <td>{{this}}</td>
+                    {{/each}}
+                    <td>{{this._id.code}}</td>
+                    <td>{{this._id.stock}}</td>
+                    <td>{{this._id.status}}</td>
+                    
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>

@@ -13,9 +13,9 @@ const productRouter = Router();
 //Endpoints para express
 //Endpoint GET con req.query
 productRouter.get('/', async (req,res)=>{
-    const {limit} = req.query;
+    const {limit=10, page=1 , sort, category, stock} = req.query;
     try{
-        const products = await productManager.getProducts(limit);               //Para uso con mongoProductManager
+        const products = await productManager.getProductsQuery(limit, page, sort,category, stock);               //Para uso con mongoProductManager
         //limit? res.send(products.slice(0,limit)) : res.send(products);        //Para uso con ProductManager (FS)
         res.send(products);        
     }catch(e){
@@ -79,7 +79,7 @@ productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
         if(req.files)
         {
             req.files.forEach((element)=>{
-                photos.push(element.destination+"/"+element.filename)
+            photos.push(element.destination+"/"+element.filename)
             })
          }
         const body ={
@@ -112,5 +112,6 @@ productRouter.delete('/:pid', async (req,res)=>{
         res.status(502).send({error:true});
     }
 })
+
 
 export default productRouter;

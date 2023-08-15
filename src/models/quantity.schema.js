@@ -4,12 +4,13 @@ import { ObjectId } from "mongodb";
 
 //Schema de quantity
 const quantitySchema = new mongoose.Schema({
-    id:{
-        type:mongoose.Schema.Types.ObjectId,     
+    _id:{                       
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "products"     
     },
     quantity:{
         type:Number,
-    }
+    },
 })
 
 

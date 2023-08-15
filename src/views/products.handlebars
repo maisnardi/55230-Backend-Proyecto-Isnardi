@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="../public/css/products.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+
+<h1>Products from products view:</h1>
+<dir id="allCaontainer">
+    <div id="productsContainer">
+        <h2>Productos:</h2>
+            
+             <table>
+                <tr>
+                    <td>id</td>
+                    <td>category</td>
+                    <td>title</td>
+                    <td>description</td>
+                    <td>price</td>
+                    <td>thumbnails</td>
+                    <td>code</td>
+                    <td>stock</td>
+                    <td>status</td>
+                </tr>
+                {{#each products}}
+                <tr>
+                    <td>{{this._id}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.title}}</td>
+                    <td>{{this.description}}</td>
+                    <td>${{this.price}}</td>
+                    <td>{{this.thumbnails}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>{{this.status}}</td>
+                    <td>
+                        <form action="http://localhost:8080/product/{{this._id}}" method="GET">
+                            <button  value="" type="submit">Ver producto</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="http://localhost:8080/api/carts/64db9821e72e49374bae40f9/product/{{this._id}}" method="post">
+                            <button  value="" type="submit">Agregar al carrito</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                {{/each}}
+            </table>
+            <div id="paginateContainer">
+                <a href="{{plink}}" >Previous</a>
+                <h4><h3>{{page}}</h3></h4>
+                <a href="{{nlink}}" >Next</a>
+            </div>
+
+    </dir> 
+</dir>
+
+
+<script src="../public/js/products.view.js"></script>

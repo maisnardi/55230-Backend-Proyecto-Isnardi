@@ -11,6 +11,7 @@ import productRouter from "./routes/routes.ProductManager.js";
 import cartRouter from "./routes/routes.CartManager.js";
 import productsViewsRouter from "./routes/routes.ProductsViews.js";
 import chatRouter from "./routes/routes.ChatManager.js";
+import cartsViewRouter from "./routes/routes.CartView.js"
 
 import ChatManager from "./dao/mongo/mongoChatManager.js"
 const chatManager = new ChatManager();
@@ -56,6 +57,9 @@ app.use("/", productsViewsRouter);
 
 //Endpoint del Chat
 app.use("/chat",chatRouter);
+
+//Endpoint del carts
+app.use("/carts",cartsViewRouter);
 
 //Comunicaciones websocket
 io.on('connection', socket=>{
