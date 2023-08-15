@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="../public/css/home.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+<h1>Products from home view:</h1>
+<dir id="allCaontainer">
+    <div>
+        <div id="formDataContainer">
+            <div>
+                <h2>Load products</h2>
+            </div>
+            <div>
+                <h3>All fields except thumbnails and Image Files are required </h3>
+                    <div id="formContainer">
+                        <form action="/" method="post" enctype="multipart/form-data">
+                            <label for="title">Title</label><input type="text" name="title" required>
+                            <label for="category">Category</label><input type="text" name="category" required>
+                            <label for="description">Description</label><input type="text" name="description" required>
+                            <label for="price">Price</label><input type="text" name="price" required>
+                            <label for="thumbnails">Thumbnails</label><input type="text" name="thumbnails">
+                            <label for="photos">Image Files</label><input type="file" name="photo" accept="image/png, .jpeg, .jpg, .webp">
+                            <label for="code">Code</label><input type="text" name="code" required>
+                            <label for="stock">Stock</label><input type="text" name="stock" required>
+                            <label for="status">Status</label><input type="text" name="status" required>
+                            <input id="loadButton" type="submit" value="Load">
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div id="productsContainer">
+        <h2>Productos:</h2>
+
+        <div id="tableContainer">
+            <table>
+                <tr>
+                    <td>id</td>
+                    <td>category</td>
+                    <td>title</td>
+                    <td>description</td>
+                    <td>price</td>
+                    <td>thumbnails</td>
+                    <td>code</td>
+                    <td>stock</td>
+                    <td>status</td>
+                </tr>
+                {{#each products}}
+                <tr>
+                    <td>{{this._id}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.title}}</td>
+                    <td>{{this.description}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.thumbnails}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>{{this.status}}</td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+</dir>

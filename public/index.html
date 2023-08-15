@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--CSS-->
+    <link rel="stylesheet" href="../public/css/style.css">
+</head>
+<body>
+    <h2>Bienvenidos Proyecto Backend 55230</h2>
+    <h3>API Rest endpoints disponibles:</h3>
+    <div class="containerEndpoints">
+        <h4>Cart</h4>
+        <ul>
+            <li>POST - localhost:8080/api/carts/</li>
+            <li>POST - localhost:8080/api/carts/:cid/product/:pid/</li>
+            <li>GET - localhost:8080/api/carts/:cid</li>
+        </ul>
+        <h4>Products</h4>
+        <ul>
+            <li>GET - localhost:8080/api/products/</li> 
+            <li>GET - localhost:8080/api/products?limit=3</li>
+            <li>GET - localhost:8080/api/products/:pid</li>
+            <li>POST - localhost:8080/api/products - este metodo permite subir varios archivos a la vez con la key photo</li>
+            <li>PUT - localhost:8080/api/products/:pid - este metodo permite subir varios archivos a la vez con la key photo</li>
+            <li>DELETE - localhost:8080/api/products/:pid</li>
+        </ul>
+    </div>
+    <h3>Vistas disponibles</h3>
+    <ul>
+        <li>Vista estatica de productos: localhost:8080</li>
+        <li>Vista en tiempo real de productos:localhost:8080/realtimeproducts</li>
+    </ul>
+</body>
+</html>

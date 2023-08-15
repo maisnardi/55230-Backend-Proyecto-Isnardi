@@ -1,0 +1,29 @@
+<script src="/socket.io/socket.io.js"></script>
+<link rel="stylesheet" href="../public/css/chat.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,900;1,400&display=swap" rel="stylesheet">
+
+<div class="container-md">
+    <h1>Welcome to the chat room</h1>
+    <div class="row" style="width= 250px">
+        <div id="userContainer">
+            <h3>Enter your Email Adress:</h3>
+            <input id="mail" type="email" style=" " required>
+            <button id="logButton">Go to chat room</button>
+        </div>
+        <div id="chatbox">
+            <h2>Last messages:</h3>
+            <div class="chatMessage">
+                <p id="messagesLog"></p>
+            </div>
+            <div id="messagebox">
+                <input id="messageData" type="text">
+                <input id="sendButton" type="button" value="Send">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+<script src="../public/js/chat.socket.js"></script>
