@@ -4,7 +4,7 @@
 import { Router } from "express";   //Router
 import ProductManager from "../dao/mongo/mongoProductManager.js";
 import { upload } from "../config/multer.js";
-import productRouter from "./routes.ProductManager.js";
+import productRouter from "./routes.products.js";
 
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");

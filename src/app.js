@@ -7,11 +7,11 @@ import __dirname from "./dirname.js"
 import mongoose from "mongoose";    //Mongoose.
 
 //import de routes.   
-import productRouter from "./routes/routes.ProductManager.js";
-import cartRouter from "./routes/routes.CartManager.js";
+import productRouter from "./routes/routes.products.js";
+import cartRouter from "./routes/routes.carts.js";
 import productsViewsRouter from "./routes/routes.ProductsViews.js";
-import chatRouter from "./routes/routes.ChatManager.js";
-import cartsViewRouter from "./routes/routes.CartView.js"
+import chatRouter from "./routes/routes.chat.js";
+import cartsViewRouter from "./routes/routes.cartView.js"
 
 import ChatManager from "./dao/mongo/mongoChatManager.js"
 const chatManager = new ChatManager();
