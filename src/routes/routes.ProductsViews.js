@@ -4,7 +4,7 @@
 import { Router } from "express";   //Router
 import ProductManager from "../dao/mongo/mongoProductManager.js";
 import { upload } from "../config/multer.js";
-import productRouter from "./routes.products.js";
+import { isLogged, protectView } from "../utils/secure.middleware.js";
 
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
@@ -66,19 +66,19 @@ productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
 })
 
 //Endpoint GET con la vista http://localhost:8080/products  
-productsViewsRouter.get("/products", async (req, res)=>{
+productsViewsRouter.get("/products", protectView,async (req, res)=>{
     const {limit=10, page=1 , sort, category, stock} = req.query;
     try{
-        const products = await productManager.getProductsQuery(limit, page, sort,category, stock)
-        console.log(products)
-        const ObjProducts = products.payload.map((product => product.toObject()))
-        res.render("products", {nlink:products.nextLink,plink:products.prevLink, page:products.page, products:ObjProducts})                  
+        const products = await productManager.getProductsQuery(limit, page, sort,category, stock);
+        const ObjProducts = products.payload.map((product => product.toObject()));
+        const user = req.session.user;
+        res.render("products", {nlink:products.nextLink,plink:products.prevLink, page:products.page, products:ObjProducts, firstName:user.first_name ,lastName:user.last_name})                  
     }catch(e){
         res.status(502).send({error:true});
     }
 })
 //Endpoint GET con la vista http://localhost:8080/product/:cid  
-productsViewsRouter.get("/product/:cid", async (req, res)=>{
+productsViewsRouter.get("/product/:cid", protectView, async (req, res)=>{
     try {
         const {cid} = req.params;
         const product = await productManager.getProductById(cid)

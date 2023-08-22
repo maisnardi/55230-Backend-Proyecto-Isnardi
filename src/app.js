@@ -5,15 +5,21 @@ import { Server as HTTPServer} from "http";     //Para utilizar io dentro de rou
 import { Server as SocketIO } from "socket.io";     //socket.io.
 import __dirname from "./dirname.js"
 import mongoose from "mongoose";    //Mongoose.
+import cookieParser  from "cookie-parser";      //Cookies 
+import session from "express-session";          //Sessions
+import MongoStore from "connect-mongo";         //Mongo Store para guardar sessions data en mongo
 
 //import de routes.   
 import productRouter from "./routes/routes.products.js";
 import cartRouter from "./routes/routes.carts.js";
 import productsViewsRouter from "./routes/routes.ProductsViews.js";
 import chatRouter from "./routes/routes.chat.js";
-import cartsViewRouter from "./routes/routes.cartView.js"
+import cartsViewRouter from "./routes/routes.cartView.js";
+import userRouter from "./routes/routes.users.js";
+import userRouterViews from "./routes/routes.usersViews.js";
 
-import ChatManager from "./dao/mongo/mongoChatManager.js"
+import ChatManager from "./dao/mongo/mongoChatManager.js";
+
 const chatManager = new ChatManager();
 
 
@@ -33,6 +39,20 @@ const httpServer = HTTPServer(app);
 //Wrapper socketio
 const io = new SocketIO(httpServer);
 
+//Configuración de app con el middleware coockieParser
+app.use(cookieParser())
+
+//Configuración de app con el middleware Sessions
+app.use(session({
+    secret:'secretCoderApp',
+    resave:true,
+    saveUninitialized:true,
+    store: new MongoStore({
+        mongoUrl:'mongodb+srv://usercoder:coder55230@codercluster.9bmatez.mongodb.net/ecommerce?retryWrites=true&w=majority',
+        ttl:30,
+    }),
+}))
+
 //Middleware de socket.io - para poder acceder a io dentro de las routes
 app.use((req, res, next) => {
     req.io = io;
@@ -40,9 +60,9 @@ app.use((req, res, next) => {
   });
 
 //Endpoints servidor express.
-//Productos.
+//Productos api.
 app.use("/api/products",productRouter);
-//Carts.
+//Carts api.
 app.use("/api/carts",cartRouter);
 //Contenido static.
 app.use("/public",express.static("public"));
@@ -55,11 +75,17 @@ app.set('view engine', 'handlebars');           //espcificamos que motor de plan
 //Enpoints con handlebars con express y socket.io
 app.use("/", productsViewsRouter);
 
-//Endpoint del Chat
+//Endpoint del Chat.
 app.use("/chat",chatRouter);
 
-//Endpoint del carts
+//Endpoint del Carts.
 app.use("/carts",cartsViewRouter);
+
+//Endpoints de Users api.
+app.use("/api/",userRouter);
+
+//Endpoint de UsersViews
+app.use("/",userRouterViews);
 
 //Comunicaciones websocket
 io.on('connection', socket=>{
