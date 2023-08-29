@@ -34,7 +34,12 @@ const userSchema = new mongoose.Schema({
         type:String,
         enum:["admin","user"],
         default: "user"
+    },
+    username:{
+        type:String,
+        default:" "
     }
+
 })
 
 //Model de Usuarios

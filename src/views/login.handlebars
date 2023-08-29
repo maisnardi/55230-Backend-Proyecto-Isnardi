@@ -19,6 +19,7 @@
 
     <div class="button-group">
       <button type="submit" class="post-button">Sing in</button>
+      <button class="github-button"><img src="../public/img/github.png" alt="GitHub Logo" class="github-logo">Sign in with GitHub</button>
       <button type="button" class="signin-button"onclick="redirectToRegister()">Sing up!</button>
     </div>
   </form>
@@ -27,5 +28,8 @@
 <script>
 function redirectToRegister() {
   window.location.href = "/register";
+}
+function redirectToGithub() {
+  window.location.href = "http://localhost:8080/api/auth/github";
 }
 </script>

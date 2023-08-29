@@ -16,3 +16,6 @@ function addProductBtt(id)
 function redirectToLogout() {
     window.location.href = "/logout";
   }
+function redirectToProfile() {
+    window.location.href = "/profile"
+}

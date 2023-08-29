@@ -2,7 +2,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 
 
-<h1>Products from products view:</h1>
+{{!-- <h1>Products from products view:</h1>
 <h2>Welcome {{firstName}} {{lastName}}!</h2>
 <button type="button" class="signin-button"onclick="redirectToLogout()">Logout</button>
 <dir id="allCaontainer">
@@ -28,7 +28,7 @@
                     <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
                     <td>${{this.price}}</td>
-                    <td>{{this.thumbnails}}</td>
+                    <td><img class="product-thumbnail" src="../public/img/{{this.thumbnails}}" alt="Producto"></td>
                     <td>{{this.code}}</td>
                     <td>{{this.stock}}</td>
                     <td>{{this.status}}</td>
@@ -53,7 +53,43 @@
             </div>
 
     </dir> 
-</dir>
+</dir> --}}
 
+
+<h1>Products from products view:</h1>
+<h2>Welcome {{user}}!</h2>
+<button type="button" class="signin-button"onclick="redirectToLogout()">Logout</button>
+<button type="button" class="signin-button"onclick="redirectToProfile()">Profile</button>
+{{#each products}}
+ <div class="product-container">
+    <img class="product-thumbnail" src="../public/img/{{this.thumbnails}}" alt="Producto">
+    <div class="product-details">
+        <h1 class="product-title">{{this.title}}</h1>
+        <p class="product-description">Descripción:{{this.description}}</p>
+        <p class="product-category">Categoría: {{this.category}}</p>
+        <p class="product-code">Código: {{this.code}}</p>
+        <p class="product-price">${{this.price}}</p>
+        <p class="product-stock">Stock Disponible: {{this.stock}}</p>
+        <p class="product-status">Status: {{this.status}}</p>
+        <form action="http://localhost:8080/product/{{this._id}}" method="GET">
+            <button class="add-to-cart-btn" value="" type="submit">Ver producto</button>
+        </form>
+        <form action="http://localhost:8080/api/carts/64db9821e72e49374bae40f9/product/{{this._id}}" method="post">
+            <button class="add-to-cart-btn" value="" type="submit">Agregar al carrito</button>
+        </form>
+    </div>
+  </div>
+
+{{/each}}
+
+<div id="paginateContainer">
+    {{#if plink}}
+    <a href="{{plink}}" >Previous</a>
+    {{/if}}
+    <h3>{{page}}</h3>
+    {{#if nlink}}
+    <a href="{{nlink}}" >Next</a>
+    {{/if}}
+</div>
 
 <script src="../public/js/products.view.js"></script>

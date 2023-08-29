@@ -66,13 +66,22 @@ productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
 })
 
 //Endpoint GET con la vista http://localhost:8080/products  
-productsViewsRouter.get("/products", protectView,async (req, res)=>{
+productsViewsRouter.get("/products",protectView,async (req, res)=>{ //saco para probar el middleware protectView
+    
     const {limit=10, page=1 , sort, category, stock} = req.query;
     try{
         const products = await productManager.getProductsQuery(limit, page, sort,category, stock);
         const ObjProducts = products.payload.map((product => product.toObject()));
-        const user = req.session.user;
-        res.render("products", {nlink:products.nextLink,plink:products.prevLink, page:products.page, products:ObjProducts, firstName:user.first_name ,lastName:user.last_name})                  
+        const user = req.user;
+        const dataToRender = {
+            nlink:products.nextLink,
+            plink:products.prevLink? products.prevLink:false,
+            page:products.page, 
+            products:ObjProducts,
+            user: user.first_name? user.first_name +" "+user.last_name : user.username,
+        }
+        console.log(dataToRender)
+        res.render("products", dataToRender)                  
     }catch(e){
         res.status(502).send({error:true});
     }

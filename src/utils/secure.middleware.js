@@ -1,11 +1,12 @@
 //Middleware para proteger las vistas si el usuario no se encuentra logueado.
 export const protectView = (req,res,next) =>{
-    if(!req.session.user) return res.redirect("/login");
+    //console.log(req.user)
+    if(!req.user) return res.status(403).redirect("/login");
     next();
 };
 
 //Middleware para que el usuario no pueda volver a loguearse si ya se encuentra logueado.
 export const isLogged = (req,res,next) =>{
-    if(req.session.user) return res.redirect("/products");
+    if(req.user) return res.status(401).redirect("/products");
     next();
 };

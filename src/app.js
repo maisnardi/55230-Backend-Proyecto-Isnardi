@@ -1,15 +1,16 @@
-//Importacion de módulos.
-import express  from "express";     //Express.
+//Importación de módulos.
+import express  from "express";                 //Express.
 import handlebars from 'express-handlebars'     //Motor de plantillas handlebars.
 import { Server as HTTPServer} from "http";     //Para utilizar io dentro de routes.
-import { Server as SocketIO } from "socket.io";     //socket.io.
-import __dirname from "./dirname.js"
-import mongoose from "mongoose";    //Mongoose.
+import { Server as SocketIO } from "socket.io"; //socket.io.
+
+import mongoose from "mongoose";                //Mongoose.
 import cookieParser  from "cookie-parser";      //Cookies 
 import session from "express-session";          //Sessions
 import MongoStore from "connect-mongo";         //Mongo Store para guardar sessions data en mongo
+import passport from "passport";                //Passport general
 
-//import de routes.   
+//Importación de routes.   
 import productRouter from "./routes/routes.products.js";
 import cartRouter from "./routes/routes.carts.js";
 import productsViewsRouter from "./routes/routes.ProductsViews.js";
@@ -17,7 +18,13 @@ import chatRouter from "./routes/routes.chat.js";
 import cartsViewRouter from "./routes/routes.cartView.js";
 import userRouter from "./routes/routes.users.js";
 import userRouterViews from "./routes/routes.usersViews.js";
+import authRouter from "./routes/router.auth.js";
 
+//Importación de configuraciones
+import __dirname from "./dirname.js"            //Dirname
+import initLocalStrategy from "./config/passport.config.js";    //Estrategias Passport local
+
+//Importación de Managers
 import ChatManager from "./dao/mongo/mongoChatManager.js";
 
 const chatManager = new ChatManager();
@@ -48,16 +55,23 @@ app.use(session({
     resave:true,
     saveUninitialized:true,
     store: new MongoStore({
-        mongoUrl:'mongodb+srv://usercoder:coder55230@codercluster.9bmatez.mongodb.net/ecommerce?retryWrites=true&w=majority',
-        ttl:30,
+        mongoUrl:`mongodb://usercoder:coder55230@ac-6o744vq-shard-00-00.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-01.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-02.9bmatez.mongodb.net:27017/ecommerce?ssl=true&replicaSet=atlas-55g89c-shard-0&authSource=admin&retryWrites=true&w=majority`,
+        //mongoUrl:'mongodb+srv://usercoder:coder55230@codercluster.9bmatez.mongodb.net/ecommerce?retryWrites=true&w=majority',
+        ttl:3600,
     }),
 }))
+
 
 //Middleware de socket.io - para poder acceder a io dentro de las routes
 app.use((req, res, next) => {
     req.io = io;
     next();
   });
+
+//Configuración Passport Init
+initLocalStrategy();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Endpoints servidor express.
 //Productos api.
@@ -72,7 +86,7 @@ app.engine('handlebars',handlebars.engine());   //seteamos el motor.
 app.set('views',`${__dirname}/views`);          //le decimos donde estan las rutas de las vistas.
 app.set('view engine', 'handlebars');           //espcificamos que motor de plantillas vamos a usar.
 
-//Enpoints con handlebars con express y socket.io
+//Enpoints con handlebars, express y socket.io
 app.use("/", productsViewsRouter);
 
 //Endpoint del Chat.
@@ -86,6 +100,9 @@ app.use("/api/",userRouter);
 
 //Endpoint de UsersViews
 app.use("/",userRouterViews);
+
+//Endpoints de Passport-github2
+app.use("/api/auth", authRouter);
 
 //Comunicaciones websocket
 io.on('connection', socket=>{

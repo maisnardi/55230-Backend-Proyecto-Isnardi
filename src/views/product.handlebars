@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="../public/css/product.style.css">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 
-
+{{!-- 
 <h1>Product view:</h1>
 <dir id="allCaontainer">
     <div id="productsContainer">
@@ -24,7 +24,7 @@
                     <td>{{product.description}}</td>
                     <td>{{product.code}}</td>
                     <td>${{product.price}}</td>
-                    <td>{{product.thumbnails}}</td>
+                    <td>C</td>
                     <td>{{product.stock}}</td>
                     <td>{{product.status}}</td>
                     <td>
@@ -37,4 +37,20 @@
                
             </table>
     </dir> 
-</dir>
+</dir> --}}
+
+
+ <div class="product-container">
+    <img class="product-thumbnail" src="../public/img/{{product.thumbnails}}" alt="Producto">
+    <div class="product-details">
+        <h1 class="product-title">{{product.title}}</h1>
+        <p class="product-description">Descripción:{{product.description}}</p>
+        <p class="product-category">Categoría: {{product.category}}</p>
+        <p class="product-code">Código: {{product.code}}</p>
+        <p class="product-price">${{product.price}}</p>
+        <p class="product-stock">Stock Disponible: {{product.stock}}</p>
+        <form action="http://localhost:8080/api/carts/64db9821e72e49374bae40f9/product/{{product._id}}" method="post">
+            <button class="add-to-cart-btn">Agregar al Carrito</button>
+        </form>
+    </div>
+  </div>
