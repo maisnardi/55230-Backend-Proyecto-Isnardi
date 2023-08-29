@@ -1,7 +1,7 @@
 //Middleware para proteger las vistas si el usuario no se encuentra logueado.
 export const protectView = (req,res,next) =>{
     //console.log(req.user)
-    if(!req.user) return res.status(403).redirect("/login");
+    if(!req.user) return res.status(403).redirect("/");
     next();
 };
 

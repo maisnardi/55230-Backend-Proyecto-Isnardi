@@ -78,9 +78,9 @@ productsViewsRouter.get("/products",protectView,async (req, res)=>{ //saco para 
             plink:products.prevLink? products.prevLink:false,
             page:products.page, 
             products:ObjProducts,
-            user: user.first_name? user.first_name +" "+user.last_name : user.username,
+            user: user.first_name.trim().length>0   ? user.first_name +" "+user.last_name : user.username,
         }
-        console.log(dataToRender)
+        console.log()
         res.render("products", dataToRender)                  
     }catch(e){
         res.status(502).send({error:true});
@@ -91,8 +91,7 @@ productsViewsRouter.get("/product/:cid", protectView, async (req, res)=>{
     try {
         const {cid} = req.params;
         const product = await productManager.getProductById(cid)
-        const jsonProduct = product.toJSON()  
-        console.log(jsonProduct)     
+        const jsonProduct = product.toJSON()       
         res.render("product", {product:jsonProduct})
     } catch (error) {
         res.status(502).send({error:true});

@@ -13,7 +13,7 @@ const userRouterViews = Router();
 
 //Endpoints para express
 //Endpoint GET para mostrar la vista de Login.
-userRouterViews.get('/login', isLogged ,async (req,res)=>{
+userRouterViews.get('/', isLogged ,async (req,res)=>{
     try{
         const users = await userManager.getUsers();
         res.render('login')      
@@ -22,7 +22,7 @@ userRouterViews.get('/login', isLogged ,async (req,res)=>{
     }
 })
 //Endpoint POST para enviar los datos ingresado en la vista de Login. Con Passport.
-userRouterViews.post("/login", passport.authenticate("login", {successRedirect:"/products",failureRedirect:"/login"}) ,async (req, res)=>{})
+userRouterViews.post("/login", passport.authenticate("login", {successRedirect:"/products",failureRedirect:"/"}) ,async (req, res)=>{})
 
 //Endoint GET de register para mostrar la vista del formulario de registro.
 userRouterViews.get('/register', isLogged ,async (req,res)=>{
@@ -30,7 +30,7 @@ userRouterViews.get('/register', isLogged ,async (req,res)=>{
 })
 
 //Endoint POST de register para enviar los datos ingresado en la vista de registro.Con Passport.
-userRouterViews.post('/register', passport.authenticate("register", {successRedirect: "/login", failureRedirect:"/register"}) , async (req,res)=>{})
+userRouterViews.post('/register', passport.authenticate("register", {successRedirect: "/", failureRedirect:"/register"}) , async (req,res)=>{})
 
 //Endoint GET de profile para mostrar la vista del perfil del usuario.
 userRouterViews.get('/profile', protectView ,async (req,res)=>{
@@ -48,7 +48,7 @@ userRouterViews.get('/profile', protectView ,async (req,res)=>{
 //Endoint GET para cerrar la sesion del usuario.
 userRouterViews.get('/logout', protectView ,async (req,res)=>{
     req.session.destroy((error)=>{
-        res.redirect("/login");
+        res.redirect("/");
     });
 })
 
