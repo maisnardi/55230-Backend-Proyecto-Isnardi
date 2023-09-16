@@ -23,19 +23,19 @@ import authRouter from "./routes/router.auth.js";
 //Importación de configuraciones
 import __dirname from "./dirname.js"            //Dirname
 import initLocalStrategy from "./config/passport.config.js";    //Estrategias Passport local
+import ARGS from "./config/config.js";          //Process seleccion de puertp app
 
 //Importación de Managers
 import ChatManager from "./dao/mongo/mongoChatManager.js";
 
 const chatManager = new ChatManager();
 
-
 //Conexión con la base de datos externa, Atlas de mongoDB
-const dbConnection = mongoose.connect(`mongodb://usercoder:coder55230@ac-6o744vq-shard-00-00.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-01.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-02.9bmatez.mongodb.net:27017/ecommerce?ssl=true&replicaSet=atlas-55g89c-shard-0&authSource=admin&retryWrites=true&w=majority`)
+const dbConnection = mongoose.connect(process.env.MONGO_URL)
 dbConnection.then(()=>{console.log(`Conected to MongoDB database`)})
 
-//Declaracion puerto servidor express.
-const PORT = 8080;
+//Declaracion puerto servidor express.Viene desde Commander.
+const PORT = ARGS.p;    //Default PORT = 8080;
 
 //Inicializamos el servidor express.
 const app = express();
@@ -55,7 +55,7 @@ app.use(session({
     resave:true,
     saveUninitialized:true,
     store: new MongoStore({
-        mongoUrl:`mongodb://usercoder:coder55230@ac-6o744vq-shard-00-00.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-01.9bmatez.mongodb.net:27017,ac-6o744vq-shard-00-02.9bmatez.mongodb.net:27017/ecommerce?ssl=true&replicaSet=atlas-55g89c-shard-0&authSource=admin&retryWrites=true&w=majority`,
+        mongoUrl:process.env.MONGO_URL,
         //mongoUrl:'mongodb+srv://usercoder:coder55230@codercluster.9bmatez.mongodb.net/ecommerce?retryWrites=true&w=majority',
         ttl:3600,
     }),
