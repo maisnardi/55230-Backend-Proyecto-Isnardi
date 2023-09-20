@@ -1,18 +1,13 @@
-//Routes de los endpoints de Productos
-
+//Controller de API Products
 //Importaciones
-import { Router } from "express";   //Router
-import ProductManager from "../dao/mongo/mongoProductManager.js";
+import ProductManager from "../services/products.service.js";
 import {upload} from "../config/multer.js"
 
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
-//Instaciamos 
-const productRouter = Router();
 
-//Endpoints para express
-//Endpoint GET con req.query
-productRouter.get('/', async (req,res)=>{
+//Controller GET Products with filters
+export const GETProductsFilter = async (req,res)=>{
     const {limit=10, page=1 , sort, category, stock} = req.query;
     try{
         const products = await productManager.getProductsQuery(limit, page, sort,category, stock);               //Para uso con mongoProductManager
@@ -21,10 +16,10 @@ productRouter.get('/', async (req,res)=>{
     }catch(e){
         res.status(502).send({error:true});
     }
-})
+}
 
-//Endpoint GET con req.params
-productRouter.get('/:pid', async (req,res)=>{
+//Controller GET Product by ID
+export const GETProductById = async (req,res)=>{
     try {
         const {pid} = req.params;
         const product = await productManager.getProductById(pid);    //ahora necesito que pid sea un string
@@ -32,17 +27,16 @@ productRouter.get('/:pid', async (req,res)=>{
     } catch(e){
         res.status(502).send({error:true});
     }
-})
+}
 
-//Endpoint POST con req.body
-productRouter.post("/", upload.array('photo'),async (req,res)=>{
+//Controller POST Product
+export const POSTProduct = async (req,res)=>{
     try {
         const photos=[];
         if(req.files.length>0)
         {
             req.files.forEach((element)=>{
                 photos.push(element.filename)
-                //photos.push(element.destination+"/"+element.filename)
             })
         }
         if(req.body.thumbnails)
@@ -69,17 +63,17 @@ productRouter.post("/", upload.array('photo'),async (req,res)=>{
     } catch (error) {
         res.status(502).send({error:"true"});
     }
-})
+}
 
-//Endpoint PUT
-productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
+//Controller PUT Update product
+export const PUTUpdateProductsById = async (req,res)=>{
     try {
         const photos =[];
         const {pid} = req.params;
         if(req.files)
         {
             req.files.forEach((element)=>{
-            photos.push(element.destination+"/"+element.filename)
+            photos.push(element.filename)
             })
          }
         const body ={
@@ -95,10 +89,10 @@ productRouter.put('/:pid', upload.array('photo'),async (req,res)=>{
     } catch(e){
         res.status(502).send({error:true});
     }
-})
+}
 
-//Endpoint DELETE
-productRouter.delete('/:pid', async (req,res)=>{
+//Controller DELETE Product
+export const DELETEProductById = async (req,res)=>{
     try {
         const {pid} = req.params;
         const response = await productManager.deleteProduct(pid);
@@ -111,7 +105,7 @@ productRouter.delete('/:pid', async (req,res)=>{
     } catch (error) {
         res.status(502).send({error:true});
     }
-})
+}
 
-
-export default productRouter;
+//Controller Multer Middleware
+export const MDWMulter = upload.array('photo');

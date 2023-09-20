@@ -11,31 +11,31 @@ import MongoStore from "connect-mongo";         //Mongo Store para guardar sessi
 import passport from "passport";                //Passport general
 
 //Importación de routes.   
-import productRouter from "./routes/routes.products.js";
-import cartRouter from "./routes/routes.carts.js";
-import productsViewsRouter from "./routes/routes.ProductsViews.js";
-import chatRouter from "./routes/routes.chat.js";
-import cartsViewRouter from "./routes/routes.cartView.js";
-import userRouter from "./routes/routes.users.js";
-import userRouterViews from "./routes/routes.usersViews.js";
-import authRouter from "./routes/router.auth.js";
+import productRouter from "./routers/routes.products.js";
+import cartRouter from "./routers/routes.carts.js";
+import productsViewsRouter from "./routers/routes.ProductsViews.js";
+import chatRouter from "./routers/routes.chat.js";
+import cartsViewRouter from "./routers/routes.cartView.js";
+import userRouter from "./routers/routes.users.js";
+import userRouterViews from "./routers/routes.usersViews.js";
+import authRouter from "./routers/router.auth.js";
 
 //Importación de configuraciones
 import __dirname from "./dirname.js"            //Dirname
 import initLocalStrategy from "./config/passport.config.js";    //Estrategias Passport local
-import ARGS from "./config/config.js";          //Process seleccion de puertp app
+import * as Commander from "./config/config.js";          //Process seleccion de puertp app
 
 //Importación de Managers
-import ChatManager from "./dao/mongo/mongoChatManager.js";
+import ChatManager from "./services/chat.service.js";
 
 const chatManager = new ChatManager();
 
 //Conexión con la base de datos externa, Atlas de mongoDB
-const dbConnection = mongoose.connect(process.env.MONGO_URL)
+const dbConnection = mongoose.connect(Commander.ENV.MONGO_URI)
 dbConnection.then(()=>{console.log(`Conected to MongoDB database`)})
 
 //Declaracion puerto servidor express.Viene desde Commander.
-const PORT = ARGS.p;    //Default PORT = 8080;
+const PORT = Commander.ARGS.p;    //Default PORT = 8080;
 
 //Inicializamos el servidor express.
 const app = express();
@@ -46,7 +46,7 @@ const httpServer = HTTPServer(app);
 //Wrapper socketio
 const io = new SocketIO(httpServer);
 
-//Configuración de app con el middleware coockieParser
+//Configuración de app con el middleware CoockieParser
 app.use(cookieParser())
 
 //Configuración de app con el middleware Sessions
@@ -55,7 +55,7 @@ app.use(session({
     resave:true,
     saveUninitialized:true,
     store: new MongoStore({
-        mongoUrl:process.env.MONGO_URL,
+        mongoUrl:Commander.ENV.MONGO_URI,
         //mongoUrl:'mongodb+srv://usercoder:coder55230@codercluster.9bmatez.mongodb.net/ecommerce?retryWrites=true&w=majority',
         ttl:3600,
     }),

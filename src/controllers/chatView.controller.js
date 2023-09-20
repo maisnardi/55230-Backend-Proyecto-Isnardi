@@ -1,16 +1,12 @@
-//Routes del endpoint de Chat
-
+//Controller de Chat view
 //Importaciones
-import { Router } from "express";
-import ChatManager from "../dao/mongo/mongoChatManager.js"
+import ChatManager from "../services/chat.service.js"
 
 //Instanciamos un nuevo productManager.
 const chatManager = new ChatManager();
-//Instaciamos
-const chatRouter = Router();
 
-//Endpoint GET
-chatRouter.get("/", async(req, res)=>{
+//Controller GET Chat
+export const GETLiveChatView = async(req, res)=>{
     try {
         const messages = await chatManager.getMessages();
         req.io.on('connection', socket=>{
@@ -21,6 +17,4 @@ chatRouter.get("/", async(req, res)=>{
     } catch (error) {
         console.log(error)
     }
-})
-
-export default chatRouter;
+}

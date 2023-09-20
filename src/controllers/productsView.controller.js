@@ -1,18 +1,13 @@
-//Routes de los endpoints de views de handlebars
-
+//Controller de Products view
 //Importaciones
-import { Router } from "express";   //Router
-import ProductManager from "../dao/mongo/mongoProductManager.js";
-import { upload } from "../config/multer.js";
-import { isLogged, protectView } from "../utils/secure.middleware.js";
+import ProductManager from "../services/products.service.js";
+import { upload } from "../config/multer.js";       //Multer
 
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
-//Instaciamos 
-const productsViewsRouter = Router();
 
-//Endpoint GET para mostrar productos en la view home de handlebars 
-productsViewsRouter.get("/home", async (req,res)=>{
+//Controller GET Products in Home View
+export const GETProductsInHomeView = async (req,res)=>{
     try{
         await productManager.getProducts().then(products => {
             const productsObj = products.map(product => product.toObject())
@@ -22,16 +17,16 @@ productsViewsRouter.get("/home", async (req,res)=>{
     }catch(e){
         res.status(502).send({error:true});
     }
-})
- 
-//Endpoint POST con req.body para agregar productos desde el form de http://localhost:8080/
-productsViewsRouter.post("/", upload.array('photo'),async (req,res)=>{
+}
+
+//Controller POST Products from Home View with socket.io
+export const POSTProductsLive = async (req,res)=>{
     try {
         const photos=[];
         if(req.files.length>0)
         {
             req.files.forEach((element)=>{
-            photos.push(element.destination+"/"+element.filename)
+            photos.push(element.filename)
         })
         }
         if(req.body.thumbnails.length>0){
@@ -44,15 +39,15 @@ productsViewsRouter.post("/", upload.array('photo'),async (req,res)=>{
 
         //Emit de datos socket.io       
         const products = await productManager.getProducts();
-        console.log(typeof(products))
         req.io.emit("products", products);
         res.redirect("/home");
     } catch (error) {
         res.status(502).send({error:true});
     }
-})
-//Endpoint GET para visualizar todos los prodcutos en tiempo real en la vista http://localhost:8080/realtimeproducts
-productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
+}
+
+//Controller GET Realtimeproducts
+export const GETRealTimeProducts = async (req, res, next)=>{
     try{
         res.render("realTimeProducts")
         const products = await productManager.getProducts();
@@ -63,11 +58,10 @@ productsViewsRouter.get("/realtimeproducts", async (req, res, next)=>{
     }catch(e){
         res.status(502).send({error:true});
     }
-})
+}
 
-//Endpoint GET con la vista http://localhost:8080/products  
-productsViewsRouter.get("/products",protectView,async (req, res)=>{ //saco para probar el middleware protectView
-    
+//Controller GET AllProducts View
+export const GETAllProductsView = async (req, res)=>{
     const {limit=10, page=1 , sort, category, stock} = req.query;
     try{
         const products = await productManager.getProductsQuery(limit, page, sort,category, stock);
@@ -85,9 +79,10 @@ productsViewsRouter.get("/products",protectView,async (req, res)=>{ //saco para 
     }catch(e){
         res.status(502).send({error:true});
     }
-})
-//Endpoint GET con la vista http://localhost:8080/product/:cid  
-productsViewsRouter.get("/product/:cid", protectView, async (req, res)=>{
+}
+
+//Controller GET Product by ID
+export const GETProductByIdView = async (req, res)=>{
     try {
         const {cid} = req.params;
         const product = await productManager.getProductById(cid)
@@ -96,6 +91,7 @@ productsViewsRouter.get("/product/:cid", protectView, async (req, res)=>{
     } catch (error) {
         res.status(502).send({error:true});
     }
-})
+}
 
-export default productsViewsRouter;
+//Controller Multer Middleware
+export const MDWMulter = upload.array('photo');

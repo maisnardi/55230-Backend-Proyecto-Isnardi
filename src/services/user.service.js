@@ -1,19 +1,23 @@
 //Importacion de modulos
-import __dirname from "../../dirname.js";
-import UserModel from "../../models/user.schema.js";
+import __dirname from "../dirname.js";
+// import UserModel from "../../models/user.schema.js";
 import crypto from "crypto";    //Importacion del módulo crypto, lo reemplazamos por bcrypt
 import bcrypt from 'bcrypt';
+
+import * as UserDAO from "../dao/mongo/users.mongo.dao.js"
 
 //Declaracion de clase UserManager
 class UserManager{
     constructor(){}
    
     getUserById = async (id)=>{
-        return await UserModel.findById(id)
+        //return await UserModel.findById(id)
+        return await UserDAO.findById(id);
     }
 
     getUserByEmail = async (email)=>{
-        return await UserModel.find({email:email})
+        //return await UserModel.find({email:email})
+        return await UserDAO.findByEmail(email);
     }
     
     // addUser = async(user)=>{    //utilizando crypto
@@ -39,7 +43,8 @@ class UserManager{
 
     addUser = async(user)=>{    //utilizando bcrypt
         try {
-            const dbUser = await UserModel.findOne({email:user.email}).lean();
+            //const dbUser = await UserModel.findOne({email:user.email}).lean();
+            const dbUser = await UserDAO.findByEmail(user.email);
             if(dbUser)
             {
                 return {message:"The entered user is already registered"};
@@ -50,8 +55,12 @@ class UserManager{
                 {
                    user.role="admin";
                 }
-                const newUser = await UserModel.insertMany(user);
-                const storedUser = await UserModel.findOne({email:user.email}).lean();
+                //const newUser = await UserModel.insertMany(user);
+                const newUser = await UserDAO.insertUser(user);
+                console.log(newUser)
+                //const storedUser = await UserModel.findOne({email:user.email}).lean();
+                const storedUser = await UserDAO.findByEmail(user.email);
+                console.log(storedUser)
                 return {payload:storedUser, message: "user created successfully"};
             }
         } catch (error) {
@@ -61,7 +70,7 @@ class UserManager{
 
     getUsers = async()=>{
         try {
-            const users = await UserModel.find().lean();
+            const users = await UserDAO.findAllUsers();
             return users;
         } catch (error) {
             return [];
@@ -91,7 +100,8 @@ class UserManager{
 
      validateLogin = async (email, password)=>{      //utilizando bcrypt
         try {
-            const user = await UserModel.findOne({email}).lean();
+            //const user = await UserModel.findOne({email}).lean();
+            const user = await UserDAO.findByEmail(email)
             if(!user){
                 console.log("no existe el usuario")
                 return {message:"plaese check email adress and password"};

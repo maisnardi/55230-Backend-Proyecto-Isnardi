@@ -10,8 +10,8 @@ parameters.option("-p <PORT>", "App initialization port", 8080);                
 parameters.option("-env <ENVIROMENT>", "Enviroment initialization", "DEV")      //Default enviroment DEV. Ej: nodemon .\app.js -p 8083 -env DEV
 parameters.parse();
 
-const ARGS = parameters.opts();
-export default ARGS;
+export const ARGS = parameters.opts();
+
 
 //Configuración dotenv
 dotenv.config({
@@ -19,3 +19,7 @@ dotenv.config({
 });
 
 
+export const ENV = {
+    MONGO_URI: process.env.MONGO_URI,
+    SECRET: process.env.SECRET,
+}

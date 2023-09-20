@@ -4,7 +4,7 @@ import local from 'passport-local'
 import GithubStrategy from 'passport-github2'
 
 //Importación de managers.
-import UserManager from "../dao/mongo/mongoUserManager.js";
+import UserManager from "../services/user.service.js";
 
 //Instanciamos user.
 const userManager = new UserManager()
@@ -39,7 +39,8 @@ const initLocalStrategy = ()=>{
     }, async (accessToken, refreshToken, profile, done)=>{
         const userEmail = profile._json.email;
         const user = await userManager.getUserByEmail(userEmail);
-        if (user.length>0) return done(null, user[0])
+        console.log(user)
+        if (user) return done(null, user)
         else{
             const newUser = await userManager.addUser({
                 first_name: profile._json.name? profile._json.name.split(" ")[0] :" " ,
