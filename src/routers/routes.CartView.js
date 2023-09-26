@@ -12,4 +12,5 @@ const cartsViewRouter = Router();
 //Endpoint GET req.params
 cartsViewRouter.get('/:cid', CartsViewController.GETCartById)
 
+
 export default cartsViewRouter;

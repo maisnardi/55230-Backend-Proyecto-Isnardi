@@ -181,13 +181,12 @@ class ProductManager{
                 DbProduct.stock = object.stock ?? DbProduct.stock;
         
                 await DbProduct.save();
-                console.log(`El producto con ID (${id}) fue actualizado`);
+                console.log(`El producto con ID (${DbProduct._id}) fue actualizado`);
                 return "updated"
             }else{
-                console.log(`No existe producto con ID (${id})`)
+                console.log(`No existe producto con ID (${DbProduct._id})`)
                 return "badID"
             }
-            
         } catch (error) {
             console.log(`ERROR al actualizar el archivo ${error}`)
         }

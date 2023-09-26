@@ -81,3 +81,14 @@ export const DELETEDeleteProductsById = async (req, res)=>{
         console.log(error)
     }
 }
+
+//Controller POST purchase cart
+export const POSTPurchaseCart = async (req, res) =>{
+    try{
+        const {cid} = req.params;
+        const noStockProducts = await cartManager.purchaseCart(cid);
+        res.status(200).send({product:noStockProducts});
+    }catch(error){
+        console.log(error)
+    }
+}

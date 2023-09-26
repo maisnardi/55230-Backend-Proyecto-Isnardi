@@ -22,8 +22,10 @@ import authRouter from "./routers/router.auth.js";
 
 //Importación de configuraciones
 import __dirname from "./dirname.js"            //Dirname
+
+
 import initLocalStrategy from "./config/passport.config.js";    //Estrategias Passport local
-import * as Commander from "./config/config.js";          //Process seleccion de puertp app
+import * as Commander from "./config/config.js";          //Process seleccion de puerto app
 
 //Importación de Managers
 import ChatManager from "./services/chat.service.js";
@@ -56,7 +58,6 @@ app.use(session({
     saveUninitialized:true,
     store: new MongoStore({
         mongoUrl:Commander.ENV.MONGO_URI,
-        //mongoUrl:'mongodb+srv://usercoder:coder55230@codercluster.9bmatez.mongodb.net/ecommerce?retryWrites=true&w=majority',
         ttl:3600,
     }),
 }))

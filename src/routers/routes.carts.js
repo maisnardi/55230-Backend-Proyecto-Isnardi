@@ -28,4 +28,7 @@ cartRouter.put("/:cid/products/:pid", CartApiController.PUTIncrementQuantityById
 //Endpoint DELETE con req.params - Eleminina todos los productos de un carrito.
 cartRouter.delete("/:cid", CartApiController.DELETEDeleteProductsById)
 
+
+//Endpoint 
+cartRouter.post("/:cid/purchase", CartApiController.POSTPurchaseCart)
 export default cartRouter;

@@ -2,7 +2,13 @@
 // import CartModel from "../../models/cart.schema.js"    //Mongoose
 import __dirname from "../dirname.js";
 import * as CartDAO from "../dao/mongo/cart.mongo.dao.js"
+import * as ProductDAO from "../dao/mongo/products.mongo.js"
+import ProductManager from "./products.service.js";
+import TicketManager from "./ticket.service.js";
 
+//Instanciamos un nuevo productManager.
+const productManager = new ProductManager("products");
+const ticketManger = new TicketManager();
 //Declaracion de clase CartManager
 class CartManager{
     //declaro el constructor
@@ -130,6 +136,36 @@ class CartManager{
         } catch (error) {
             console.log(error)  
         }
+    }
+    //Función asíncrona que recibe como parametro un ID de un carrito, verifica el stock de los productos, hace la carga en atlas y devuelve un array con los productos que no se pudieron cargar por falta de stock. Trabaja con persistencia en ATLAS.
+    purchaseCart = async (cartId) =>{
+        let noStockArray = [];
+        let amount = 0;
+        try {
+            const cart = await CartDAO.findCartById(cartId);
+            cart.products.forEach( async element=>{
+                try {
+                    const product = await ProductDAO.findById(element._id);
+                    if(element.quantity<=product.stock)
+                    {
+                        product.stock -= element.quantity;
+                        await productManager.updateProduct(element._id, product)
+                        const amount =amount +element._id.price*element.quantity;
+                    }else{
+                        console.log("no hay stock suficiente")
+                        noStockArray.push({_id:element._id, quantity:element.quantity})
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            })
+            
+        }catch (error) {
+           console.log(error)  
+        }
+        //console.log(amount)
+        await ticketManger.createTicket(amount);
+        return noStockArray;   
     }
 }
 export default CartManager;
