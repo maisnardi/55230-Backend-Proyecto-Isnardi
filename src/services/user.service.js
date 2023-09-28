@@ -4,7 +4,12 @@ import __dirname from "../dirname.js";
 import crypto from "crypto";    //Importacion del módulo crypto, lo reemplazamos por bcrypt
 import bcrypt from 'bcrypt';
 
-import * as UserDAO from "../dao/mongo/users.mongo.dao.js"
+//import User from "../dao/mongo/users.mongo.dao.js"
+import {UsersDAO} from "../dao/factory.js"
+
+
+//Instaciamos la clase user
+const UserDAO = new UsersDAO();
 
 //Declaracion de clase UserManager
 class UserManager{

@@ -1,14 +1,25 @@
 //Importacion de modulos
 // import CartModel from "../../models/cart.schema.js"    //Mongoose
 import __dirname from "../dirname.js";
-import * as CartDAO from "../dao/mongo/cart.mongo.dao.js"
-import * as ProductDAO from "../dao/mongo/products.mongo.js"
+// import Cart from "../dao/mongo/cart.mongo.dao.js"
+// import Product  from "../dao/mongo/products.mongo.js"
 import ProductManager from "./products.service.js";
 import TicketManager from "./ticket.service.js";
 
+import { CartsDAO, ProductsDAO } from "../dao/factory.js";
+
+//Instanciación de DAOs
+//Instanciamos la clase Cart
+const CartDAO = new CartsDAO();
+//Instanciamos la clase Product
+const ProductDAO = new ProductsDAO();
+
+//Instanciación de Managers
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
+//Instanciamos un nuevo ticketManager.
 const ticketManger = new TicketManager();
+
 //Declaracion de clase CartManager
 class CartManager{
     //declaro el constructor
@@ -150,7 +161,7 @@ class CartManager{
                     {
                         product.stock -= element.quantity;
                         await productManager.updateProduct(element._id, product)
-                        const amount =amount +element._id.price*element.quantity;
+                        amount =amount +element._id.price*element.quantity;
                     }else{
                         console.log("no hay stock suficiente")
                         noStockArray.push({_id:element._id, quantity:element.quantity})

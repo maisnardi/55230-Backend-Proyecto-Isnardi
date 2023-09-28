@@ -1,14 +1,13 @@
 //Importacion del modulo de JWT
 import jwt  from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import { ENV } from "../config/config.js";
 
 //Key de JWT
-export const SECRET= process.env.SECRET;
+export const SECRET= ENV.SECRET;
 
 //Generamos el token
 export const generateToken = (user)=>{
-    console.log("entro a generateToken")
-    console.log(user)
     const token = jwt.sign({user},SECRET,{expiresIn:"1hr"});
     return token;
 }

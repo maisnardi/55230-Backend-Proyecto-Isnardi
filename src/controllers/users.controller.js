@@ -1,6 +1,8 @@
 //Controller de API Users
 //Importaciones
+import e from "express";
 import UserManager from "../services/user.service.js";
+import { generateToken } from "../utils/jwt.js";    //JWT
 
 //Instanciamos un nuevo productManager.
 const userManager = new UserManager();
@@ -25,4 +27,29 @@ export const POSTUser = async (req,res)=>{
     }catch(e){
         res.status(502).send({error:true});
     }
+}
+
+//Controller POST Login User JWT
+export const POSTUserLogin = async (req, res) =>{
+    try {
+        const {email, password} = req.body;
+        const user = await userManager.validateLogin(email, password);
+        if(!user.payload) {
+            res.send({error:true, message: user.message})
+        }else{
+            const token = generateToken({sub:user.payload._id.toString(), user:{email:user.payload.email}})
+            res.cookie('accessToken', token,{
+                maxAge: (24*60*60)*1000,
+                httpOnly:true,
+            })
+            
+            res.send({error: false, accessToken: token})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+//Controller GET User JWT
+export const GETUser = (req,res)=>{
+    res.send({error:false, user:req.user});
 }

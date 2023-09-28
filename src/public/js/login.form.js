@@ -10,14 +10,13 @@ function redirectToGithub() {
 const form = document.getElementById("loginForm");
 
 form.addEventListener('submit', async (event)=>{
-    console.log("entro")
     event.preventDefault();
     const data = new FormData(form);
     const obj = {};
     data.forEach((value, key) => obj[key]=value);
     console.log(obj);
 
-    const response = await fetch('/api/login', {
+    const response = await fetch('login', {
         method:'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -25,6 +24,7 @@ form.addEventListener('submit', async (event)=>{
         },
     });
     const responseData = await response.json();
+    console.log(responseData)
     if(responseData.error)
     {
       return alert("invalid credentials");

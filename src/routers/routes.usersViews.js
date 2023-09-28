@@ -31,4 +31,7 @@ userRouterViews.get('/logout', protectView, UserViewsController.GETLogoutView)
 //Endoint GET para ver los datos de la session.
 userRouterViews.get('/sessions', UserViewsController.GETSessionView)
 
+//Endpoint GET para ver los datos de la sesion de JWT.
+userRouterViews.get('/current', )
+
 export default userRouterViews;

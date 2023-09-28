@@ -1,6 +1,11 @@
 import __dirname from "../dirname.js";
 // import ChatModel from "../../models/chat.schema.js"
-import * as ChatDAO from "../dao/mongo/chat.mongo.dao.js"
+//import Chat from "../dao/mongo/chat.mongo.dao.js"
+
+import { ChatsDAO } from "../dao/factory.js";
+
+//Instaciamos la clase Chat
+const ChatDAO = new ChatsDAO();
 
 class ChatManager{
 

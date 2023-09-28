@@ -1,6 +1,7 @@
 //Controller de Users Views
 //Importaciones
 import UserManager from "../services/user.service.js";
+import { generateToken } from "../utils/jwt.js";
 
 //Instanciamos un nuevo productManager.
 const userManager = new UserManager();
@@ -45,4 +46,7 @@ export const GETSessionView = (req,res)=>{
 }
 
 //Controller POST
-export const POSTNone = async (req,res)=>{}
+export const POSTNone = async (req,res)=>{
+    console.log(req.user)
+    
+}

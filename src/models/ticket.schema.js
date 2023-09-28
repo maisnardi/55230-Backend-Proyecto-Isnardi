@@ -5,9 +5,6 @@ import mongoosePaginate from "mongoose-paginate-v2"     //Paginate
 
 //Schema de Ticket
 const ticketSchema = new mongoose.Schema({
-    _id:{
-        type:ObjectId
-    },
     code:{
         type:String,
         required: true

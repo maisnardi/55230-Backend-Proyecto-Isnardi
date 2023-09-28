@@ -8,6 +8,7 @@ const parameters = new Command();
 
 parameters.option("-p <PORT>", "App initialization port", 8080);                //Default port 8080.Ej: nodemon .\app.js -p 8083
 parameters.option("-env <ENVIROMENT>", "Enviroment initialization", "DEV")      //Default enviroment DEV. Ej: nodemon .\app.js -p 8083 -env DEV
+parameters.option("-pers <PERSISTANT>", "Persistant Mode", "MONGO")
 parameters.parse();
 
 export const ARGS = parameters.opts();
@@ -22,4 +23,5 @@ dotenv.config({
 export const ENV = {
     MONGO_URI: process.env.MONGO_URI,
     SECRET: process.env.SECRET,
+    PERSISTANCE:ARGS.pers ?? process.env.PERSISTANCE,
 }

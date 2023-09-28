@@ -2,9 +2,13 @@
 import passport from "passport";
 import local from 'passport-local'
 import GithubStrategy from 'passport-github2'
+import jwt from "passport-jwt"
+import { ENV } from "./config.js";
+import cookieExtractor from "../utils/cookieJWT.js";
 
 //Importación de managers.
 import UserManager from "../services/user.service.js";
+
 
 //Instanciamos user.
 const userManager = new UserManager()
@@ -54,10 +58,30 @@ const initLocalStrategy = ()=>{
         } 
     } ))
 
+//Passport JWT
+    const JWTStrategy = jwt.Strategy;
+    passport.use("current", new JWTStrategy(
+          {
+            jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: ENV.SECRET,
+          },
+            async (payload, done) => {
+            console.log(payload);
+            const user = await userManager.getUserById(payload.user.sub);
+            if (!user) return done("credenciales no validas!");
+            else{
+                return done(null, user);
+            }
+            
+          }
+        )
+      );    
+
 //Serialización
     passport.serializeUser((user,done)=>{
+        console.log(user)
         done(null, user._id)
-    })
+    });
 
 //Desearialización
     passport.deserializeUser(async (id, done) => {

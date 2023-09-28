@@ -2,8 +2,12 @@
 import __dirname from "../dirname.js";
 // import ProductModel from "../models/product.schema.js";
 // import { ObjectId } from "mongodb";
-import * as ProductsDAO from "../dao/mongo/products.mongo.js"
+//import Product  from "../dao/mongo/products.mongo.js"
 
+import { ProductsDAO } from "../dao/factory.js";
+
+//Instanciamos la clase Product
+const ProductDAO = new ProductsDAO();
 
 //Declaracion de clase ProductManager
 class ProductManager{
@@ -38,7 +42,7 @@ class ProductManager{
         let validate=false;
         try {
             //const value = await ProductModel.findOne({code:code});
-            const value = await ProductsDAO.findByCode(code);
+            const value = await ProductDAO.findByCode(code);
             if(value){
                 validate=true;
             }
@@ -66,10 +70,10 @@ class ProductManager{
             else{              
                 try {
                     //const a = await ProductModel.insertMany([data]).ObjectId
-                    const a = await ProductsDAO.insertProduct(data);
+                    const a = await ProductDAO.insertProduct(data);
                     //const newID = await ProductModel.findOne({code:data.code});
                     console.log(a);
-                    const newID = await ProductsDAO.findByCode(data.code);
+                    const newID = await ProductDAO.findByCode(data.code);
                     status = [{code:200}, {posted:"True."}, {id:newID._id.toString()}];
                 } catch (error) {
                     console.log(`ERROR al guardar el archivo ${error}`)
@@ -86,7 +90,7 @@ class ProductManager{
     getProducts = async (limit)=>{
         try{
             //const data = await ProductModel.find().limit(limit);
-            const data = await ProductsDAO.findWithLimit(limit);
+            const data = await ProductDAO.findWithLimit(limit);
             return data;
         }catch(e){
             return e;
@@ -108,7 +112,7 @@ class ProductManager{
             option.sort={price:uSort}
             try{
                 //data = await ProductModel.paginate(query,option);
-                data = await ProductsDAO.productPaginate(query,option);
+                data = await ProductDAO.productPaginate(query,option);
                 const {docs,totalPages,prevPage,nextPage,page,hasPrevPage,hasNextPage} = data;
                 result = {
                     status:"success",
@@ -132,7 +136,7 @@ class ProductManager{
         else{
             try{
                 //data = await ProductModel.paginate(query,option);
-                data = await ProductsDAO.productPaginate(query,option);
+                data = await ProductDAO.productPaginate(query,option);
                 const {docs,totalPages,prevPage,nextPage,page,hasPrevPage,hasNextPage} = data;
                 result = {
                     status:"success",
@@ -159,7 +163,7 @@ class ProductManager{
     getProductById = async (id)=>{
         try {
             //const product = await ProductModel.findOne({_id: new ObjectId(id)});
-            const product = await ProductsDAO.findById(id);
+            const product = await ProductDAO.findById(id);
             return product ? product : `ERROR: ID (${id}) not found`;
         } catch (error) {
             console.log(`ERROR: ID (${id}) not found`);
@@ -171,7 +175,7 @@ class ProductManager{
     updateProduct = async (id,object)=>{
         try {
             //const DbProduct = await ProductModel.findById({_id: new ObjectId(id)});
-            const DbProduct = await ProductsDAO.findById(id);
+            const DbProduct = await ProductDAO.findById(id);
             if(DbProduct){
                 DbProduct.title = object.title ?? DbProduct.title;
                 DbProduct.description = object.description ?? DbProduct.description;
@@ -197,7 +201,7 @@ class ProductManager{
         let status = [{code:200}, {status:{}}];
         try{
             //const value = await ProductModel.deleteOne({_id: new ObjectId(id)});
-            const value = await ProductsDAO.deleteById(id);
+            const value = await ProductDAO.deleteById(id);
             if(value.deletedCount===0)
             {
                 console.log(`Error: No se pudo eliminar el producto con ID (${id}) porque no existe`)
