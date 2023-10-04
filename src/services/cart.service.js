@@ -157,35 +157,6 @@ class CartManager{
         }
     }
     //Función asíncrona que recibe como parametro un ID de un carrito, verifica el stock de los productos, hace la carga en atlas y devuelve un array con los productos que no se pudieron cargar por falta de stock. Trabaja con persistencia en ATLAS.
-    // purchaseCart = async (cartId) =>{
-    //     let noStockArray = [];
-    //     let amount;
-    //     try {
-    //         const cart = await CartDAO.findCartById(cartId);
-    //         cart.products.forEach( async element=>{
-                
-    //             try {
-    //                 const product = await ProductDAO.findById(element._id);
-    //                 if(element.quantity<=product.stock)
-    //                 {
-                        
-    //                     product.stock -= element.quantity;
-    //                     await productManager.updateProduct(element._id, product)
-    //                 }else{
-    //                     console.log("no hay stock suficiente")
-    //                     noStockArray.push({_id:element._id, quantity:element.quantity})
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error)
-    //             }
-    //             console.log(amount)
-    //         })
-    //     }catch (error) {
-    //        console.log(error)  
-    //     }  
-    //     return noStockArray;   
-    // }
-
     getTicket = async (cartId, email)=>{
         let totalAmount =0;
         const partialAmount = []       
