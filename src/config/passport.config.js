@@ -8,11 +8,11 @@ import cookieExtractor from "../utils/cookieJWT.js";
 
 //Importación de managers.
 import UserManager from "../services/user.service.js";
-
+import CartManager from "../services/cart.service.js";
 
 //Instanciamos user.
-const userManager = new UserManager()
-
+const userManager = new UserManager();
+const cartManager = new CartManager();
 const initLocalStrategy = ()=>{
 
 //Estrategias
@@ -27,7 +27,8 @@ const initLocalStrategy = ()=>{
 
 //Register
     passport.use('register', new local.Strategy({passReqToCallback:true, usernameField: 'email'}, async (req,email, password, done)=>{
-        const user = req.body
+        const newCart = await cartManager.createCart();
+        const user = {...req.body, cartId: newCart}
         const response = await userManager.addUser(user);
         if(!response.payload)return done(null, false);
         else{
@@ -66,9 +67,8 @@ const initLocalStrategy = ()=>{
             secretOrKey: ENV.SECRET,
           },
             async (payload, done) => {
-            console.log(payload);
             const user = await userManager.getUserById(payload.user.sub);
-            if (!user) return done("credenciales no validas!");
+            if (!user) return done("Invalid credentials!");
             else{
                 return done(null, user);
             }

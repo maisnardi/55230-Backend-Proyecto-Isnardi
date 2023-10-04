@@ -28,13 +28,14 @@ export const GETProfileView = async (req,res)=>{
         age: req.user.age.trim().length>0? req.user.age : false,
         username: req.user.username.trim().length>0? req.user.username : false,
         email: req.user.email,
-        role: req.user.role
+        role: req.user.role,
     }
     res.render("profile", {user:userData})
 }
 
 //Controller GET vista Logout.
 export const GETLogoutView = async (req,res)=>{
+    res.clearCookie("accessToken");
     req.session.destroy((error)=>{
         res.redirect("/");
     });

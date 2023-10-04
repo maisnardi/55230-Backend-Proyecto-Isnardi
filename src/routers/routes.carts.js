@@ -3,6 +3,8 @@
 //Importaciones
 import { Router } from "express";   //Router
 import * as CartApiController from "../controllers/carts.controllers.js"
+import passportMW from "../utils/passport.middleware.js"
+import {protectByRole} from "../utils/secure.middleware.js"
 
 //Instaciamos 
 const cartRouter = Router();
@@ -14,7 +16,7 @@ cartRouter.post("/", CartApiController.POSTCreateNewCart)
 cartRouter.get('/:cid', CartApiController.GETCartById)
 
 //Endpoint POST con req.params - Agrega un producto a un carrito.
-cartRouter.post("/:cid/product/:pid", CartApiController.POSTAddProductToCartId)
+cartRouter.post("/:cid/product/:pid",passportMW("current"),protectByRole("user"),CartApiController.POSTAddProductToCartId)
 
 //Endpoint DELETE con req.params - Elimina del carrito un producto seleccionado.
 cartRouter.delete("/:cid/product/:pid", CartApiController.DELETEProductById)
@@ -28,7 +30,6 @@ cartRouter.put("/:cid/products/:pid", CartApiController.PUTIncrementQuantityById
 //Endpoint DELETE con req.params - Eleminina todos los productos de un carrito.
 cartRouter.delete("/:cid", CartApiController.DELETEDeleteProductsById)
 
-
 //Endpoint 
-cartRouter.post("/:cid/purchase", CartApiController.POSTPurchaseCart)
+cartRouter.post("/:cid/purchase",passportMW("current"), CartApiController.POSTPurchaseCart)
 export default cartRouter;

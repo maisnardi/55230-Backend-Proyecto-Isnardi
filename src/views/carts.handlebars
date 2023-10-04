@@ -3,6 +3,9 @@
 
 <h1>Cart view:</h1>
    <div id="productsContainer">
+         <form action="http://localhost:8080/api/carts/{{cart}}/purchase" method="POST">
+            <button class="add-to-cart-btn" value="" type="submit">Purchase products!</button>
+        </form>
         <h2>Carrito: {{cart}}:</h2>
 
         <div id="tableContainer">
@@ -35,5 +38,7 @@
                 </tr>
                 {{/each}}
             </table>
+
+            <h3>Total amount: </h3>
         </div>
     </div>

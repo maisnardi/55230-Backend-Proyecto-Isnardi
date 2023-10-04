@@ -1,9 +1,12 @@
 //Controller de API Carts
 //Importaciones
 import CartManager from "../services/cart.service.js";
+import TicketManager from "../services/ticket.service.js";
 
 //Instanciamos un nuevo productManager.
 const cartManager = new CartManager("carts");
+//Instanciamos un nuevo ticketManager.
+const ticketManger = new TicketManager();
 
 //Controller POST create new cart.
 export const POSTCreateNewCart = async (req, res)=> {
@@ -85,9 +88,12 @@ export const DELETEDeleteProductsById = async (req, res)=>{
 //Controller POST purchase cart
 export const POSTPurchaseCart = async (req, res) =>{
     try{
+        console.log("entro en purchase")
         const {cid} = req.params;
-        const noStockProducts = await cartManager.purchaseCart(cid);
-        res.status(200).send({product:noStockProducts});
+        console.log(`El usuario es ${req.user.email}`)
+        const noStockProducts = await cartManager.getTicket(cid,req.user.email);
+        
+        res.status(200).json({product:noStockProducts});
     }catch(error){
         console.log(error)
     }

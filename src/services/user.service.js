@@ -3,6 +3,7 @@ import __dirname from "../dirname.js";
 // import UserModel from "../../models/user.schema.js";
 import crypto from "crypto";    //Importacion del módulo crypto, lo reemplazamos por bcrypt
 import bcrypt from 'bcrypt';
+import CurrentDTO from "../dto/current.dto.js";     //DTO Current
 
 //import User from "../dao/mongo/users.mongo.dao.js"
 import {UsersDAO} from "../dao/factory.js"
@@ -62,10 +63,8 @@ class UserManager{
                 }
                 //const newUser = await UserModel.insertMany(user);
                 const newUser = await UserDAO.insertUser(user);
-                console.log(newUser)
                 //const storedUser = await UserModel.findOne({email:user.email}).lean();
                 const storedUser = await UserDAO.findByEmail(user.email);
-                console.log(storedUser)
                 return {payload:storedUser, message: "user created successfully"};
             }
         } catch (error) {
@@ -123,6 +122,11 @@ class UserManager{
         } catch (error) {
             console.log(error)
         }
+    }
+
+    filterData = (user)=>{
+        const data = new CurrentDTO(user);
+        return data;
     }
 }
 export default UserManager;

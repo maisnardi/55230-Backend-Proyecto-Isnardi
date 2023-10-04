@@ -10,7 +10,8 @@ class Cart{
 
     //DAO insert products
     insertProducts = async (products)=>{
-        return await CartModel.insertMany({products});
+        //return await CartModel.insertMany({products});
+        return await CartModel.create({products});
     }
 
     //DAO find by cart id

@@ -20,5 +20,7 @@ userRouter.post('/', UserController.POSTUser)
 userRouter.post('/login', UserController.POSTUserLogin)
 
 //Endpoint GET User para profile
-userRouter.get('/current', passport.authenticate ('current', {session:false}),protectByRole("user"),UserController.GETUser);
+//userRouter.get('/current', passport.authenticate ('current', {session:false}),protectByRole("user"),UserController.GETUser);
+userRouter.get('/current', UserController.GETCurrentUser)
+
 export default userRouter;

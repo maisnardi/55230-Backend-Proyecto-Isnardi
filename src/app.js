@@ -15,11 +15,11 @@ import productRouter from "./routers/routes.products.js";
 import cartRouter from "./routers/routes.carts.js";
 import productsViewsRouter from "./routers/routes.ProductsViews.js";
 import chatRouter from "./routers/routes.chat.js";
-import cartsViewRouter from "./routers/routes.cartView.js";
+import cartsViewRouter from "./routers/routes.CartView.js"
 import userRouter from "./routers/routes.users.js";
 import userRouterViews from "./routers/routes.usersViews.js";
 import authRouter from "./routers/router.auth.js";
-
+import ticketRouter from "./routers/routes.ticketView.js";
 //Importación de configuraciones
 import __dirname from "./dirname.js"            //Dirname
 
@@ -104,6 +104,9 @@ app.use("/",userRouterViews);
 
 //Endpoints de Passport-github2
 app.use("/api/auth", authRouter);
+
+//Endpoint de Ticket
+app.use('/ticket', ticketRouter);
 
 //Comunicaciones websocket
 io.on('connection', socket=>{

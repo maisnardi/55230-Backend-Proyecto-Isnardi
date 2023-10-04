@@ -38,8 +38,11 @@ const userSchema = new mongoose.Schema({
     username:{
         type:String,
         default:" "
+    },
+    cartId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "carts"     
     }
-
 })
 
 //Model de Usuarios

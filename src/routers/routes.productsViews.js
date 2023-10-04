@@ -4,24 +4,25 @@
 import { Router } from "express";   //Router
 import * as ProductsViewController from "../controllers/productsView.controller.js"
 import { protectView } from "../utils/secure.middleware.js";      //Protecciones
-
+import passportMW from "../utils/passport.middleware.js";
+import {protectByRole} from "../utils/secure.middleware.js" 
 
 //Instaciamos 
 const productsViewsRouter = Router();
 
 //Endpoint GET para mostrar productos en la view home de handlebars 
-productsViewsRouter.get("/home", ProductsViewController.GETProductsInHomeView);
+productsViewsRouter.get("/home",passportMW("current"), protectByRole("admin"), ProductsViewController.GETProductsInHomeView);
  
 //Endpoint POST con req.body para agregar productos desde el form de http://localhost:8080/
-productsViewsRouter.post("/", ProductsViewController.MDWMulter, ProductsViewController.POSTProductsLive);
+productsViewsRouter.post("/", passportMW("current"), protectByRole("admin"), ProductsViewController.MDWMulter, ProductsViewController.POSTProductsLive);
 
 //Endpoint GET para visualizar todos los prodcutos en tiempo real en la vista http://localhost:8080/realtimeproducts
-productsViewsRouter.get("/realtimeproducts", ProductsViewController.GETRealTimeProducts);
+productsViewsRouter.get("/realtimeproducts",passportMW("current"), protectByRole("admin"), ProductsViewController.GETRealTimeProducts);
 
 //Endpoint GET con la vista http://localhost:8080/products  
-productsViewsRouter.get("/products", protectView, ProductsViewController.GETAllProductsView);
+productsViewsRouter.get("/products", passportMW("current"),ProductsViewController.GETAllProductsView);
 
 //Endpoint GET con la vista http://localhost:8080/product/:cid  
-productsViewsRouter.get("/product/:cid", protectView, ProductsViewController.GETProductByIdView);
+productsViewsRouter.get("/product/:pid", passportMW("current"), ProductsViewController.GETProductByIdView);
 
 export default productsViewsRouter;

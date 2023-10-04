@@ -4,41 +4,49 @@ import __dirname from "../dirname.js";
 // import Cart from "../dao/mongo/cart.mongo.dao.js"
 // import Product  from "../dao/mongo/products.mongo.js"
 import ProductManager from "./products.service.js";
-import TicketManager from "./ticket.service.js";
 
 import { CartsDAO, ProductsDAO } from "../dao/factory.js";
+import TicketManager from "./ticket.service.js";
+
 
 //Instanciación de DAOs
 //Instanciamos la clase Cart
 const CartDAO = new CartsDAO();
+
 //Instanciamos la clase Product
 const ProductDAO = new ProductsDAO();
+
 
 //Instanciación de Managers
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
+
 //Instanciamos un nuevo ticketManager.
-const ticketManger = new TicketManager();
+const ticketManager = new TicketManager();
 
 //Declaracion de clase CartManager
 class CartManager{
     //declaro el constructor
     constructor(){
     }
+    calculateAmount = ()=>{
+
+    }
 
     //Función asíncrona que al ser llamada crea un array de carritos, con un objeto con id único y un array de productos. Trabaja con presistencia de archivo.
     createCart = async ()=>{
         const products = [];
-        let carts;
+        let cart;
         try {
             //await CartModel.insertMany({products});
-            await CartDAO.insertProducts(products);
+            cart = await CartDAO.insertProducts(products);
             //carts = await CartModel.find().populate("products._id");
-            carts = await CartDAO.findAllCarts();
+            //carts = await CartDAO.findAllCarts();
+            
         } catch (error) {
             console.log(error)
         }
-        return carts;  
+        return cart._id;  
     }
 
     //Función asíncrona que recibe el ID de un carrito y devuelve el contenido del array de productos en el.Trabaja con persistencia en ATLAS.
@@ -149,34 +157,62 @@ class CartManager{
         }
     }
     //Función asíncrona que recibe como parametro un ID de un carrito, verifica el stock de los productos, hace la carga en atlas y devuelve un array con los productos que no se pudieron cargar por falta de stock. Trabaja con persistencia en ATLAS.
-    purchaseCart = async (cartId) =>{
-        let noStockArray = [];
-        let amount = 0;
-        try {
-            const cart = await CartDAO.findCartById(cartId);
-            cart.products.forEach( async element=>{
-                try {
-                    const product = await ProductDAO.findById(element._id);
-                    if(element.quantity<=product.stock)
-                    {
-                        product.stock -= element.quantity;
-                        await productManager.updateProduct(element._id, product)
-                        amount =amount +element._id.price*element.quantity;
-                    }else{
-                        console.log("no hay stock suficiente")
-                        noStockArray.push({_id:element._id, quantity:element.quantity})
-                    }
-                } catch (error) {
-                    console.log(error)
+    // purchaseCart = async (cartId) =>{
+    //     let noStockArray = [];
+    //     let amount;
+    //     try {
+    //         const cart = await CartDAO.findCartById(cartId);
+    //         cart.products.forEach( async element=>{
+                
+    //             try {
+    //                 const product = await ProductDAO.findById(element._id);
+    //                 if(element.quantity<=product.stock)
+    //                 {
+                        
+    //                     product.stock -= element.quantity;
+    //                     await productManager.updateProduct(element._id, product)
+    //                 }else{
+    //                     console.log("no hay stock suficiente")
+    //                     noStockArray.push({_id:element._id, quantity:element.quantity})
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error)
+    //             }
+    //             console.log(amount)
+    //         })
+    //     }catch (error) {
+    //        console.log(error)  
+    //     }  
+    //     return noStockArray;   
+    // }
+
+    getTicket = async (cartId, email)=>{
+        let totalAmount =0;
+        const partialAmount = []       
+        const cart = await CartDAO.findCartById(cartId);
+        const stockArray = cart.products.filter(item => item._id.stock >= item.quantity);
+        stockArray.forEach(element => {
+                partialAmount.push(element.quantity * element._id.price)
+        });
+        totalAmount = partialAmount.reduce((initialValue, currentValue, index, array )=>{return initialValue+currentValue })    
+        const noStockArray = cart.products.filter(item => item._id.stock < item.quantity);
+    
+        //Actualizo el stock en la BD
+        cart.products.forEach( async element=>{        
+            try {
+                const product = await ProductDAO.findById(element._id);
+                if(element.quantity<=product.stock)
+                {
+                    product.stock -= element.quantity;
+                    await productManager.updateProduct(element._id, product)
                 }
-            })
-            
-        }catch (error) {
-           console.log(error)  
-        }
-        //console.log(amount)
-        await ticketManger.createTicket(amount);
-        return noStockArray;   
+            } catch (error) {
+                console.log(error)
+            }
+        })
+        await ticketManager.createTicket(totalAmount, email)
+
+        return noStockArray;
     }
 }
 export default CartManager;

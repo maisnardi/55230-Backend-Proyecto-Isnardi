@@ -22,7 +22,7 @@ export const GETAllUsers = async (req,res)=>{
 export const POSTUser = async (req,res)=>{
     try{
         const userData = req.body;
-        const user = await userManager.addUser(userData);      //Revisar esta funcion no creo q tenga q estar aca
+        const user = await userManager.addUser(userData);      
         user.payload ? res.status(200).send({created:user.message, user:user.payload}) : res.status(404).send({error:user.message})    
     }catch(e){
         res.status(502).send({error:true});
@@ -32,6 +32,7 @@ export const POSTUser = async (req,res)=>{
 //Controller POST Login User JWT
 export const POSTUserLogin = async (req, res) =>{
     try {
+        console.log("entro en el login post de Api user")
         const {email, password} = req.body;
         const user = await userManager.validateLogin(email, password);
         if(!user.payload) {
@@ -51,5 +52,14 @@ export const POSTUserLogin = async (req, res) =>{
 }
 //Controller GET User JWT
 export const GETUser = (req,res)=>{
-    res.send({error:false, user:req.user});
+    res.re({error:false, user:req.user});
+}
+
+//Controller GET User con Sessions
+export const GETCurrentUser = (req, res)=>{
+    if(!req.user) res.send("No user loged in");
+    else{
+        const filterData = userManager.filterData(req.user);
+        res.send(filterData);
+    }
 }

@@ -19,3 +19,9 @@ function redirectToLogout() {
 function redirectToProfile() {
     window.location.href = "/profile"
 }
+function redirectToChatRoom(){
+    window.location.href = "/chat"
+}
+function redirectToManager(){
+    window.location.href = "/home"
+}

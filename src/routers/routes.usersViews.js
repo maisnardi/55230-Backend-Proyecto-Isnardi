@@ -5,13 +5,14 @@ import { Router } from "express";   //Router
 import { isLogged, protectView } from "../utils/secure.middleware.js";
 import passport from "passport";
 import * as UserViewsController from "../controllers/usersViews.controller.js"
+import passportMW from "../utils/passport.middleware.js"
 
 //Instaciamos 
 const userRouterViews = Router();
 
 //Endpoints para express
 //Endpoint GET para mostrar la vista de Login.
-userRouterViews.get('/', isLogged, UserViewsController.GETLoginView)
+userRouterViews.get('/',isLogged,UserViewsController.GETLoginView)
 
 //Endpoint POST para enviar los datos ingresado en la vista de Login. Con Passport.
 userRouterViews.post("/login", passport.authenticate("login", {successRedirect:"/products",failureRedirect:"/"}), UserViewsController.POSTNone)
@@ -23,15 +24,12 @@ userRouterViews.get('/register', isLogged, UserViewsController.GETRegisterView)
 userRouterViews.post('/register', passport.authenticate("register", {successRedirect: "/", failureRedirect:"/register"}), UserViewsController.POSTNone)
 
 //Endoint GET de profile para mostrar la vista del perfil del usuario.
-userRouterViews.get('/profile', protectView, UserViewsController.GETProfileView)
+userRouterViews.get('/profile', passportMW("current"), UserViewsController.GETProfileView)
 
 //Endoint GET para cerrar la sesion del usuario.
 userRouterViews.get('/logout', protectView, UserViewsController.GETLogoutView)
 
 //Endoint GET para ver los datos de la session.
-userRouterViews.get('/sessions', UserViewsController.GETSessionView)
-
-//Endpoint GET para ver los datos de la sesion de JWT.
-userRouterViews.get('/current', )
+//userRouterViews.get('/sessions', UserViewsController.GETSessionView)
 
 export default userRouterViews;

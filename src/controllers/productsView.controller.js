@@ -64,8 +64,10 @@ export const GETRealTimeProducts = async (req, res, next)=>{
 export const GETAllProductsView = async (req, res)=>{
     const {limit=10, page=1 , sort, category, stock} = req.query;
     try{
+        
         const products = await productManager.getProductsQuery(limit, page, sort,category, stock);
         const ObjProducts = products.payload.map((product => product.toObject()));
+        console.log(ObjProducts)
         const user = req.user;
         const dataToRender = {
             nlink:products.nextLink,
@@ -73,8 +75,10 @@ export const GETAllProductsView = async (req, res)=>{
             page:products.page, 
             products:ObjProducts,
             user: user.first_name.trim().length>0   ? user.first_name +" "+user.last_name : user.username,
+            role: user.role ==="admin" ? true : false,
+            cid: user.cartId.toString(),
+            cart: user.cartId
         }
-        console.log()
         res.render("products", dataToRender)                  
     }catch(e){
         res.status(502).send({error:true});
@@ -84,10 +88,15 @@ export const GETAllProductsView = async (req, res)=>{
 //Controller GET Product by ID
 export const GETProductByIdView = async (req, res)=>{
     try {
-        const {cid} = req.params;
-        const product = await productManager.getProductById(cid)
-        const jsonProduct = product.toJSON()       
-        res.render("product", {product:jsonProduct})
+        const {pid} = req.params;
+        const product = await productManager.getProductById(pid)
+        const jsonProduct = product.toJSON();
+        const displaydata = {
+            product: jsonProduct,
+            role: req.user.role==="user"? true : false,
+            cid: req.user.cartId.toString()
+        }  
+        res.render("product", displaydata)
     } catch (error) {
         res.status(502).send({error:true});
     }

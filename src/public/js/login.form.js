@@ -16,7 +16,7 @@ form.addEventListener('submit', async (event)=>{
     data.forEach((value, key) => obj[key]=value);
     console.log(obj);
 
-    const response = await fetch('login', {
+    const response = await fetch('/api/login', {
         method:'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -30,5 +30,6 @@ form.addEventListener('submit', async (event)=>{
       return alert("invalid credentials");
     }
     localStorage.setItem("accessToken", responseData.accessToken);
+    window.location.href = "http://localhost:8080/products";
 });
 
