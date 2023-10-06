@@ -60,7 +60,7 @@ class ProductManager{
     addProduct = async(product)=>{
         let status = [{code:200}, {status:{}}, {id:0}];
         let data = this.#modelData(product)
-        console.log(data)
+        //console.log(data)
         if(this.#validateData(data))
         {
             if(await this.#validateCode(data.code)){

@@ -13,13 +13,18 @@ import passport from "passport";                //Passport general
 //Importación de routes.   
 import productRouter from "./routers/routes.products.js";
 import cartRouter from "./routers/routes.carts.js";
-import productsViewsRouter from "./routers/routes.ProductsViews.js";
+import productsViewsRouter from "./routers/routes.productsViews.js";
 import chatRouter from "./routers/routes.chat.js";
 import cartsViewRouter from "./routers/routes.CartView.js"
 import userRouter from "./routers/routes.users.js";
 import userRouterViews from "./routers/routes.usersViews.js";
 import authRouter from "./routers/router.auth.js";
 import ticketRouter from "./routers/routes.ticketView.js";
+import mockRouter from "./routers/router.mocks.js";
+
+//Importación de middleware de errores
+import ErrorHandlerMiddleware from "./utils/error.middleware.js"
+
 //Importación de configuraciones
 import __dirname from "./dirname.js"            //Dirname
 
@@ -108,6 +113,9 @@ app.use("/api/auth", authRouter);
 //Endpoint de Ticket
 app.use('/ticket', ticketRouter);
 
+//Enpoint de Mocks
+app.use('/api',mockRouter);
+
 //Comunicaciones websocket
 io.on('connection', socket=>{
     console.log(`Nuevo cliente conectado ID:${socket.id}`);
@@ -119,6 +127,8 @@ io.on('connection', socket=>{
         socket.broadcast.emit("newMessage", messageData)
     })
 })
+//Middleware de manejo de errores
+app.use(ErrorHandlerMiddleware);
 
 //Inicializacion de express
 httpServer.listen(PORT, ()=>{

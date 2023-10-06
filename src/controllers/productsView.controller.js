@@ -3,6 +3,11 @@
 import ProductManager from "../services/products.service.js";
 import { upload } from "../config/multer.js";       //Multer
 
+//Imports de creación de errores
+import CustomError from "../utils/Errors/customError.js";
+import {generateProductErrorInfo} from "../utils/Errors/InfoErrors.js"
+import EErrors from "../utils/Errors/EnumErrors.js";
+
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
 
@@ -21,7 +26,7 @@ export const GETProductsInHomeView = async (req,res)=>{
 
 //Controller POST Products from Home View with socket.io
 export const POSTProductsLive = async (req,res)=>{
-    try {
+    
         const photos=[];
         if(req.files.length>0)
         {
@@ -35,15 +40,23 @@ export const POSTProductsLive = async (req,res)=>{
         const body={...req.body,
             thumbnails:photos
         };
-        const response = await productManager.addProduct(body);
+        if(!body.title|| !body.category||!body.description||!body.price||!body.code||!body.stock||!body.status){
+            console.log("entro al generador de errores")
+            CustomError.createError({
+                message:"Product creation ERROR",
+                cause:generateProductErrorInfo(body.title, body.category, body.description, body.price, body.code, body.stock, body.status),
+                name:"New creating product error",
+                code:EErrors.USER_INPUT_ERROR
+            })
+        }
 
-        //Emit de datos socket.io       
-        const products = await productManager.getProducts();
-        req.io.emit("products", products);
-        res.redirect("/home");
-    } catch (error) {
-        res.status(502).send({error:true});
-    }
+        // const response = await productManager.addProduct(body);
+
+        // //Emit de datos socket.io       
+        // const products = await productManager.getProducts();
+        // req.io.emit("products", products);
+        // res.redirect("/home");
+  
 }
 
 //Controller GET Realtimeproducts

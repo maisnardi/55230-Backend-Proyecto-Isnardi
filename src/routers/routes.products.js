@@ -23,5 +23,4 @@ productRouter.put('/:pid', ProductsApiController.MDWMulter,ProductsApiController
 //Endpoint DELETE
 productRouter.delete('/:pid',ProductsApiController.DELETEProductById)
 
-
 export default productRouter;

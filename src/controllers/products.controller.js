@@ -2,6 +2,12 @@
 //Importaciones
 import ProductManager from "../services/products.service.js";
 import {upload} from "../config/multer.js"
+//import generateProduct from "../utils/genereateProducts.Faker.js"
+
+//Imports de creación de errores
+import CustomError from "../utils/Errors/customError.js";
+import {generateProductErrorInfo} from "../utils/Errors/InfoErrors.js"
+import EErrors from "../utils/Errors/EnumErrors.js";
 
 //Instanciamos un nuevo productManager.
 const productManager = new ProductManager("products");
@@ -31,7 +37,6 @@ export const GETProductById = async (req,res)=>{
 
 //Controller POST Product
 export const POSTProduct = async (req,res)=>{
-    try {
         const photos=[];
         if(req.files.length>0)
         {
@@ -51,18 +56,22 @@ export const POSTProduct = async (req,res)=>{
         const body={...req.body,
             thumbnails:photos 
         };
-        
-        const response = await productManager.addProduct(body);
-        res.status(response[0].code).send(response[1]);
-        
-        //Emit de datos socket.io       
-        if(response[1].posted){
-            req.io.emit("newProduct", body, response[2].id);
+        if(!body.title|| !body.category||!body.description||!body.price||!body.code||!body.stock||!body.status){
+            CustomError.createError({
+                message:"PRODUCT CREATE ERROR",
+                cause:generateProductErrorInfo(body),
+                name:"New product error",
+                code:EErrors.USER_INPUT_ERROR,
+            })
         }
+        // const response = await productManager.addProduct(body);
+        // res.status(response[0].code).send(response[1]);
         
-    } catch (error) {
-        res.status(502).send({error:"true"});
-    }
+        // //Emit de datos socket.io       
+        // if(response[1].posted){
+        //     req.io.emit("newProduct", body, response[2].id);
+        // }
+   
 }
 
 //Controller PUT Update product
@@ -109,3 +118,4 @@ export const DELETEProductById = async (req,res)=>{
 
 //Controller Multer Middleware
 export const MDWMulter = upload.array('photo');
+
