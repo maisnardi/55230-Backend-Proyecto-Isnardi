@@ -1,27 +1,26 @@
-//Routes de los endpoints de Carts
-
+//Controller de API Carts
 //Importaciones
-import { Router } from "express";   //Router
-import CartManager from "../dao/mongo/mongoCartManager.js";
+import CartManager from "../services/cart.service.js";
+import TicketManager from "../services/ticket.service.js";
 
 //Instanciamos un nuevo productManager.
 const cartManager = new CartManager("carts");
-//Instaciamos 
-const cartRouter = Router();
+//Instanciamos un nuevo ticketManager.
+const ticketManger = new TicketManager();
 
-//Endpoint POST - Crea un nuevo carrito.
-cartRouter.post("/", async (req, res)=> {
+//Controller POST create new cart.
+export const POSTCreateNewCart = async (req, res)=> {
     try {
         const cart = await cartManager.createCart()
-        cart =!false ? res.status(200).send(cart) : res.status(404).send({error: "Cart not created"});
+        cart.length !=0 ? res.status(200).send(cart) : res.status(404).send({error: "Cart not created"});
         //res.status(200).send(cart)
     } catch (error) {
         res.status(502).send({error:true});
     }
-})
+}
 
-//Endpoint GET req.params - Devuelve el carrito del ID recibido.
-cartRouter.get('/:cid', async (req, res)=>{
+//Controller GET req.params returns cart by id.
+export const GETCartById = async (req, res)=>{
     try {
         const {cid} = req.params;
         const data =await cartManager.getCartProductsById(cid);
@@ -29,30 +28,30 @@ cartRouter.get('/:cid', async (req, res)=>{
     } catch (error) {
         res.status(404).send({error:true});
     }
-})
+}
 
-//Endpoint POST con req.params - Agrega un producto a un carrito.
-cartRouter.post("/:cid/product/:pid", async (req, res)=>{
+//Controller POST req.params Add product to cart.
+export const POSTAddProductToCartId = async (req, res)=>{
     try {
         const {cid,pid} = req.params;
         (await cartManager.addProductToCart(cid,pid))==true ? res.status(200).send({updated:true}) : res.status(404).send({error:"Cart not foud"});
     } catch (error) {
         res.status(404).send({error:true});
     }
-})
+}
 
-//Endpoint DELETE con req.params - Elimina del carrito un producto seleccionado.
-cartRouter.delete("/:cid/product/:pid", async (req, res)=>{
+//Controller DELETE req.params delete product from cart by id.
+export const DELETEProductById = async (req, res)=>{
     try {
        const {cid,pid} = req.params;
        await cartManager.deleteProduct(cid, pid) == true? res.status(200).send({deleted:true}) : res.status(404).send({error:"Cart o Product not foud"});
     } catch (error) {
         res.status(404).send({error:true});
     }
-})
+}
 
-//Endpoint PUT con req.params y req.body - Reemplazar por completo un array de productos.
-cartRouter.put("/:cid", async (req, res)=>{
+//Controller PUT req.params and req.body Replace cart content by ID.
+export const PUTUpadateFullCartbyId = async (req, res)=>{
     try {
         const {cid} = req.params;
         const body = req.body;
@@ -61,10 +60,10 @@ cartRouter.put("/:cid", async (req, res)=>{
     } catch (error) {
         res.status(404).send({error:true});
     }
-})
+}
 
-//Endpoint PUT con req.params - Aumenta el valor de quantity de un producto de un carrito.
-cartRouter.put("/:cid/products/:pid", async(req, res)=>{
+//Controller PUT req.params increment product quantity
+export const PUTIncrementQuantityById = async(req, res)=>{
     try {
         const {cid,pid} = req.params;
         const body = req.body;
@@ -73,10 +72,10 @@ cartRouter.put("/:cid/products/:pid", async(req, res)=>{
     } catch (error) {
         res.status(404).send({error:true});
     }
-})  
+}
 
-//Endpoint DELETE con req.params - Eleminina todos los productos de un carrito.
-cartRouter.delete("/:cid", async (req, res)=>{
+//Controller DELETE erase all products from cart
+export const DELETEDeleteProductsById = async (req, res)=>{
     try {
         const {cid} = req.params;
         const result = await cartManager.deleteCartProducts(cid)
@@ -84,6 +83,18 @@ cartRouter.delete("/:cid", async (req, res)=>{
     } catch (error) {
         console.log(error)
     }
-})
+}
 
-export default cartRouter;
+//Controller POST purchase cart
+export const POSTPurchaseCart = async (req, res) =>{
+    try{
+        console.log("entro en purchase")
+        const {cid} = req.params;
+        console.log(`El usuario es ${req.user.email}`)
+        const noStockProducts = await cartManager.getTicket(cid,req.user.email);
+        
+        res.status(200).json({product:noStockProducts});
+    }catch(error){
+        console.log(error)
+    }
+}

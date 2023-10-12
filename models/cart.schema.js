@@ -5,9 +5,9 @@ import quantitySchema from "../models/quantity.schema.js"
 
 //Schema de product
 const cartSchema = new mongoose.Schema({
-  _id:{
-    type:ObjectId,
-  },
+  // _id:{
+  //   type:ObjectId,
+  // },
   products:[quantitySchema]
 
   

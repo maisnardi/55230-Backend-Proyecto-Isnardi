@@ -12,3 +12,16 @@ function addProductBtt(id)
         console.log(`${data} and status is${status}`)
     });
 }
+
+function redirectToLogout() {
+    window.location.href = "/logout";
+  }
+function redirectToProfile() {
+    window.location.href = "/profile"
+}
+function redirectToChatRoom(){
+    window.location.href = "/chat"
+}
+function redirectToManager(){
+    window.location.href = "/home"
+}

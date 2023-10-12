@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="../public/css/login.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+<div class="container">
+  <form action='/login' method="post" id="loginForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <div class="button-group">
+      <button type="submit" class="post-button">Sing in</button>
+      <button type="button" class="github-button"onclick="redirectToGithub()"><img src="../public/img/favicon-dark.png" alt="GitHub Logo" class="github-logo">Sign in with GitHub</button>
+      <button type="button" class="signin-button"onclick="redirectToRegister()">Sing up!</button>
+    </div>
+  </form>
+</div>
+
+<script src="../public/js/login.form.js">
+  
+function redirectToRegister() {
+  window.location.href = "/register";
+}
+function redirectToGithub() {
+  window.location.href = "http://localhost:8080/api/auth/github";
+}
+</script>

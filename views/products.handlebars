@@ -1,57 +1,48 @@
 <link rel="stylesheet" href="../public/css/products.style.css">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
-
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 <h1>Products from products view:</h1>
-<dir id="allCaontainer">
-    <div id="productsContainer">
-        <h2>Productos:</h2>
-            
-             <table>
-                <tr>
-                    <td>id</td>
-                    <td>category</td>
-                    <td>title</td>
-                    <td>description</td>
-                    <td>price</td>
-                    <td>thumbnails</td>
-                    <td>code</td>
-                    <td>stock</td>
-                    <td>status</td>
-                </tr>
-                {{#each products}}
-                <tr>
-                    <td>{{this._id}}</td>
-                    <td>{{this.category}}</td>
-                    <td>{{this.title}}</td>
-                    <td>{{this.description}}</td>
-                    <td>${{this.price}}</td>
-                    <td>{{this.thumbnails}}</td>
-                    <td>{{this.code}}</td>
-                    <td>{{this.stock}}</td>
-                    <td>{{this.status}}</td>
-                    <td>
-                        <form action="http://localhost:8080/product/{{this._id}}" method="GET">
-                            <button  value="" type="submit">Ver producto</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form action="http://localhost:8080/api/carts/64db9821e72e49374bae40f9/product/{{this._id}}" method="post">
-                            <button  value="" type="submit">Agregar al carrito</button>
-                        </form>
-                    </td>
-                    
-                </tr>
-                {{/each}}
-            </table>
-            <div id="paginateContainer">
-                <a href="{{plink}}" >Previous</a>
-                <h4><h3>{{page}}</h3></h4>
-                <a href="{{nlink}}" >Next</a>
-            </div>
+<h2>Welcome {{user}}!</h2>
+<h1>"{{cid}}"</h1>
+<button type="button" class="signin-button"onclick="redirectToLogout()">Logout</button>
+<button type="button" class="signin-button"onclick="redirectToProfile()">Profile</button>
+<button type="button" class="signin-button"onclick="redirectToChatRoom()">Chat room</button>
+{{#if role}}
+    <button type="button" class="signin-button"onclick="redirectToManager()">Manage Products</button>
+{{/if}}
+<a href="http://localhost:8080/carts/{{cid}}"><span class="material-symbols-outlined" >shopping_cart</span></a>
+{{#each products}}
+ <div class="product-container">
+    <img class="product-thumbnail" src="../public/img/{{this.thumbnails}}" alt="Producto">
+    <div class="product-details">
+        <h1 class="product-title">{{this.title}}</h1>
+        <p class="product-description">Description:{{this.description}}</p>
+        <p class="product-category">Category: {{this.category}}</p>
+        <p class="product-code">Code: {{this.code}}</p>
+        <p class="product-price">Price: ${{this.price}}</p>
+        <p class="product-stock">Stock: {{this.stock}}</p>
+        <p class="product-status">Status: {{this.status}}</p>
+        <form action="http://localhost:8080/product/{{this._id}}" method="GET">
+            <button class="add-to-cart-btn" value="" type="submit">View product</button>
+        </form>
+        
+        {{!-- <form action="http://localhost:8080/api/carts/{{cart}}/product/{{this._id}}" method="POST">
+            <button class="add-to-cart-btn" value="" type="submit">Add product to cart!</button>
+        </form> --}}
 
-    </dir> 
-</dir>
+    </div>
+  </div>
 
+{{/each}}
+
+<div id="paginateContainer">
+    {{#if plink}}
+    <a href="{{plink}}" >Previous</a>
+    {{/if}}
+    <h3>{{page}}</h3>
+    {{#if nlink}}
+    <a href="{{nlink}}" >Next</a>
+    {{/if}}
+</div>
 
 <script src="../public/js/products.view.js"></script>
