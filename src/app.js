@@ -4,11 +4,12 @@ import handlebars from 'express-handlebars'     //Motor de plantillas handlebars
 import { Server as HTTPServer} from "http";     //Para utilizar io dentro de routes.
 import { Server as SocketIO } from "socket.io"; //socket.io.
 
-import mongoose from "mongoose";                //Mongoose.
-import cookieParser  from "cookie-parser";      //Cookies 
-import session from "express-session";          //Sessions
-import MongoStore from "connect-mongo";         //Mongo Store para guardar sessions data en mongo
-import passport from "passport";                //Passport general
+import mongoose from "mongoose";                                //Mongoose.
+import cookieParser  from "cookie-parser";                      //Cookies 
+import session from "express-session";                          //Sessions
+import MongoStore from "connect-mongo";                         //Mongo Store para guardar sessions data en mongo
+import passport from "passport";                                //Passport general
+import winston from "winston/lib/winston/config/index.js";      //Winston para loggers
 
 //Importación de routes.   
 import productRouter from "./routers/routes.products.js";
@@ -21,6 +22,10 @@ import userRouterViews from "./routers/routes.usersViews.js";
 import authRouter from "./routers/router.auth.js";
 import ticketRouter from "./routers/routes.ticketView.js";
 import mockRouter from "./routers/router.mocks.js";
+import loggerRouter from "./routers/router.loggers.js";
+
+//Importación de middleware Winston
+import winstonHTTPMiddleware from "./utils/winstonHTTP.middleware.js";
 
 //Importación de middleware de errores
 import ErrorHandlerMiddleware from "./utils/error.middleware.js"
@@ -48,6 +53,9 @@ const PORT = Commander.ARGS.p;    //Default PORT = 8080;
 const app = express();
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+
+//Middleware de Winstone
+app.use(winstonHTTPMiddleware);
 
 const httpServer = HTTPServer(app);
 //Wrapper socketio
@@ -127,6 +135,17 @@ io.on('connection', socket=>{
         socket.broadcast.emit("newMessage", messageData)
     })
 })
+
+app.use('/public', express.static(__dirname + '/public', {
+    setHeaders: (res, path) => {
+           if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    }
+}));
+//Endpoint de Loggers
+app.use('/api', loggerRouter);
+
 //Middleware de manejo de errores
 app.use(ErrorHandlerMiddleware);
 

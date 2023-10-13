@@ -16,7 +16,8 @@ export const ARGS = parameters.opts();
 
 //Configuración dotenv
 dotenv.config({
-    path: '../.env'
+    //path: '../.env'
+    path:'.env'
 });
 
 
@@ -24,4 +25,6 @@ export const ENV = {
     MONGO_URI: process.env.MONGO_URI,
     SECRET: process.env.SECRET,
     PERSISTANCE:ARGS.pers ?? process.env.PERSISTANCE,
+    ENVIRONMENT: ARGS.pers ?? "DEV"
+
 }

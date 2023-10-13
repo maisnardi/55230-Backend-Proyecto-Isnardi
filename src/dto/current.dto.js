@@ -5,4 +5,4 @@ export default class CurrentDTO{
         this.email=user.email
         this.role=user.role
     }
-} 
+};

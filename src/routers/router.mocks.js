@@ -10,7 +10,4 @@ const mockRouter = Router();
 //Endpoint de Mocking GET
 mockRouter.get('/mockingproducts',MocksApiController.GETMockingProducts);
 
-
-
-
 export default mockRouter;
