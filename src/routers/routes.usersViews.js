@@ -32,4 +32,17 @@ userRouterViews.get('/logout', protectView, UserViewsController.GETLogoutView)
 //Endoint GET para ver los datos de la session.
 //userRouterViews.get('/sessions', UserViewsController.GETSessionView)
 
+//Endoint GET para restaurar la clave del usuario.
+userRouterViews.get('/restore',  UserViewsController.GETRestoreView)
+
+//Endpoint POST para enviar correo de restablecimiento de password
+userRouterViews.post('/restore', UserViewsController.POSTRestorePassword)
+
+//Endoint GET para restaurar la clave del usuario.
+userRouterViews.get('/restore/:userID',UserViewsController.GETUserResetPasswordView)
+
+//Endoint PUT para cambiar la clave del usuario.
+userRouterViews.post('/restore/:userID',UserViewsController.POSTUserResetPassword)
+
+
 export default userRouterViews;

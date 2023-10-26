@@ -1,70 +1,4 @@
-{{!-- <link rel="stylesheet" href="../public/css/home.style.css">
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 
-<h1>Products from home view:</h1>
-<dir id="allCaontainer">
-    <div>
-        <div id="formDataContainer">
-            <div>
-                <h2>Load products</h2>
-            </div>
-            <div>
-                <h3>All fields except thumbnails and Image Files are required </h3>
-                    <div id="formContainer">
-                        <form action="/" method="post" enctype="multipart/form-data">
-                            <label for="title">Title</label><input type="text" name="title">
-                            <label for="category">Category</label><input type="text" name="category" >
-                            <label for="description">Description</label><input type="text" name="description" >
-                            <label for="price">Price</label><input type="text" name="price" >
-                            <label for="thumbnails">Thumbnails</label><input type="text" name="thumbnails">
-                            <label for="photos">Image Files</label><input type="file" name="photo" accept="image/png, .jpeg, .jpg, .webp">
-                            <label for="code">Code</label><input type="text" name="code" >
-                            <label for="stock">Stock</label><input type="text" name="stock" >
-                            <label for="status">Status</label><input type="text" name="status" >
-                            <input id="loadButton" type="submit" value="Load">
-                        </form>
-                    </div>
-            </div>
-        </div>
-    </div>
-    <div id="productsContainer">
-        <h2>Productos:</h2>
-
-        <div id="tableContainer">
-            <table>
-                <tr>
-                    <td>id</td>
-                    <td>category</td>
-                    <td>title</td>
-                    <td>description</td>
-                    <td>price</td>
-                    <td>thumbnails</td>
-                    <td>code</td>
-                    <td>stock</td>
-                    <td>status</td>
-                </tr>
-                {{#each products}}
-                <tr>
-                    <td>{{this._id}}</td>
-                    <td>{{this.category}}</td>
-                    <td>{{this.title}}</td>
-                    <td>{{this.description}}</td>
-                    <td>{{this.price}}</td>
-                    <td>{{this.thumbnails}}</td>
-                    <td>{{this.code}}</td>
-                    <td>{{this.stock}}</td>
-                    <td>{{this.status}}</td>
-                </tr>
-                {{/each}}
-            </table>
-        </div>
-    </div>
-</dir>
-
-<script src="../public/js/home.view.js"></script> --}}
-
-
-{{!-- <link rel="stylesheet" href="../public/css/home.style.css"> --}}
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 
 <!DOCTYPE html>
@@ -72,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Tienda de Productos</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -193,12 +127,8 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Products from home view</h1>
-    </header>
-
     <section>
-        <h2>Add products</h2>
+        <h2>Modify product - {{title}} -{{_id}}</h2>
         <h3>All fields except thumbnails and Image Files are required </h3>
         <form action="/" method="post" enctype="multipart/form-data">
             <input type="text" name="title" placeholder="Title" >
@@ -210,42 +140,26 @@
             <input type="text" name="code" placeholder="Code" >
             <input type="text" name="stock" placeholder="Stock" >
             <input type="text" name="status" placeholder="Status">
-            <input id="loadButton" type="submit" value="Load">
+            <input id="loadButton" type="submit" value="Update">
         </form>
         <div class="titleProducts">
-            <h2>Products list</h2>
-            {{#if filter}}
-                <button class="filter-btn">Show my products</button>
-            {{/if}}
-            
+            <h2>Product</h2>            
         </div>
         <table>
             <tr>
                 <th>ID</th>
-                <th>Categoría</th>
-                <th>Título</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Miniaturas</th>
-                <th>Código</th>
+                <th>Category</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Thumbnails</th>
+                <th>Code</th>
                 <th>Stock</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
-            <!-- Ejemplo de fila en la tabla con botones de edición y borrado -->
-            {{#each products}}
                 <tr>
-                    {{!-- <td>{{this._id}}</td>
-                    <td>{{this.category}}</td>
-                    <td>{{this.title}}</td>
-                    <td>{{this.description}}</td>
-                    <td>{{this.price}}</td>
-                    <td>{{this.thumbnails}}</td>
-                    <td>{{this.code}}</td>
-                    <td>{{this.stock}}</td>
-                    <td>{{this.status}}</td> --}}
-
-                    <td>{{this._id}}</td>
+                    <td>{{_id}}</td>
                     <td>{{this.category}}</td>
                     <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
@@ -254,20 +168,13 @@
                     <td>{{this.code}}</td>
                     <td>{{this.stock}}</td>
                     <td>{{this.status}}</td>
-                    {{#if this.render}}
-                        <td>
-                            <a href="/product/modify/{{this._id}}"><button class="edit-btn">Edit</button></a>
-                        </td>
-                    {{/if}}
-
+                    <td>
+                        <button type="button" class="delete-btn" onclick="apiDelete()">Delete</button>
+                    </td>
                 </tr>
-                {{/each}}
         </table>
     </section>
 </body>
 </html>
 
-
-
-
-<script src="../public/js/home.view.js"></script>
+<script src="../public/js/modifyProduct.js"></script>

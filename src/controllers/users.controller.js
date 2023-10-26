@@ -63,3 +63,21 @@ export const GETCurrentUser = (req, res)=>{
         res.send(filterData);
     }
 }
+
+//Controller PUT Role user
+export const PUTUserRole = async (req,res)=>{
+    try {
+        const id = req.params.uid;
+        const newRole = req.body.role
+        if(id.length < 24)
+        {
+            res.status(404).send({error: true,message: "Id number to short"});
+        }else{
+            const response = await userManager.updateUserRole(id,newRole);
+            // console.log(response)
+            response.error ? res.status(response.code).send({error: true,message: response.message}) : res.status(200).send({error: false, message: response.message})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}

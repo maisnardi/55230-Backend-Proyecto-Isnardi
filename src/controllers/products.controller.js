@@ -54,7 +54,8 @@ export const POSTProduct = async (req,res)=>{
                 photos.push(req.body.thumbnails)
             }     
         const body={...req.body,
-            thumbnails:photos 
+            thumbnails:photos,
+            owner:req.user._id
         };
         if(!body.title|| !body.category||!body.description||!body.price||!body.code||!body.stock||!body.status){
             CustomError.createError({
@@ -64,13 +65,13 @@ export const POSTProduct = async (req,res)=>{
                 code:EErrors.USER_INPUT_ERROR,
             })
         }
-        // const response = await productManager.addProduct(body);
-        // res.status(response[0].code).send(response[1]);
+        const response = await productManager.addProduct(body);
+        res.status(response[0].code).send(response[1]);
         
-        // //Emit de datos socket.io       
-        // if(response[1].posted){
-        //     req.io.emit("newProduct", body, response[2].id);
-        // }
+        //Emit de datos socket.io       
+        if(response[1].posted){
+            req.io.emit("newProduct", body, response[2].id);
+        }
    
 }
 
@@ -103,6 +104,7 @@ export const PUTUpdateProductsById = async (req,res)=>{
 //Controller DELETE Product
 export const DELETEProductById = async (req,res)=>{
     try {
+        console.log("entro en borrar productos")
         const {pid} = req.params;
         const response = await productManager.deleteProduct(pid);
         res.status(response[0].code).send(response[1]);

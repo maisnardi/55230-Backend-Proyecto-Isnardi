@@ -21,6 +21,10 @@ class User{
     insertUser = async (data)=>{
         return await UserModel.insertMany(data)
     }
+    //DAO update user
+    updateUser = async (id,data)=>{
+        return await UserModel.findByIdAndUpdate(id, data);
+    }
 }
 
 export default User;

@@ -3,7 +3,7 @@
 //Importaciones
 import { Router } from "express";   //Router
 import * as ProductsApiController from "../controllers/products.controller.js"
-
+import { protectByRole } from "../utils/secure.middleware.js";
 //Instaciamos 
 const productRouter = Router();
 
@@ -21,6 +21,6 @@ productRouter.post("/", ProductsApiController.MDWMulter,ProductsApiController.PO
 productRouter.put('/:pid', ProductsApiController.MDWMulter,ProductsApiController.PUTUpdateProductsById)
 
 //Endpoint DELETE
-productRouter.delete('/:pid',ProductsApiController.DELETEProductById)
+productRouter.delete('/:pid',protectByRole(["admin", "premium"]),ProductsApiController.DELETEProductById)
 
 export default productRouter;

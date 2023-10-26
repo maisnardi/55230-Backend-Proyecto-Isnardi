@@ -38,6 +38,11 @@ const productSchema = new mongoose.Schema({
     status:{
         type:Boolean,
         required: true
+    },
+    owner:{
+        type:mongoose.Schema.Types.Mixed,
+        ref: "users",
+        default: "admin",  
     }
 })
 //Agregamos el plugin de paginate

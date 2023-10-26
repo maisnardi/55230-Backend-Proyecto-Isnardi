@@ -9,6 +9,6 @@ import {protectByRole} from "../utils/secure.middleware.js"
 const chatRouter = Router();
 
 //Endpoint GET de la vista chat
-chatRouter.get("/", passportMW("current"), protectByRole("user") ,LiveChatViewController.GETLiveChatView);
+chatRouter.get("/", passportMW("current"), protectByRole(["user"]) ,LiveChatViewController.GETLiveChatView);
 
 export default chatRouter;

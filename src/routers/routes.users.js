@@ -10,17 +10,20 @@ import {protectByRole} from "../utils/secure.middleware.js"
 const userRouter = Router();
 
 //Endpoints para express
-//Endpoint GET Users
+//Endpoint GET Users.
 userRouter.get('/', UserController.GETAllUsers)
 
-//Endpoint POST User 
+//Endpoint POST User.
 userRouter.post('/', UserController.POSTUser)
 
-//Endpoint POST User para login JWT
+//Endpoint POST User para login JWT.
 userRouter.post('/login', UserController.POSTUserLogin)
 
-//Endpoint GET User para profile
-//userRouter.get('/current', passport.authenticate ('current', {session:false}),protectByRole("user"),UserController.GETUser);
+//Endpoint GET User para profile.
+//userRouter.get('/current', passport.authenticate ('current', {session:false}),protectByRole(["user"]),UserController.GETUser);
 userRouter.get('/current', UserController.GETCurrentUser)
+
+//Endpoint PUT para actualizar el rol del usuario.
+userRouter.put('/users/premium/:uid', UserController.PUTUserRole)
 
 export default userRouter;

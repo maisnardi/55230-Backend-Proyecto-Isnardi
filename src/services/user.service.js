@@ -128,5 +128,63 @@ class UserManager{
         const data = new CurrentDTO(user);
         return data;
     }
+
+    updateUserPassword = async (userID, newPassword)=>{
+        try {
+            const user = await UserDAO.findById(userID);    
+            const isEqual = await bcrypt.compare(newPassword, user.password);       //comparo la clave ingresada con la almacenada.
+            if(isEqual) {
+                return {error:true , message:"The new password you entered is the same as your old password. Enter a different password!"}
+            }else{
+                const salt = await bcrypt.genSalt(10);    //creo la llave para encriptar
+                const password = await bcrypt.hash(newPassword, salt);   //encripto la clave ingresada por el usuario con la llave generada.
+                try {
+                    await UserDAO.updateUser(userID, {salt:salt, password:password});
+                } catch (error) {
+                    console.log(error)
+                }
+                return {error: false , message: "Password changed!"}
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    updateUserRole = async (userID, newRole)=>{
+        try {
+                if(newRole === "user" || newRole === "premium")
+                {
+                    const user = await UserDAO.findById(userID);
+                    if(user){
+                        if (user.role === "user"){
+                            if(newRole==="user")return {error:true, code:400 ,message:"The user already has user privileges"}
+                            else{
+                                await UserDAO.updateUser(userID, {role:"premium"})
+                                return {error: false, code:200 ,message:"User role updated"}
+                            }
+                        }else if(user.role === "premium"){
+                            if(newRole==="premium")return {error:true,code:400, message:"The user already has premium privileges"}
+                            else{
+                                await UserDAO.updateUser(userID, {role:"user"})
+                                return {error: false, code:200, message:"User role updated"}
+                            }
+                        }
+                        else{
+                            return {error:true, code:403 ,message: "No authorization: User is Admin"}
+                        }
+                    }else{
+                        return {error:true, code:404 ,message: "No user found with that ID number"}
+                    }
+                    
+                }
+                else{
+                    return {error:true , code:400 ,message: "Invalid user Role"}; 
+                }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
 }
 export default UserManager;

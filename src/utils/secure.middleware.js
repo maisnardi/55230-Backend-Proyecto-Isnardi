@@ -26,9 +26,13 @@ export const isLogged = (req,res,next) =>{
 }
 
 //Middleware para proteger vistas por rol de usuario
-export const protectByRole = (role) => (req, res, next) =>{
-    console.log(req.user.role)
-    if (req.user && req.user.role !== role)
+export const protectByRole = (roles) => (req, res, next) =>{
+    const granted = roles.includes(req.user.role)
+    if (req.user && !granted)
         return res.status(403).redirect("/products");
     next();
+    // console.log(req.user.role)
+    // if (req.user && req.user.role !== role)
+    //     return res.status(403).redirect("/products");
+    // next();
 }

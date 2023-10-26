@@ -25,6 +25,7 @@ export const ENV = {
     MONGO_URI: process.env.MONGO_URI,
     SECRET: process.env.SECRET,
     PERSISTANCE:ARGS.pers ?? process.env.PERSISTANCE,
-    ENVIRONMENT: ARGS.pers ?? "DEV"
-
+    ENVIRONMENT: ARGS.pers ?? "DEV",
+    EMAIL:process.env.EMAIL,
+    EMAILPASS:process.env.EMAILPASS,
 }

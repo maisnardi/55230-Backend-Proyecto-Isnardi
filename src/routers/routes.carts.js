@@ -16,7 +16,7 @@ cartRouter.post("/", CartApiController.POSTCreateNewCart)
 cartRouter.get('/:cid', CartApiController.GETCartById)
 
 //Endpoint POST con req.params - Agrega un producto a un carrito.
-cartRouter.post("/:cid/product/:pid",passportMW("current"),protectByRole("user"),CartApiController.POSTAddProductToCartId)
+cartRouter.post("/:cid/product/:pid",passportMW("current"),protectByRole(["user"]),CartApiController.POSTAddProductToCartId)
 
 //Endpoint DELETE con req.params - Elimina del carrito un producto seleccionado.
 cartRouter.delete("/:cid/product/:pid", CartApiController.DELETEProductById)

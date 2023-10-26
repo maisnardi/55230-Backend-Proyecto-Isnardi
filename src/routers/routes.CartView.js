@@ -14,7 +14,7 @@ const cartsViewRouter = Router();
 cartsViewRouter.get('/:cid', CartsViewController.GETCartById)
 
 //Endpoint POST con req.params - Agrega un producto a un carrito.
-cartsViewRouter.post("/:cid/product/:pid",passportMW("current"),protectByRole("user"), CartsViewController.POSTAddProductToCartId)
+cartsViewRouter.post("/:cid/product/:pid",passportMW("current"),protectByRole(["user"]), CartsViewController.POSTAddProductToCartId)
 
 //Endpoint 
 cartsViewRouter.post("/:cid/purchase", CartsViewController.POSTPurchaseCart)

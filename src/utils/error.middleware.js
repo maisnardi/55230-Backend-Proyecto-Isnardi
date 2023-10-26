@@ -9,6 +9,7 @@ const ErrorHandlerMiddleware = (error, req, res, next)=>{
             res.send({error:true, msg: error.name})
             break;
         default:
+            console.log(error.code)
             res.send({error:true, msg: "unhandled error/promise"})
             break;
            

@@ -22,7 +22,8 @@ class ProductManager{
             code:data.code?.trim(),
             stock:Number(data?.stock)<0 ? Number(data?.stock)*-1 : Number(data?.stock),
             status: data.status==Boolean? data.status : true,
-            category:data.category?.trim()
+            category:data.category?.trim(),
+            owner: data.owner? data.owner:"admin"
         }
         return modifiedData;
     }
@@ -95,7 +96,7 @@ class ProductManager{
         }catch(e){
             return e;
         }
-    }
+    } 
 
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products en ATLAS.
     getProductsQuery = async (uLimit, uPage, uSort, uCategory, uStock)=>{
@@ -218,6 +219,6 @@ class ProductManager{
         }
         return status;
     }
-    }
+}
 
 export default ProductManager;

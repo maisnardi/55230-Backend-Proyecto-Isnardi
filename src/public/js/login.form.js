@@ -5,6 +5,9 @@ function redirectToRegister() {
 function redirectToGithub() {
     window.location.href = "http://localhost:8080/api/auth/github";
   }
+function redirectToRestore() {
+  window.location.href = "/restore";
+}
 
 //Formulario
 const form = document.getElementById("loginForm");
