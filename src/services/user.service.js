@@ -15,7 +15,7 @@ const UserDAO = new UsersDAO();
 //Declaracion de clase UserManager
 class UserManager{
     constructor(){}
-   
+    
     getUserById = async (id)=>{
         //return await UserModel.findById(id)
         return await UserDAO.findById(id);
@@ -59,7 +59,7 @@ class UserManager{
                 user.password = await bcrypt.hash(user.password, user.salt);   //encripto la clave ingresada por el usuario con la llave generada.
                 if(user.email==="adminCoder@coder.com")
                 {
-                   user.role="admin";
+                    user.role="admin";
                 }
                 //const newUser = await UserModel.insertMany(user);
                 const newUser = await UserDAO.insertUser(user);
@@ -155,6 +155,7 @@ class UserManager{
                 if(newRole === "user" || newRole === "premium")
                 {
                     const user = await UserDAO.findById(userID);
+                    console.log(user)
                     if(user){
                         if (user.role === "user"){
                             if(newRole==="user")return {error:true, code:400 ,message:"The user already has user privileges"}

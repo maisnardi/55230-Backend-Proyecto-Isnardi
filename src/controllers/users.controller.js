@@ -32,7 +32,6 @@ export const POSTUser = async (req,res)=>{
 //Controller POST Login User JWT
 export const POSTUserLogin = async (req, res) =>{
     try {
-        console.log("entro en el login post de Api user")
         const {email, password} = req.body;
         const user = await userManager.validateLogin(email, password);
         if(!user.payload) {
@@ -52,7 +51,7 @@ export const POSTUserLogin = async (req, res) =>{
 }
 //Controller GET User JWT
 export const GETUser = (req,res)=>{
-    res.re({error:false, user:req.user});
+    res.send({error:false, user:req.user});
 }
 
 //Controller GET User con Sessions

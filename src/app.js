@@ -10,6 +10,8 @@ import session from "express-session";                          //Sessions
 import MongoStore from "connect-mongo";                         //Mongo Store para guardar sessions data en mongo
 import passport from "passport";                                //Passport general
 import winston from "winston/lib/winston/config/index.js";      //Winston para loggers
+import swaggerJSDoc from "swagger-jsdoc";                       //Swagger
+import {serve,setup} from "swagger-ui-express"                  //Swagger
 
 //Importación de routes.   
 import productRouter from "./routers/routes.products.js";
@@ -24,23 +26,34 @@ import ticketRouter from "./routers/routes.ticketView.js";
 import mockRouter from "./routers/router.mocks.js";
 import loggerRouter from "./routers/router.loggers.js";
 
+//Importacion de Router principal (general)
+import GeneralRauter from "./routers/general.router.js";
+let router = new GeneralRauter();
+router=router.getRouter();
+
 //Importación de middleware Winston
 import winstonHTTPMiddleware from "./utils/winstonHTTP.middleware.js";
 
 //Importación de middleware de errores
 import ErrorHandlerMiddleware from "./utils/error.middleware.js"
 
+//Importación de middleware de not found
+import NotFoundMiddleware from "./utils/notFound.middleware.js";
+
 //Importación de configuraciones
 import __dirname from "./dirname.js"            //Dirname
 
-
 import initLocalStrategy from "./config/passport.config.js";    //Estrategias Passport local
-import * as Commander from "./config/config.js";          //Process seleccion de puerto app
+import * as Commander from "./config/config.js";                //Process seleccion de puerto app
+import options from "./config/swagger.js";                      //Configuraciones de Swagger
 
 //Importación de Managers
 import ChatManager from "./services/chat.service.js";
 
 const chatManager = new ChatManager();
+
+//Configuración del modulo de swagger
+const specs = swaggerJSDoc(options)
 
 //Conexión con la base de datos externa, Atlas de mongoDB
 const dbConnection = mongoose.connect(Commander.ENV.MONGO_URI)
@@ -51,8 +64,11 @@ const PORT = Commander.ARGS.p;    //Default PORT = 8080;
 
 //Inicializamos el servidor express.
 const app = express();
-app.use(express.urlencoded({extended:true}));
-app.use(express.json());
+app.use(express.urlencoded({extended:true}));       //para leer query y params
+app.use(express.json());                            //para leer body(json)
+
+//Implementación de Swagger
+app.use('/api/docs',serve, setup(specs))
 
 //Middleware de Winstone
 app.use(winstonHTTPMiddleware);
@@ -80,7 +96,7 @@ app.use(session({
 app.use((req, res, next) => {
     req.io = io;
     next();
-  });
+});
 
 //Configuración Passport Init
 initLocalStrategy();
@@ -88,10 +104,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Endpoints servidor express.
+//Implementacion del enrutador principal (general)
+app.use('/', router);
+
 //Productos api.
-app.use("/api/products",productRouter);
+//app.use("/api/products",productRouter);   BORRAR
+
 //Carts api.
-app.use("/api/carts",cartRouter);
+//app.use("/api/carts",cartRouter);       //BORRAR
+
 //Contenido static.
 app.use("/public",express.static("public"));
 
@@ -101,28 +122,28 @@ app.set('views',`${__dirname}/views`);          //le decimos donde estan las rut
 app.set('view engine', 'handlebars');           //espcificamos que motor de plantillas vamos a usar.
 
 //Enpoints con handlebars, express y socket.io
-app.use("/", productsViewsRouter);
+//app.use("/", productsViewsRouter);      //BORRAR
 
 //Endpoint del Chat.
-app.use("/chat",chatRouter);
+//app.use("/chat",chatRouter);        //BORRAR
 
 //Endpoint del Carts.
-app.use("/carts",cartsViewRouter);
+//app.use("/carts",cartsViewRouter);      //BORRAR
 
 //Endpoints de Users api.
-app.use("/api/",userRouter);
+// app.use("/api/",userRouter);     BORRAR
 
 //Endpoint de UsersViews
-app.use("/",userRouterViews);
+//app.use("/",userRouterViews);       //BORRAR
 
 //Endpoints de Passport-github2
-app.use("/api/auth", authRouter);
+//app.use("/api/auth", authRouter);     BORRAR
 
 //Endpoint de Ticket
 app.use('/ticket', ticketRouter);
 
 //Enpoint de Mocks
-app.use('/api',mockRouter);
+//app.use('/api',mockRouter);       //BORRAR
 
 //Comunicaciones websocket
 io.on('connection', socket=>{
@@ -135,19 +156,21 @@ io.on('connection', socket=>{
         socket.broadcast.emit("newMessage", messageData)
     })
 })
-
+//Contenido estatico
 app.use('/public', express.static(__dirname + '/public', {
     setHeaders: (res, path) => {
-           if (path.endsWith('.js')) {
-            res.setHeader('Content-Type', 'application/javascript');
+        if (path.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript');
         }
     }
 }));
+
 //Endpoint de Loggers
-app.use('/api', loggerRouter);
+// app.use('/api', loggerRouter);       BORRAR
 
 //Middleware de manejo de errores
 app.use(ErrorHandlerMiddleware);
+app.use(NotFoundMiddleware);
 
 //Inicializacion de express
 httpServer.listen(PORT, ()=>{

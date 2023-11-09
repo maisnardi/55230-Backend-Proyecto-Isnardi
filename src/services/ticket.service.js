@@ -23,6 +23,6 @@ class TicketManager{
         } catch (error) {
             console.log(error)
         }
-     }
+    }
 }
 export default TicketManager;

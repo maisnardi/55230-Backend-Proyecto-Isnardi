@@ -1,19 +1,7 @@
-import EErrors from "./Errors/EnumErrors.js"
-
-const ErrorHandlerMiddleware = (error, req, res, next)=>{
-    console.log("entro al middleware de erroes")
-    //console.log(error.cause)
-    
-    switch(error.code){
-        case EErrors.USER_INPUT_ERROR:
-            res.send({error:true, msg: error.name})
-            break;
-        default:
-            console.log(error.code)
-            res.send({error:true, msg: "unhandled error/promise"})
-            break;
-           
-    }
+export default function (error, req, res, next) {
+    console.log(error.message);
+    let status = error.status || 500;
+    let from = `${req.method} ${req.url} ${error.from || "fatal"}`;
+    let message = `${error.message[0].toUpperCase()}${error.message.slice(1).toLowerCase()}` || "error handler";
+    return res.status(status).json({ status, message, from });
 }
-
-export default ErrorHandlerMiddleware;

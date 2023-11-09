@@ -17,10 +17,10 @@ productRouter.get('/:pid', ProductsApiController.GETProductById)
 //Endpoint POST con req.body
 productRouter.post("/", ProductsApiController.MDWMulter,ProductsApiController.POSTProduct)
 
-//Endpoint PUT
+//Endpoint PUT con req.params
 productRouter.put('/:pid', ProductsApiController.MDWMulter,ProductsApiController.PUTUpdateProductsById)
 
-//Endpoint DELETE
+//Endpoint DELETE con req.params
 productRouter.delete('/:pid',protectByRole(["admin", "premium"]),ProductsApiController.DELETEProductById)
 
 export default productRouter;

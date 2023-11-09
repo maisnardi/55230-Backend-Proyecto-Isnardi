@@ -1,0 +1,461 @@
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        title:
+          description: Name of the product.
+          type: string
+        code:
+          description: Unique product code.
+          type: string
+        description:
+          description: Brief description of the product.
+          type: string
+        thumbnails:
+          description: Product image, can be a file or a link.
+          type: array
+          items:
+            type: string
+        price:
+          description: Product price.
+          type: number
+          format: float
+          minimum: 0
+          exclusiveMinimum: true
+        category:
+          description: Product category, type of product.
+          type: string
+        stock:
+          description: Number of that product in stock.
+          type: integer
+          format: int64
+          minimum: 0
+          exclusiveMinimum: false
+        status:
+          description: Product status.
+          type: boolean
+      example:  
+        title: Camiseta Argentina
+        code: 266-2372
+        description: Camiseta Oficial Adidas Afa 3 Estrellas Campeones Del Mundo De Fútbol Para Hombre
+        thumbnails: [Argentina 22 3 estrellas_1.webp]
+        price: 35000
+        category: camisetas futbol 
+        stock: 25
+        status: true
+  responses:
+    product:
+      type: object
+      properties:
+        status:
+          type: string
+          description: petition status
+        payload:
+          type: string
+          description: ID of the new product created
+      example:
+        status: success
+        payload: 654c375f9c5e7c5b84d359ce
+    
+    invalid:
+      type: object
+      properties:
+        error:
+          type: string
+          description: petition status
+      example:
+        error: The product is already loaded.
+
+    incomplete:
+      type: object
+      properties:
+        error:
+          type: string
+          description: incomplete fields error message
+      example:
+        error: Incomplete fields, please check them.
+
+    noauthorization:
+      type: object
+      properties:
+        error:
+          type: string
+          description: petition status
+      example:
+        error: No authorization.
+    
+    deleted:
+      type: object
+      properties:
+        deleted:
+        type: string
+        description: if true de product was deleted
+      example:
+        deleted: true.
+    
+    notfound:
+      type: object
+      properties:
+        error:
+        type: string
+        description: param ID not found
+      example:
+        error: ID not found
+    
+    notmodify:
+      type: object
+      properties:
+        error:
+        type: boolean
+        description: db not modify
+      example:
+        error: true
+    
+    updated:
+      type: object
+      properties:
+        update: 
+          type: boolean
+          description: If true the product was updated
+      example:
+        update: true
+    
+    notfoundupdated:
+      type: object
+      properties:
+        error: 
+          type: string
+          description: product not updated message, ID not found
+      example:
+        error: ID not found
+    
+    notupdated:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: if true, product not updated
+      example:
+        error: true
+    
+    productsfound:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: true if error occurred
+        message:
+          type: string
+          description: message description
+        payload:
+          type: array
+          description: product and pagination data
+          items:
+            type: object
+            properties: 
+              _id:
+                type: string
+                description: product unique id
+              title:
+                type: string
+                description: product title
+              description:
+                type: string
+                description: product description             
+              price:
+                type: number
+                description: product price              
+              thumbnails:
+                type: array
+                description: product photos
+                items:
+                  type: string
+                  description: photo name or photo link
+              code:
+                type: string
+                description: product unic code
+              stock:
+                type: integer
+                description: product stock number
+                minimum: 0
+              status:
+                type: boolean
+                description: product status
+              category:
+                type: string
+                description: product category                 
+              owner:
+                type: string
+                description: product owner user id   
+        totalPages: 
+          type: string
+          description: total pagination pages
+        prevPage:
+          type: string
+          description: previus page
+        nextPage:
+          type: string
+          description: next page        
+        page:
+          type: string
+          description: actual page        
+        hasPrevPage:
+          type: boolean
+          description: has previus page?       
+        hasNextPage:
+          type: boolean
+          description: has next page ?       
+        prevLinkAPI:
+          type: string
+          description: previus page link
+        nextLinkAPI:
+          type: string
+          description: next page link
+        prevLink:
+          type: string
+          description: previus page link query       
+        nextLink:
+          type: string
+          description: next page link query        
+    example:
+      {
+        error: false,
+        message: products found,
+        payload: {
+            status: success,
+            payload: [
+                {
+                    owner: admin,
+                    _id: 64c3cc0d06404a4aff717827,
+                    title: CAMISETA ALTERNATIVA PUMA ITALIA,
+                    description: Camiseta Alternativa Puma Italia De Fútbol Para Hombre,
+                    price: 15999,
+                    thumbnails: [
+                        Italia alternativa_1.webp
+                    ],
+                    code: 962-2127,
+                    stock: 4,
+                    status: true,
+                    category: Camisetas
+                },
+                {
+                    _id: 64c3cc0d06404a4aff717828,
+                    title: CAMISETA OFICIAL NIKE BRASIL MATCH,
+                    description: Camiseta Oficial Nike Brasil Match De Fútbol Para Hombre,
+                    price: 39999,
+                    thumbnails: [
+                        Brasil match_1.webp
+                    ],
+                    code: 302-3334,
+                    stock: 7,
+                    status: true,
+                    category: Camisetas,
+                    owner: admin
+                },
+            ],
+            totalPages: 6,
+            prevPage: 1,
+            nextPage: 3,
+            page: 2,
+            hasPrevPage: true,
+            hasNextPage: true,
+            prevLinkAPI: localhost:8080/api/products/?limit=3&page=1,
+            nextLinkAPI: localhost:8080/api/products/?limit=3&page=3,
+            prevLink: ?limit=3&page=1,
+            nextLink: ?limit=3&page=3
+        }
+    }      
+    productsnotfoundquery:
+      type: object
+      properties:
+        error: 
+          type: boolean
+          description: search status.
+        message:
+          type: string
+          description: search response message.
+      example:
+        error: false
+        message: No matching products
+
+    noresultquery:
+      type: object
+      properties:
+        error: 
+          type: boolean
+          description: search status.
+        message:
+          type: string
+          description: search response message.
+      example:
+        error: true
+        message: Invalid request
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+paths:
+  /api/products:
+    post:
+      summary: Create new product
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        description: Object with the properties of the product to be created.
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/Products'
+      responses:
+        '201':
+          description: success in creating a product.
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/product'
+        '400':
+          description: Incomplete products fields.
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/incomplete'
+        '401':
+          description: product allready loaded.
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '403':
+          description: no authorization.
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/noauthorization'
+    get:
+      summary: Get all products
+      tags:
+      - Products
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: the numbers of products to return.
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: page number to display.
+        - in: query
+          name: sort
+          schema:
+            type: integer
+          description: ordering of products ascending (1) or descending (-1).
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: category search query.
+        - in: query
+          name: stock
+          schema: 
+            type: boolean
+          description: search by stock. True or false.
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: products found
+          content:
+            aplication/json:
+              schema:
+                  $ref: '#/components/responses/productsfound'
+        '404':
+          description: No products found matching the applied filter.
+          content:
+            aplication/json:
+              schema:
+                  $ref: '#/components/responses/productsnotfoundquery'
+        '502':
+          description: Bad Getway.
+          content:
+            aplication/json:
+              schema:
+                  $ref: '#/components/responses/noresultquery'
+  /api/products/{id}:
+    put:
+      summary: Update product
+      tags:
+      - Products
+      security:
+      - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: product ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Object with the properties of the product to be created
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/Products'
+      responses:
+        '200':
+          description: product updated
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/updated'
+        '404':
+          description: product not updated
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/notfoundupdated'
+        '502':
+          description: product not updated
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/notupdated'  
+    delete:
+      summary: Delete product from DB
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: product deleted 
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/deleted'
+        '404':
+          description: product ID not found
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/notfound'
+        '502':
+          description: could not modify database
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/notmodify'

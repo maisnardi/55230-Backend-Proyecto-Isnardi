@@ -12,7 +12,7 @@ const productsViewsRouter = Router();
 
 //Endpoint GET para mostrar productos en la view home de handlebars 
 productsViewsRouter.get("/home",passportMW("current"), protectByRole(["admin", "premium"]), ProductsViewController.GETProductsInHomeView);
- 
+
 //Endpoint POST con req.body para agregar productos desde el form de http://localhost:8080/home
 productsViewsRouter.post("/", passportMW("current"), protectByRole(["admin","premium"]), ProductsViewController.MDWMulter, ProductsViewController.POSTProductsLive);
 

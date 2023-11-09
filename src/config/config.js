@@ -16,7 +16,6 @@ export const ARGS = parameters.opts();
 
 //Configuración dotenv
 dotenv.config({
-    //path: '../.env'
     path:'.env'
 });
 

@@ -13,13 +13,17 @@ export const GETLoginView = async (req,res)=>{
     try{
         const users = await userManager.getUsers();
         res.render('login')      
-    }catch(e){
-        res.status(502).send({error:true});
+    }catch(error){
+        res.status(502).send({error:true, message:error});
     }
 }
 //Controller GET vista Register.
 export const GETRegisterView = async (req,res)=>{
-    res.render("register")
+    try {
+        res.render("register")
+    } catch (error) {
+        res.status(502).send({error:true , message:error});
+    }
 }
 
 //Controller GET vista Profile.
@@ -37,7 +41,9 @@ export const GETProfileView = async (req,res)=>{
 
 //Controller GET vista Logout.
 export const GETLogoutView = async (req,res)=>{
-    res.clearCookie("accessToken");
+    const test=res.clearCookie('accessToken',{
+        httpOnly:true,
+    });
     req.session.destroy((error)=>{
         res.redirect("/");
     });

@@ -32,13 +32,15 @@ export const JWTMW = (req, res, next) =>{
 //Middleware para validar JWT desde COOKIES
 export const JWTCookiesMW = (req, res, next)=>{
     const token = req.cookies.accessToken;
-    if(!token) return res.send({message: "No user loged in"})
+    if(!token) return res.status(401).send({message: "No user loged in"})
     else{
         try {
             const cookieValid = jwt.verify(token, SECRET);
-            next()
+            if(cookieValid){
+                return next();
+            }
         } catch (error) {
-            return res.send({error:true})
+            return res.status(401).send({error:true , message:"Validation Error"})
         }
     }
 }
