@@ -59,7 +59,7 @@ const initLocalStrategy = () => {
         }
     }))
 
-    //Passport JWT
+    //Passport JWT verifica la existencia de cookie y devuelve el usuario.
     const JWTStrategy = jwt.Strategy;
     passport.use("current", new JWTStrategy(
         {
@@ -73,13 +73,11 @@ const initLocalStrategy = () => {
                 return done(null, user);
             }
 
-        }
-    )
+        })
     );
 
     //Serialización
     passport.serializeUser((user, done) => {
-        console.log(user)
         done(null, user._id)
     });
 

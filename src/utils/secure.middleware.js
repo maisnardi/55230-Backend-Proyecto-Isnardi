@@ -44,6 +44,7 @@ export const protectByRole = (roles) => (req, res, next) => {
 
 //Middleware de proteccion por rol para API.
 export const protectByRoleApi = (roles) => (req, res, next) => {
+    console.log(req.user)
     const granted = roles.includes(req.user.role)
     console.log(req.user.role);
     console.log(granted)

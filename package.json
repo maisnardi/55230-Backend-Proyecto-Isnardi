@@ -5,9 +5,10 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/app.js -env PROD",
-    "dev": "nodemon ./src/app.js -env DEV"
+    "dev": "nodemon ./src/app.js -env DEV",
+    "mocha": "mocha test/mocha",
+    "supertest": "mocha test/supertest"
   },
   "repository": {
     "type": "git",
@@ -43,5 +44,10 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

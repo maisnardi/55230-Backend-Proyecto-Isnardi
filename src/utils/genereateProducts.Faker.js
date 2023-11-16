@@ -1,6 +1,6 @@
 //Generador de Productos con Faker,
 import { fakerES_MX  as faker } from "@faker-js/faker";
-import * as thumbnailsGenerator from "../utils/genereateProductsThumnails.Faker.js"
+import * as thumbnailsGenerator from "../utils/genereateProductsThumbnails.Faker.js"
 
 const thumbnails=[]
 

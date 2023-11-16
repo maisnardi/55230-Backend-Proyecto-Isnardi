@@ -1,6 +1,5 @@
 //Controller de API Users
 //Importaciones
-import e from "express";
 import UserManager from "../services/user.service.js";
 import { generateToken } from "../utils/jwt.js";    //JWT
 
@@ -35,15 +34,14 @@ export const POSTUserLogin = async (req, res) =>{
         const {email, password} = req.body;
         const user = await userManager.validateLogin(email, password);
         if(!user.payload) {
-            res.send({error:true, message: user.message})
+            res.status(400).send({error:true, message: user.message})
         }else{
             const token = generateToken({sub:user.payload._id.toString(), user:{email:user.payload.email}})
             res.cookie('accessToken', token,{
                 maxAge: (24*60*60)*1000,
                 httpOnly:true,
             })
-            
-            res.send({error: false, accessToken: token})
+            res.status(200).send({error: false, accessToken: token})
         }
     } catch (error) {
         console.log(error)
@@ -56,11 +54,16 @@ export const GETUser = (req,res)=>{
 
 //Controller GET User con Sessions
 export const GETCurrentUser = (req, res)=>{
-    if(!req.user) res.send("No user loged in");
-    else{
-        const filterData = userManager.filterData(req.user);
-        res.send(filterData);
+    try {
+        if(!req.user) res.send("No user loged in");
+        else{
+            const filterData = userManager.filterData(req.user);
+            res.send(filterData);
+        }
+    } catch (error) {
+        console.log(error)
     }
+
 }
 
 //Controller PUT Role user
@@ -76,6 +79,15 @@ export const PUTUserRole = async (req,res)=>{
             // console.log(response)
             response.error ? res.status(response.code).send({error: true,message: response.message}) : res.status(200).send({error: false, message: response.message})
         }
+    } catch (error) {
+        console.log(error)
+    }    
+}
+
+//Post user para /register
+export const POSTNone = async (req,res)=>{
+    try {
+        res.status(201).send({message: "success", payload: req.user})
     } catch (error) {
         console.log(error)
     }

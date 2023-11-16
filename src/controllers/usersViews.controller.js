@@ -57,7 +57,6 @@ export const GETSessionView = (req,res)=>{
 //Controller POST
 export const POSTNone = async (req,res)=>{
     console.log(req.user);
-    
 }
 
 //Controller GET vista Restore Password.

@@ -5,7 +5,8 @@ import __dirname from "../dirname.js";
 //import Product  from "../dao/mongo/products.mongo.js"
 
 import { ProductsDAO } from "../dao/factory.js";
-
+import CustomError from "../utils/Errors/customError.js";
+import errorsDictionary from "../utils/Errors/EnumErrors.js";
 //Instanciamos la clase Product
 const ProductDAO = new ProductsDAO();
 
@@ -39,11 +40,11 @@ class ProductManager {
     }
 
     //Función privada que verifica si el value de code ya se encuentra cargado en el array products.Si esta cargado devuelvo true, si no se encuentra devuelve false.
-    #validateCode = async (code) => {
+    #validateCode = async (code, next) => {
         let validate = false;
         try {
             //const value = await ProductModel.findOne({code:code});
-            const value = await ProductDAO.findByCode(code);
+            const value = await ProductDAO.findByCode(code,next);
             if (value) {
                 validate = true;
             }
@@ -58,18 +59,18 @@ class ProductManager {
     // }
 
     //Función asíncrona que recibe como parametro un producto, realiza 3 verificaciones y si la información esta bien lo carga dentro del array products con un número de ID único.Trabaja con persistencia de archivo.
-    addProduct = async (product) => {
+    addProduct = async (product, next) => {
         let status = [{ code: 200 }, { status: {} }, { id: 0 }];
         let data = this.#modelData(product)
         if (this.#validateData(data)) {
-            if (await this.#validateCode(data.code)) {
+            if (await this.#validateCode(data.code, next)) {
                 console.log("El producto ya se encuentra cargado");
                 status = [{ code: 401 }, { error: "The product is already loaded." }];
             }
             else {
                 try {
-                    const a = await ProductDAO.insertProduct(data);
-                    const newID = await ProductDAO.findByCode(data.code);
+                    const a = await ProductDAO.insertProduct(data, next);
+                    const newID = await ProductDAO.findByCode(data.code, next);
                     status = [{ code: 201 }, { status: "success" }, { id: newID._id.toString()}];
                 } catch (error) {
                     console.log(`ERROR al guardar el archivo ${error}`)
@@ -83,10 +84,10 @@ class ProductManager {
         return status;
     }
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products en ATLAS.
-    getProducts = async (limit) => {
+    getProducts = async (limit, next) => {
         try {
             //const data = await ProductModel.find().limit(limit);
-            const data = await ProductDAO.findWithLimit(limit);
+            const data = await ProductDAO.findWithLimit(limit, next);
             return data;
         } catch (e) {
             return e;
@@ -94,7 +95,7 @@ class ProductManager {
     }
 
     //Función asíncrona que devuelve por consola todos los productos cargados en el Array products en ATLAS.
-    getProductsQuery = async (uLimit, uPage, uSort, uCategory, uStock) => {
+    getProductsQuery = async (uLimit, uPage, uSort, uCategory, uStock, next) => {
         let result;
         let data;
         let query = {}
@@ -108,7 +109,7 @@ class ProductManager {
             option.sort = { price: uSort }
             try {
                 //data = await ProductModel.paginate(query,option);
-                data = await ProductDAO.productPaginate(query, option);
+                data = await ProductDAO.productPaginate(query, option, next);
                 const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = data;
                 result = {
                     status: "success",
@@ -125,14 +126,15 @@ class ProductManager {
                     nextLink: hasNextPage == false ? null : `?limit=${uLimit}&page=${nextPage}&sort=${uSort}`
                 }
                 return result;
-            } catch (e) {
-                return result.status = "error";
+            } catch (error) {
+                error.from = "service";
+                return next(error)
             }
         }
         else {
             try {
                 //data = await ProductModel.paginate(query,option);
-                data = await ProductDAO.productPaginate(query, option);
+                data = await ProductDAO.productPaginate(query, option, next);
                 const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = data;
                 result = {
                     status: "success",
@@ -149,17 +151,18 @@ class ProductManager {
                     nextLink: hasNextPage == false ? null : `?limit=${uLimit}&page=${nextPage}`
                 }
                 return result;
-            } catch (e) {
-                return result.status = "error";
+            } catch (error) {
+                error.from = "service";
+                return next(error)
             }
         }
     }
 
     //Función asíncrona que recibe como parametro un ID de un producto y lo busca dentro del array products en ATLAS. Si existe devuelve por consola el producto, si no arroja un mensaje indicando que el productno no existe. Trabaja con persistencia de archivo.
-    getProductById = async (id) => {
+    getProductById = async (id, next) => {
         try {
             //const product = await ProductModel.findOne({_id: new ObjectId(id)});
-            const product = await ProductDAO.findById(id);
+            const product = await ProductDAO.findById(id, next);
             return product ? product : `ERROR: ID (${id}) not found`;
         } catch (error) {
             console.log(`ERROR: ID (${id}) not found`);
@@ -168,10 +171,10 @@ class ProductManager {
     }
 
     //Función asíncrona que recibe como parametros el ID de un producto y los campos que se quieren actualizar de un producto y lo actualiza.Trabaja con persistencia de archivo.
-    updateProduct = async (id, object) => {
+    updateProduct = async (id, object, next) => {
         try {
             //const DbProduct = await ProductModel.findById({_id: new ObjectId(id)});
-            const DbProduct = await ProductDAO.findById(id);
+            const DbProduct = await ProductDAO.findById(id, next);
             if (DbProduct) {
                 DbProduct.title = object.title ?? DbProduct.title;
                 DbProduct.description = object.description ?? DbProduct.description;
@@ -189,22 +192,23 @@ class ProductManager {
             }
         } catch (error) {
             console.log(`ERROR al actualizar el archivo ${error}`)
+            return `ERROR al actualizar el archivo ${error}`
         }
     }
 
     //Función asíncrona que recibe como parametro el ID de un producto y lo elimina del array de productos de Atlas.Trabaja con persistencia de archivo.
-    deleteProduct = async (id) => {
+    deleteProduct = async (id, next) => {
         let status = [{ code: 200 }, { status: {} }];
         try {
             //const value = await ProductModel.deleteOne({_id: new ObjectId(id)});
-            const value = await ProductDAO.deleteById(id);
+            const value = await ProductDAO.deleteById(id, next);
             if (value.deletedCount === 0) {
                 console.log(`Error: No se pudo eliminar el producto con ID (${id}) porque no existe`)
                 status = [{ code: 404 }, { error: "ID not found" }];
             }
             else {
                 console.log(`El producto con el ID (${id}) fue eliminado`);
-                status = [{ code: 200 }, { deleted: "true." }];
+                status = [{ code: 200 }, { deleted: true }];
             }
         }
         catch (e) {

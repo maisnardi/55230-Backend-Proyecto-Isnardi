@@ -32,7 +32,7 @@ form.addEventListener('submit', async (event)=>{
     {
       return alert("invalid credentials");
     }
-    localStorage.setItem("accessToken", responseData.accessToken);
+    // localStorage.setItem("accessToken", responseData.accessToken);
     window.location.href = "http://localhost:8080/products";
 });
 

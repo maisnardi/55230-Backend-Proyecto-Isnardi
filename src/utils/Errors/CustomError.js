@@ -1,17 +1,8 @@
-//Custom error class
-
-// export default class CustomError {
-//     static createError({ message, cause, name= "Error", code=1 }){
-
-//         const newError = new Error(message, { cause })
-//         newError.name = name
-//         newError.code = code
-//         throw newError;
-//     }
-// }
+//Custom Error class
 
 export default class CustomError {
     static new({ status, message, from }) {
+        console.log("se activa el custom error");
         let error = new Error(message)
         error.status = status;
         error.message = message;

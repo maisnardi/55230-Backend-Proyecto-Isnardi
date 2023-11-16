@@ -1,5 +1,12 @@
 components:
   schemas:
+    Files:
+      description: thumbnail file
+      type: string
+      format: binary
+    Thumbnails:
+      description: thumbnail file name or link
+      type: string
     Products:
       type: object
       properties:
@@ -16,7 +23,9 @@ components:
           description: Product image, can be a file or a link.
           type: array
           items:
-            type: string
+            anyOf:
+            - $ref: '#/components/schemas/Files'
+            - $ref: '#/components/schemas/Thumbnails'
         price:
           description: Product price.
           type: number
@@ -31,7 +40,6 @@ components:
           type: integer
           format: int64
           minimum: 0
-          exclusiveMinimum: false
         status:
           description: Product status.
           type: boolean
@@ -44,6 +52,11 @@ components:
         category: camisetas futbol 
         stock: 25
         status: true
+    ProductPost:
+      allOf:
+        - $ref: '#/components/schemas/Products'
+        - type: object
+          required: [title, description , price, code, stock, status, category]
   responses:
     product:
       type: object
@@ -306,11 +319,11 @@ paths:
         - cookieAuth: []
       requestBody:
         required: true
-        description: Object with the properties of the product to be created.
+        description: Properties of the product to be created.
         content:
-          aplication/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Products'
+              $ref: '#/components/schemas/ProductPost'
       responses:
         '201':
           description: success in creating a product.
@@ -402,10 +415,9 @@ paths:
           schema:
             type: string
       requestBody:
-        required: true
-        description: Object with the properties of the product to be created
+        description: Properties of the product to be modify
         content:
-          aplication/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/Products'
       responses:

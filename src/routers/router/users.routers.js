@@ -1,4 +1,4 @@
-//Routes de los endpoints de Users
+//Routes de los endpoints de Users hhttp://localhost:8080/api/
 
 //Importaciones
 import CustomRouter from "../custom.router.js";
@@ -13,6 +13,9 @@ export default class UsersRouter extends CustomRouter {
         //Endpoints para express
         //Endpoint POST User.
         this.create('/', UserController.POSTUser)
+
+        //Endpoint POST User con passport.
+        this.create('/register', passport.authenticate("register"), UserController.POSTNone)
 
         //Endpoint POST User para login JWT.
         //this.create('/login', UserController.POSTUserLogin)

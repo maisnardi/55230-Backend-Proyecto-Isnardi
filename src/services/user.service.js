@@ -17,13 +17,22 @@ class UserManager{
     constructor(){}
     
     getUserById = async (id)=>{
-        //return await UserModel.findById(id)
-        return await UserDAO.findById(id);
+        try {
+            //return await UserModel.findById(id)
+            return await UserDAO.findById(id);    
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     getUserByEmail = async (email)=>{
-        //return await UserModel.find({email:email})
-        return await UserDAO.findByEmail(email);
+        try {
+            //return await UserModel.find({email:email})
+            return await UserDAO.findByEmail(email);
+        } catch (error) {
+            console.log(error)
+        }
+
     }
     
     // addUser = async(user)=>{    //utilizando crypto
@@ -125,8 +134,13 @@ class UserManager{
     }
 
     filterData = (user)=>{
-        const data = new CurrentDTO(user);
-        return data;
+        try {
+            const data = new CurrentDTO(user);
+            return data;
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
     updateUserPassword = async (userID, newPassword)=>{
@@ -155,7 +169,6 @@ class UserManager{
                 if(newRole === "user" || newRole === "premium")
                 {
                     const user = await UserDAO.findById(userID);
-                    console.log(user)
                     if(user){
                         if (user.role === "user"){
                             if(newRole==="user")return {error:true, code:400 ,message:"The user already has user privileges"}

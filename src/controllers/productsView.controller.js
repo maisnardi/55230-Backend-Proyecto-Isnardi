@@ -5,7 +5,6 @@ import { upload } from "../config/multer.js";       //Multer
 
 //Imports de creación de errores
 import CustomError from "../utils/Errors/customError.js";
-import { generateProductErrorInfo } from "../utils/Errors/InfoErrors.js"
 import EErrors from "../utils/Errors/EnumErrors.js";
 
 //Instanciamos un nuevo productManager.
@@ -54,13 +53,13 @@ export const POSTProductsLive = async (req, res) => {
             owner: req.user._id
         };
         if (!body.title || !body.category || !body.description || !body.price || !body.code || !body.stock || !body.status) {
-            console.log("entro al generador de errores")
-            CustomError.createError({
-                message: "Product creation ERROR",
-                cause: generateProductErrorInfo(body.title, body.category, body.description, body.price, body.code, body.stock, body.status),
-                name: "New creating product error",
-                code: EErrors.USER_INPUT_ERROR
-            })
+            // console.log("entro al generador de errores")
+            // CustomError.createError({
+            //     message: "Product creation ERROR",
+            //     cause: generateProductErrorInfo(body.title, body.category, body.description, body.price, body.code, body.stock, body.status),
+            //     name: "New creating product error",
+            //     code: EErrors.USER_INPUT_ERROR
+            // })
         }
 
         const response = await productManager.addProduct(body);
