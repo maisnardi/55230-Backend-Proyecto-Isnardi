@@ -2,7 +2,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 
 <div class="container">
-  <form action="register" method="post">
+  <form action="/api/auth/register" method="post" id="registerForm">
     <label for="first_name">Nombre:</label>
     <input type="text" id="first_name" name="first_name" required>
 
@@ -17,8 +17,8 @@
 
     <label for="password">Contraseña:</label>
     <input type="password" id="password" name="password" required>
-
-    <button type="submit">Send</button>
+    <input id="sendButton" type="submit" value="Send">
   </form>
 </div>
 
+<script src="../public/js/register.view.js"></script>

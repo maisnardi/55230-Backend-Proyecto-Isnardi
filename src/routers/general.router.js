@@ -9,6 +9,7 @@ import ChatRouter from "./router/chat.routers.js";
 import CartsRouter from "./router/carts.routers.js"
 import CartsViewsRouter from "./router/cartsView.routers.js"
 import UsersViewsRouter from "./router/usersViews.routers.js"
+import TicketRouter from "./router/tickets.routers.js"
 
 //Instanciación de Routers
 //Products
@@ -16,8 +17,8 @@ let products = new ProductsRouter();
 products = products.getRouter();
 
 //ProductsViews
-let prodViews = new ProductsViewRouter();
-prodViews = prodViews.getRouter();
+let prodVWS = new ProductsViewRouter();
+prodVWS = prodVWS.getRouter();
 
 //Users
 let users = new UsersRouter();
@@ -51,17 +52,22 @@ mocks = mocks.getRouter();
 let chat = new ChatRouter();
 chat = chat.getRouter();
 
+//Tickets
+let tickets = new TicketRouter();
+tickets = tickets.getRouter();
+
 export default class GeneralRauter extends CustomRouter{
     init(){
         this.use('/api/products', products);
-        this.use('/', prodViews);
+        this.use('/', prodVWS);
         this.use('/api/carts', carts);
         this.use('/carts', cartsVWS);
-        this.use('/api', users);
+        this.use('/api/auth', users);
         this.use('/',usersVWS);
         this.use('/api/loggers', logger);
         this.use('/api/auth', auth);
         this.use('/api', mocks);
         this.use('/chat', chat);
+        this.use('/api/ticket',tickets)
     }
 }

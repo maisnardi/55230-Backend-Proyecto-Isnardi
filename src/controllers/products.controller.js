@@ -41,9 +41,10 @@ export const GETProductById = async (req, res, next) => {
     }
 }
 
-//Controller POST Product
+//Controller POST Product with socket.io
 export const POSTProduct = async (req, res, next) => {
     try {
+        console.log("entro al endpoint api product post")
         console.log(req.body)
         console.log(req.files)
         const photos = [];
@@ -88,6 +89,9 @@ export const POSTProduct = async (req, res, next) => {
         if (response[1].status === "success") {
             req.io.emit("newProduct", body, response[2].id);
         }
+
+        const products = await productManager.getProducts();
+        req.io.emit("products", products);
     } catch (error) {
         console.log(error)
         res.status(502).send({ error: true, message: error });
@@ -146,5 +150,6 @@ export const DELETEProductById = async (req, res, next) => {
 }
 
 //Controller Multer Middleware
-export const MDWMulter = upload.array('photo');
+export const MDWMulter = upload.array('photo')
+;
 

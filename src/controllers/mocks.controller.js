@@ -9,5 +9,5 @@ export const GETMockingProducts = async (req, res)=>{
         products.push(generateProduct());
         
     }
-    res.send({status: "succes" , payload: products})
+    res.send({status: "success" , payload: products})
 };

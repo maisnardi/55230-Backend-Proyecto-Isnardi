@@ -1,44 +1,56 @@
 <link rel="stylesheet" href="../public/css/carts.style.css">
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet">
+    <div class="cart-container">
+        <h1>Your Cart</h1>
 
-<h1>Cart view:</h1>
-   <div id="productsContainer">
-         <form action="http://localhost:8080/api/carts/{{cart}}/purchase" method="POST">
-            <button class="add-to-cart-btn" value="" type="submit">Purchase products!</button>
-        </form>
-        <h2>Carrito: {{cart}}:</h2>
-
-        <div id="tableContainer">
-            <table>
+        <table>
+            <thead>
                 <tr>
-                    <td>Quantity</td>
-                    <td>title</td>
-                    <td>category</td>
-                    <td>description</td>
-                    <td>price</td>
-                    <td>thumbnails</td>
-                    <td>code</td>
-                    <td>stock</td>
-                    <td>status</td>
+                    <th>Quantity</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Code</th>
+                    <th>Action</th>
                 </tr>
+            </thead>
+            <tbody>
                 {{#each products}}
-                <tr>
-                    <td>{{this.quantity}}</td>
-                    <td>{{this._id.title}}</td>
-                    <td>{{this._id.category}}</td>
-                    <td>{{this._id.description}}</td>
-                    <td>{{this._id.price}}</td>
-                    <td>{{#each this._id.thumnails}}</td>
-                            <td>{{this}}</td>
-                    {{/each}}
-                    <td>{{this._id.code}}</td>
-                    <td>{{this._id.stock}}</td>
-                    <td>{{this._id.status}}</td>
-                    
-                </tr>
+                    <tr>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this._id.title}}</td>
+                        <td>{{this._id.category}}</td>
+                        <td>{{this._id.description}}</td>
+                        <td>{{this._id.price}}</td>
+                        <td>{{this._id.code}}</td>
+                        <td>
+                            <form action="/api/carts/" method="delete" id="removebtn">
+                                <input type="hidden" name="pid" value="{{this._id._id}}">
+                                <input type="submit" value="Remove">
+                            </form>
+                        </td>
+                    </tr>
                 {{/each}}
-            </table>
+            </tbody>
+        </table>
 
-            <h3>Total amount: </h3>
+        <p class="total-amount">Total Amount: ${{amount}}</p>
+
+        <div class="button-container">
+            <form action="/api/carts/{{cart.cid}}" method="delete" id="empty">
+                <input type="hidden" name="cid" value="{{cart.cid}}">
+                <input type="submit" class="empty-button" value="Empty cart">
+            </form>
+        </div>
+            <button class="purchase-button">Purchase</button>
+            <a href="/products" class="products-button"><button class="products-button">Back to products</button></a>
+            <form action="/api/carts/{{cart.cid}}" method="delete" id="empty">
+                <input type="hidden" name="cid" value="{{cart.cid}}">
+                <input type="submit" class="empty-button" value="Empty cart">
+            </form>
         </div>
     </div>
+
+<script src="../public/js/cart.view.js"></script>

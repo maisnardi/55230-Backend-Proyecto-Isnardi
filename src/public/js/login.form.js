@@ -17,22 +17,22 @@ form.addEventListener('submit', async (event)=>{
     const data = new FormData(form);
     const obj = {};
     data.forEach((value, key) => obj[key]=value);
-    console.log(obj);
-
-    const response = await fetch('/api/login', {
+    const response = await fetch('/api/auth/login', {
         method:'POST',
         body: JSON.stringify(obj),
         headers: {
             "Content-Type": "application/json",
         },
-    });
-    const responseData = await response.json();
-    console.log(responseData)
-    if(responseData.error)
-    {
-      return alert("invalid credentials");
-    }
-    // localStorage.setItem("accessToken", responseData.accessToken);
-    window.location.href = "http://localhost:8080/products";
+    })
+    .then((res)=>{
+        if(res.status === 200)
+        {
+          window.location.href = "http://localhost:8080/products"
+        }
+        else{
+          window.alert("Invalid credentials, please check them");
+          window.location.href = "http://localhost:8080/"
+        }
+    })
 });
 

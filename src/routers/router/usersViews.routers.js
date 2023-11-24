@@ -1,4 +1,4 @@
-//Routes de los endpoints de Users Views
+//Routes de los endpoints de Users Views http://localhost:8080/
 
 //Importaciones
 import CustomRouter from "../custom.router.js";
@@ -11,37 +11,25 @@ import passportMW from "../../utils/passport.middleware.js";
 export default class UsersViewsRouter extends CustomRouter {
     init() {
         //Endpoints para express
-        //Endpoint POST para enviar los datos ingresado en la vista de Login. Con Passport.
-        this.create("/login", passport.authenticate("login", { successRedirect: "/products", failureRedirect: "/" }), UserViewsController.POSTNone)
-
-        //Endoint POST de register para enviar los datos ingresado en la vista de registro.Con Passport.
-        this.create('/register', passport.authenticate("register", { successRedirect: "/", failureRedirect: "/register" }), UserViewsController.POSTNone)
-
-        //Endpoint POST para enviar correo de restablecimiento de password
-        this.create('/restore', UserViewsController.POSTRestorePassword)
-
-        //Endoint PUT para cambiar la clave del usuario.
-        this.create('/restore/:userID', UserViewsController.POSTUserResetPassword)
-
-        //Endpoint GET para mostrar la vista de Login.
+        //Endpoint GET para mostrar la vista de Login. http://localhost:8080/
         this.read('/', isLogged, UserViewsController.GETLoginView)
 
-        //Endoint GET de register para mostrar la vista del formulario de registro.
+        //Endoint GET de register para mostrar la vista del formulario de registro. http://localhost:8080/register
         this.read('/register', isLogged, UserViewsController.GETRegisterView)
 
-        //Endoint GET de profile para mostrar la vista del perfil del usuario.
+        //Endoint GET de profile para mostrar la vista del perfil del usuario. http://localhost:8080/profile
         this.read('/profile', passportMW("current"), UserViewsController.GETProfileView)
 
-        //Endoint GET para cerrar la sesion del usuario.
+        //Endoint GET para cerrar la sesion del usuario. http://localhost:8080/logout
         this.read('/logout', protectView, UserViewsController.GETLogoutView)
 
         //Endoint GET para ver los datos de la session.
         //this.read('/sessions', UserViewsController.GETSessionView)
 
-        //Endoint GET para restaurar la clave del usuario.
+        //Endoint GET para restaurar la clave del usuario. http://localhost:8080/restore
         this.read('/restore', UserViewsController.GETRestoreView)
 
-        //Endoint GET para restaurar la clave del usuario.
+        //Endoint GET para restaurar la clave del usuario. http://localhost:8080/restore/:userID
         this.read('/restore/:userID', UserViewsController.GETUserResetPasswordView)
     }
 }

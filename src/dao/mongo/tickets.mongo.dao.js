@@ -14,5 +14,9 @@ class Ticket{
             }
         )
     }
+
+    //DAO Get ticket
+    // getTicketDAO = async(ticketID)
+
 }
 export default Ticket;

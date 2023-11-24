@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="../public/css/product.style.css">
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet">
 
- <div class="product-container">
+<div class="product-container">
     <img class="product-thumbnail" src="../public/img/{{product.thumbnails}}" alt="Producto">
     <div class="product-details">
         <h1 class="product-title">{{product.title}}</h1>
@@ -11,10 +12,13 @@
         <p class="product-price">Price: ${{product.price}}</p>
         <p class="product-stock">Stock: {{product.stock}}</p>
         {{#if role}}
-            <form action="http://localhost:8080/carts/{{cid}}/product/{{product._id}}" method="post">
-                <button class="add-to-cart-btn">Add product to cart!</button>
-            </form>
+        <form action="http://localhost:8080/api/carts/{{cid}}/product/{{product._id}}" method="post" id="addProductToCart">
+            <input type="hidden" name="cartId" value={{cid}}>
+            <input type="submit" class="add-to-cart-btn" id="addProductButton" value="Add product to cart!">
+        </form>
         {{/if}}
 
     </div>
-  </div>
+</div>
+
+<script src="../public/js/product.js"></script>

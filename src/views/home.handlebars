@@ -200,7 +200,7 @@
     <section>
         <h2>Add products</h2>
         <h3>All fields except thumbnails and Image Files are required </h3>
-        <form action="/" method="post" enctype="multipart/form-data">
+        <form action="/" method="post" enctype="multipart/form-data" id="newProdForm">
             <input type="text" name="title" placeholder="Title" >
             <input type="text" name="category" placeholder="Category" >
             <input type="text" name="description" placeholder="Description" >
@@ -232,19 +232,8 @@
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
-            <!-- Ejemplo de fila en la tabla con botones de edición y borrado -->
             {{#each products}}
                 <tr>
-                    {{!-- <td>{{this._id}}</td>
-                    <td>{{this.category}}</td>
-                    <td>{{this.title}}</td>
-                    <td>{{this.description}}</td>
-                    <td>{{this.price}}</td>
-                    <td>{{this.thumbnails}}</td>
-                    <td>{{this.code}}</td>
-                    <td>{{this.stock}}</td>
-                    <td>{{this.status}}</td> --}}
-
                     <td>{{this._id}}</td>
                     <td>{{this.category}}</td>
                     <td>{{this.title}}</td>

@@ -82,12 +82,12 @@ describe(
                 expect(statusCode).to.be.equal(200);
                 expect(_body.update).to.be.equal(true);
             })
-        // it("testing that a user can delete a product from the system",
-        //     async () => {
-        //         let response = await requester.delete('/products/'+prodId).set("Cookie", [cookie.name +"="+ cookie.value])
-        //         let {_body,statusCode} = response;
-        //         expect(statusCode).to.be.equal(200);
-        //         expect(_body.deleted).to.be.equal(true);
-        //     })
+        it("testing that a user can delete a product from the system",
+            async () => {
+                let response = await requester.delete('/products/'+prodId).set("Cookie", [cookie.name +"="+ cookie.value])
+                let {_body,statusCode} = response;
+                expect(statusCode).to.be.equal(200);
+                expect(_body.deleted).to.be.equal(true);
+            })
     }
 )

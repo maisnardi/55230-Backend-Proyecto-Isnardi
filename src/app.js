@@ -1,35 +1,22 @@
 //Importación de módulos.
-import express  from "express";                 //Express.
+import express from "express";                 //Express.
 import handlebars from 'express-handlebars'     //Motor de plantillas handlebars.
-import { Server as HTTPServer} from "http";     //Para utilizar io dentro de routes.
+import { Server as HTTPServer } from "http";     //Para utilizar io dentro de routes.
 import { Server as SocketIO } from "socket.io"; //socket.io.
 
 import mongoose from "mongoose";                                //Mongoose.
-import cookieParser  from "cookie-parser";                      //Cookies 
+import cookieParser from "cookie-parser";                      //Cookies 
 import session from "express-session";                          //Sessions
 import MongoStore from "connect-mongo";                         //Mongo Store para guardar sessions data en mongo
 import passport from "passport";                                //Passport general
 import winston from "winston/lib/winston/config/index.js";      //Winston para loggers
 import swaggerJSDoc from "swagger-jsdoc";                       //Swagger
-import {serve,setup} from "swagger-ui-express"                  //Swagger
-
-//Importación de routes.   
-import productRouter from "./routers/routes.products.js";
-import cartRouter from "./routers/routes.carts.js";
-import productsViewsRouter from "./routers/routes.productsViews.js";
-import chatRouter from "./routers/routes.chat.js";
-import cartsViewRouter from "./routers/routes.CartView.js"
-import userRouter from "./routers/routes.users.js";
-import userRouterViews from "./routers/routes.usersViews.js";
-import authRouter from "./routers/router.auth.js";
-import ticketRouter from "./routers/routes.ticketView.js";
-import mockRouter from "./routers/router.mocks.js";
-import loggerRouter from "./routers/router.loggers.js";
+import { serve, setup } from "swagger-ui-express"                  //Swagger
 
 //Importacion de Router principal (general)
 import GeneralRauter from "./routers/general.router.js";
 let router = new GeneralRauter();
-router=router.getRouter();
+router = router.getRouter();
 
 //Importación de middleware Winston
 import winstonHTTPMiddleware from "./utils/winstonHTTP.middleware.js";
@@ -57,18 +44,18 @@ const specs = swaggerJSDoc(options)
 
 //Conexión con la base de datos externa, Atlas de mongoDB
 const dbConnection = mongoose.connect(Commander.ENV.MONGO_URI)
-dbConnection.then(()=>{console.log(`Conected to MongoDB database`)})
+dbConnection.then(() => { console.log(`Conected to MongoDB database`) })
 
 //Declaracion puerto servidor express.Viene desde Commander.
 const PORT = Commander.ARGS.p;    //Default PORT = 8080;
 
 //Inicializamos el servidor express.
 const app = express();
-app.use(express.urlencoded({extended:true}));       //para leer query y params
+app.use(express.urlencoded({ extended: true }));       //para leer query y params
 app.use(express.json());                            //para leer body(json)
 
 //Implementación de Swagger
-app.use('/api/docs',serve, setup(specs))
+app.use('/api/docs', serve, setup(specs))
 
 //Middleware de Winstone
 app.use(winstonHTTPMiddleware);
@@ -82,12 +69,12 @@ app.use(cookieParser())
 
 //Configuración de app con el middleware Sessions
 app.use(session({
-    secret:'secretCoderApp',
-    resave:true,
-    saveUninitialized:true,
+    secret: 'secretCoderApp',
+    resave: true,
+    saveUninitialized: true,
     store: new MongoStore({
-        mongoUrl:Commander.ENV.MONGO_URI,
-        ttl:3600,
+        mongoUrl: Commander.ENV.MONGO_URI,
+        ttl: 3600,
     }),
 }))
 
@@ -107,48 +94,18 @@ app.use(passport.session());
 //Implementacion del enrutador principal (general)
 app.use('/', router);
 
-//Productos api.
-//app.use("/api/products",productRouter);   BORRAR
-
-//Carts api.
-//app.use("/api/carts",cartRouter);       //BORRAR
-
 //Contenido static.
-app.use("/public",express.static("public"));
+app.use("/public", express.static("public"));
 
 //Motor de plantillas handlebars del servidor websocket.
-app.engine('handlebars',handlebars.engine());   //seteamos el motor.
-app.set('views',`${__dirname}/views`);          //le decimos donde estan las rutas de las vistas.
+app.engine('handlebars', handlebars.engine());   //seteamos el motor.
+app.set('views', `${__dirname}/views`);          //le decimos donde estan las rutas de las vistas.
 app.set('view engine', 'handlebars');           //espcificamos que motor de plantillas vamos a usar.
 
-//Enpoints con handlebars, express y socket.io
-//app.use("/", productsViewsRouter);      //BORRAR
-
-//Endpoint del Chat.
-//app.use("/chat",chatRouter);        //BORRAR
-
-//Endpoint del Carts.
-//app.use("/carts",cartsViewRouter);      //BORRAR
-
-//Endpoints de Users api.
-// app.use("/api/",userRouter);     BORRAR
-
-//Endpoint de UsersViews
-//app.use("/",userRouterViews);       //BORRAR
-
-//Endpoints de Passport-github2
-//app.use("/api/auth", authRouter);     BORRAR
-
-//Endpoint de Ticket
-app.use('/ticket', ticketRouter);
-
-//Enpoint de Mocks
-//app.use('/api',mockRouter);       //BORRAR
-
 //Comunicaciones websocket
-io.on('connection', socket=>{
+io.on('connection', socket => {
     console.log(`Nuevo cliente conectado ID:${socket.id}`);
-    socket.on("message", async (messageData)=>{
+    socket.on("message", async (messageData) => {
         console.log(`Mensage recibido desde el front${messageData.message}`)
         console.log(messageData)
         await chatManager.addMessages(messageData)
@@ -160,20 +117,17 @@ io.on('connection', socket=>{
 app.use('/public', express.static(__dirname + '/public', {
     setHeaders: (res, path) => {
         if (path.endsWith('.js')) {
-        res.setHeader('Content-Type', 'application/javascript');
+            res.setHeader('Content-Type', 'application/javascript');
         }
     }
 }));
-
-//Endpoint de Loggers
-// app.use('/api', loggerRouter);       BORRAR
 
 //Middleware de manejo de errores
 app.use(ErrorHandlerMiddleware);
 app.use(NotFoundMiddleware);
 
 //Inicializacion de express
-httpServer.listen(PORT, ()=>{
+httpServer.listen(PORT, () => {
     console.log(`Servidor express iniciado en el puerto ${PORT} `);
 })
 

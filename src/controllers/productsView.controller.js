@@ -35,45 +35,6 @@ export const GETProductsInHomeView = async (req, res) => {
     }
 }
 
-//Controller POST Products from Home View with socket.io
-export const POSTProductsLive = async (req, res) => {
-    try {
-        const photos = [];
-        if (req.files.length > 0) {
-            req.files.forEach((element) => {
-                photos.push(element.filename)
-            })
-        }
-        if (req.body.thumbnails.length > 0) {
-            photos.push(req.body.thumbnails)
-        }
-        const body = {
-            ...req.body,
-            thumbnails: photos,
-            owner: req.user._id
-        };
-        if (!body.title || !body.category || !body.description || !body.price || !body.code || !body.stock || !body.status) {
-            // console.log("entro al generador de errores")
-            // CustomError.createError({
-            //     message: "Product creation ERROR",
-            //     cause: generateProductErrorInfo(body.title, body.category, body.description, body.price, body.code, body.stock, body.status),
-            //     name: "New creating product error",
-            //     code: EErrors.USER_INPUT_ERROR
-            // })
-        }
-
-        const response = await productManager.addProduct(body);
-
-        //Emit de datos socket.io       
-        const products = await productManager.getProducts();
-        req.io.emit("products", products);
-        res.redirect("/home");
-    } catch (error) {
-        res.status(502).send({ error: true, message: error });
-    }
-
-
-}
 
 //Controller GET Realtimeproducts
 export const GETRealTimeProducts = async (req, res, next) => {

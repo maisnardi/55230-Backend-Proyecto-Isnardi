@@ -8,11 +8,21 @@ const cartManager = new CartManager("carts");
 //Controller GET Cart by id.
 export const GETCartById = async (req, res)=>{
     try {
+        let amount = 0;
         const {cid} = req.params;
-        console.log(cid)
         const data = await cartManager.getCartProductsById(cid);
         const dataObj = data.map(product => product.toObject())
-        res.render("carts" , {products:dataObj,cart:cid})
+        dataObj.forEach(element => {
+            amount = amount + (element._id.price * element.quantity);       
+        });
+        const render = {
+            products:dataObj,
+            cart: {
+                cid:cid
+            }, 
+            amount:amount
+        }
+        res.render("carts" , render)
     } catch (error) {
         console.log(error)
     }
@@ -27,19 +37,5 @@ export const POSTPurchaseCart = async (req, res) =>{
         res.render(ticket)
     }catch(error){
         console.log(error)
-    }
-}
-
-//Controller POST req.params Add product to cart.
-export const POSTAddProductToCartId = async (req, res)=>{
-    try {
-        console.log("entro en add product")
-        const {cid,pid} = req.params;
-        if(await cartManager.addProductToCart(cid,pid)==true)
-        {
-            res.redirect(`/carts/${cid}`);
-        } 
-    } catch (error) {
-        res.status(404).send({error:true});
     }
 }

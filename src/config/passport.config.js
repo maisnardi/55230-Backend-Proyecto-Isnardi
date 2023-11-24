@@ -27,12 +27,20 @@ const initLocalStrategy = () => {
 
     //Register
     passport.use('register', new local.Strategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
-        const newCart = await cartManager.createCart();
-        const user = { ...req.body, cartId: newCart }
-        const response = await userManager.addUser(user);
-        if (!response.payload) return done(null, false);
-        else {
-            return done(null, response.payload);
+        const existUser = await userManager.getUserByEmail(email)
+        console.log(existUser)
+        if(!existUser)
+        {
+            const newCart = await cartManager.createCart();
+            const user = { ...req.body, cartId: newCart }
+            const response = await userManager.addUser(user);
+            if (!response.payload) return done(null, false);
+            else {
+                return done(null, response.payload);
+            }
+        }
+        else{
+            return done(null, false)
         }
     }))
 
@@ -67,6 +75,7 @@ const initLocalStrategy = () => {
             secretOrKey: ENV.SECRET,
         },
         async (payload, done) => {
+            console.log(payload)
             const user = await userManager.getUserById(payload.user.sub);
             if (!user) return done("Invalid credentials!");
             else {
