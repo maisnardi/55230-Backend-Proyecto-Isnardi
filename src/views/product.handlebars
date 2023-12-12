@@ -1,24 +1,31 @@
 <link rel="stylesheet" href="../public/css/product.style.css">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
     rel="stylesheet">
+{{> navbar}}
 
 <div class="product-container">
     <img class="product-thumbnail" src="../public/img/{{product.thumbnails}}" alt="Producto">
     <div class="product-details">
-        <h1 class="product-title">{{product.title}}</h1>
+        <h2 class="product-title">{{product.title}}</h2>
         <p class="product-description">Description:{{product.description}}</p>
         <p class="product-category">Category: {{product.category}}</p>
         <p class="product-code">Code: {{product.code}}</p>
         <p class="product-price">Price: ${{product.price}}</p>
         <p class="product-stock">Stock: {{product.stock}}</p>
-        {{#if role}}
-        <form action="http://localhost:8080/api/carts/{{cid}}/product/{{product._id}}" method="post" id="addProductToCart">
-            <input type="hidden" name="cartId" value={{cid}}>
+        {{#if display.buy}}
+        <form action="http://localhost:8080/api/carts/{{product._id}}" method="PUT" id="addProductToCart">
             <input type="submit" class="add-to-cart-btn" id="addProductButton" value="Add product to cart!">
         </form>
         {{/if}}
-
+        {{#unless display.logged}}
+            <h3 class="loginMessage">Only registered users can purchase products! Please register or log in.</h3>
+        {{/unless}}
+        {{#if display.premium}}
+            <h3 class="loginMessage">Premium users can only add products they do not own.</h3>
+        {{/if}}
     </div>
 </div>
+
+<button class="add-to-cart-btn" id="backButton" onclick="redirectToProducts()" type="button">Back to products!</button>
 
 <script src="../public/js/product.js"></script>

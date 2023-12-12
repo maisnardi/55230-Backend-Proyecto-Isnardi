@@ -1,0 +1,26 @@
+<link rel="stylesheet" href="../public/css/checkout.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet">
+
+{{!-- SDK MercadoPago.js --}}
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+
+
+{{> navbar}}
+
+<div class="checkout-container">
+    <h1>Ticket code: {{data.code}}</h1>
+    <div id="containerProducts">
+        {{#each data.products}}
+            <p>{{_id.title}} x {{quantity}}</p>
+        {{/each}}
+    </div>
+    <div id="totalContainer">
+        <p>Total amount: $</p>
+        <p id="amount">{{data.amount}}</p>
+    </div>
+    <button class="pay-button" id="checkout-btn">Checkout</button>
+    <div id="wallet_container"></div>
+</div>
+
+<script src="../public/js/checkout.js"></script>

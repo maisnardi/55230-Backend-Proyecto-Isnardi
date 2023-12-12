@@ -1,50 +1,50 @@
 <link rel="stylesheet" href="../public/css/products.style.css">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
     rel="stylesheet">
-<link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-<h1>Products from products view:</h1>
-<h2>Welcome {{user}}!</h2>
-<h1>"{{cid}}"</h1>
-<button type="button" class="signin-button" onclick="redirectToLogout()">Logout</button>
-<button type="button" class="signin-button" onclick="redirectToProfile()">Profile</button>
-<button type="button" class="signin-button" onclick="redirectToChatRoom()">Chat room</button>
-{{#if role}}
-<button type="button" class="signin-button" onclick="redirectToManager()">Manage Products</button>
-{{/if}}
-<a href="http://localhost:8080/carts/{{cid}}"><span class="material-symbols-outlined">shopping_cart</span></a>
-{{#each products}}
-<div class="product-container">
-    <img class="product-thumbnail" src="../public/img/{{this.thumbnails}}" alt="Producto">
-    <div class="product-details">
-        <h1 class="product-title">{{this.title}}</h1>
-        <p class="product-description">Description:{{this.description}}</p>
-        <p class="product-category">Category: {{this.category}}</p>
-        <p class="product-code">Code: {{this.code}}</p>
-        <p class="product-price">Price: ${{this.price}}</p>
-        <p class="product-stock">Stock: {{this.stock}}</p>
-        <p class="product-status">Status: {{this.status}}</p>
-        <form action="http://localhost:8080/product/{{this._id}}" method="GET">
-            <button class="add-to-cart-btn" value="" type="submit">View product</button>
-        </form>
+{{> navbar}}
+<div class="pageContainer">
+    <div class="searchContainer">
+        {{> searchbar}}
+    </div>
 
-        {{!-- <form action="http://localhost:8080/api/carts/{{cart}}/product/{{this._id}}" method="POST">
-            <button class="add-to-cart-btn" value="" type="submit">Add product to cart!</button>
-        </form> --}}
+    <div class="productsContainer">
+        <h1>Products from products view:</h1>
+        <h2>Welcome {{user}}!</h2>
 
+    <div class="containerTemplate">
+        {{#each products}}
+        <div class="product-container">
+            <img class="product-thumbnail" src="../public/img/{{this.thumbnails}}" alt="Producto">
+            <div class="product-details">
+                <h2 class="product-title">{{this.title}}</h2>
+                <p class="product-description">Description:{{this.description}}</p>
+                <p class="product-category">Category: {{this.category}}</p>
+                <p class="product-code">Code: {{this.code}}</p>
+                <p class="product-price">Price: ${{this.price}}</p>
+                <p class="product-stock">Stock: {{this.stock}}</p>
+                <p class="product-status">Status: {{this.status}}</p>
+                <form action="/product/{{this._id}}" method="GET">
+                    <button class="add-to-cart-btn" value="" type="submit">View product</button>
+                </form>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+
+
+        <div id="paginateContainer">
+            {{#if plink}}
+            <a href="{{plink}}">Previous</a>
+            {{/if}}
+            <h3>{{page}}</h3>
+            {{#if nlink}}
+            <a href="{{nlink}}">Next</a>
+            {{/if}}
+        </div>
     </div>
 </div>
 
-{{/each}}
 
-<div id="paginateContainer">
-    {{#if plink}}
-    <a href="{{plink}}">Previous</a>
-    {{/if}}
-    <h3>{{page}}</h3>
-    {{#if nlink}}
-    <a href="{{nlink}}">Next</a>
-    {{/if}}
-</div>
 
 <script src="../public/js/products.view.js"></script>

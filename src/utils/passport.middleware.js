@@ -2,8 +2,8 @@ import passport from "passport";
 
 // middleware para usar con distintas estrategias.
 const passportMW = (strategy, options) => async (req, res, next) => {
-  console.log(options)
   passport.authenticate(strategy, options, (err, user, info) => {
+    console.log("Entro al passportMW");
     if (err) next(err);
     if (!user) {
       //return res.status(403).redirect("/");

@@ -1,0 +1,65 @@
+<link rel="stylesheet" href="../public/css/new.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+    {{>navbar}}
+
+    <section>
+        <h2>Add products</h2>
+        <h3>All fields except thumbnails and Image Files are required </h3>
+        <form action="/" method="post" enctype="multipart/form-data" id="newProdForm">
+            <input type="text" name="title" placeholder="Title" required>
+            <input type="text" name="category" placeholder="Category" required>
+            <input type="text" name="description" placeholder="Description" required>
+            <input type="number" name="price" placeholder="Price" required>
+            <input type="text" name="thumbnails"placeholder="Thumbnails" >
+            <input type="file" name="photo" accept="image/png, .jpeg, .jpg, .webp" placeholder="Photos" >
+            <input type="text" name="code" placeholder="Code" required>
+            <input type="number" name="stock" placeholder="Stock" required>
+            <input list="status" name="status" placeholder="Status" required>
+                <datalist id="status">
+                    <option value="True">
+                    <option value="False">
+                </datalist>
+            <input id="loadButton" type="submit" value="Load">
+        </form>
+        <div class="titleProducts">
+            <h2>Products list</h2>
+            
+        </div>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Categoría</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Miniaturas</th>
+                <th>Código</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            {{#each products}}
+                <tr>
+                    <td>{{this._id}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.title}}</td>
+                    <td>{{this.description}}</td>
+                    <td>${{this.price}}</td>
+                    <td>{{this.thumbnails}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>{{this.status}}</td>
+                    {{#if this.render}}
+                        <td>
+                            <a href="/products/update/"><button class="edit-btn">Edit</button></a>
+                        </td>
+                    {{/if}}
+
+                </tr>
+                {{/each}}
+        </table>
+    </section>
+
+
+<script src="../public/js/new.view.js"></script>

@@ -62,7 +62,17 @@ class Product {
             error.from = "mongo"
             next(error)
         }
-
     }
+
+    //DAO find products by owner ID
+    findByOwner = async (id, next) => {
+        try {
+            return await ProductModel.find({ owner: new ObjectId(id) }).lean()
+        } catch (error) {
+            error.from = "mongo"
+            next(error)
+        }
+    }
+
 }
 export default Product;

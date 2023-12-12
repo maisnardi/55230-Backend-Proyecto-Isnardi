@@ -2,8 +2,7 @@ import loggerDev from "./config.dev.js"
 import loggerProd from "./config.prod.js";
 import { ENV } from "../config.js";
 
-console.log(ENV)
-let env = ARGS.env;
+let env = ENV.ENVIRONMENT
 let logger = null;
 
 switch (env) {

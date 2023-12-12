@@ -1,9 +1,10 @@
 <link rel="stylesheet" href="../public/css/carts.style.css">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
     rel="stylesheet">
+
+    {{> navbar}}
     <div class="cart-container">
         <h1>Your Cart</h1>
-
         <table>
             <thead>
                 <tr>
@@ -26,10 +27,7 @@
                         <td>{{this._id.price}}</td>
                         <td>{{this._id.code}}</td>
                         <td>
-                            <form action="/api/carts/" method="delete" id="removebtn">
-                                <input type="hidden" name="pid" value="{{this._id._id}}">
-                                <input type="submit" value="Remove">
-                            </form>
+                            <button class="remove-btn" id="{{this._id._id}}">Remove</button>
                         </td>
                     </tr>
                 {{/each}}
@@ -37,20 +35,18 @@
         </table>
 
         <p class="total-amount">Total Amount: ${{amount}}</p>
-
         <div class="button-container">
+            <form action="/api/tickets" method="post" id="ticket">
+                <input type="hidden" name="cid" value="{{cart.cid}}">
+                <input type="submit" class="purchase-button" value="Proceed to checkout">
+            </form>
+
             <form action="/api/carts/{{cart.cid}}" method="delete" id="empty">
                 <input type="hidden" name="cid" value="{{cart.cid}}">
                 <input type="submit" class="empty-button" value="Empty cart">
             </form>
         </div>
-            <button class="purchase-button">Purchase</button>
-            <a href="/products" class="products-button"><button class="products-button">Back to products</button></a>
-            <form action="/api/carts/{{cart.cid}}" method="delete" id="empty">
-                <input type="hidden" name="cid" value="{{cart.cid}}">
-                <input type="submit" class="empty-button" value="Empty cart">
-            </form>
-        </div>
+            
     </div>
 
 <script src="../public/js/cart.view.js"></script>

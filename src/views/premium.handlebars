@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="../public/css/premium.style.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet">
+{{> navbar}}
+
+<div class="container">
+    <div class="premium-container">
+        <h1 class="premium-title">Premium</h1>
+        <div class="premium-content">
+            <p class="premium-text">Get premium now and get access to all the premium features!</p>
+            <form action="/api/auth/prem" method="put" id="premiumForm">
+                <input class="premium-btn" id="premiumButton" type="submit" value="Get Premium!">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="../public/js/premium.js"></script>

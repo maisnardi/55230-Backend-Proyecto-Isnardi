@@ -1,8 +1,7 @@
 //Importaciones
 import { ObjectId } from "mongodb";
 import mongoose, { model } from "mongoose";    //mongoose
-import mongoosePaginate from "mongoose-paginate-v2"     //Paginate
-
+import quantitySchema from "../models/quantity.schema.js"
 //Schema de Ticket
 const ticketSchema = new mongoose.Schema({
     code:{
@@ -13,6 +12,7 @@ const ticketSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    products:[quantitySchema],
     amount:{
         type:Number,
         required: true
@@ -23,8 +23,7 @@ const ticketSchema = new mongoose.Schema({
     }
 })
 
-//Agregamos el plugin de paginate
-ticketSchema.plugin(mongoosePaginate);
+
 
 //Model de Ticket
 const TicketModel = mongoose.model('tickets',ticketSchema);

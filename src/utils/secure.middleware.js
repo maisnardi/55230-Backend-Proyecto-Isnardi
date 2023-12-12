@@ -4,6 +4,7 @@ import { ENV } from "../config/config.js";
 //Key de JWT
 export const SECRET = ENV.SECRET;
 
+//Para vistas
 //Middleware para proteger las vistas si hay un usuario logueado si no hay lo devuele al login.
 export const protectView = (req, res, next) => {
     const token = req.cookies.accessToken;
@@ -20,6 +21,7 @@ export const protectView = (req, res, next) => {
     }
 }
 
+//Para vistas
 //Middleware para que el usuario no pueda volver a loguearse si ya se encuentra logueado con JWT y vistas.
 export const isLogged = (req, res, next) => {
     const token = req.cookies.accessToken;
@@ -34,6 +36,7 @@ export const isLogged = (req, res, next) => {
     }
 }
 
+//Para vistas
 //Middleware para proteger vistas por rol de usuario
 export const protectByRole = (roles) => (req, res, next) => {
     const granted = roles.includes(req.user.role)
@@ -42,13 +45,11 @@ export const protectByRole = (roles) => (req, res, next) => {
     next();
 }
 
+//Para API
 //Middleware de proteccion por rol para API.
 export const protectByRoleApi = (roles) => (req, res, next) => {
-    console.log(req.user)
     const granted = roles.includes(req.user.role)
-    console.log(req.user.role);
-    console.log(granted)
     if (req.user && !granted)
-        return res.status(403).send({error:true, messagge:"No authorization"})
+        return res.status(403).send({error:true, message:"No authorization"})
     next();
 }

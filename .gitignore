@@ -1,2 +1,3 @@
 # Archivos ingnorados para subir al repo
 node_modules
+.env

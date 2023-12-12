@@ -26,14 +26,13 @@ const initLocalStrategy = () => {
     }))
 
     //Register
-    passport.use('register', new local.Strategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
+    passport.use('register', new local.Strategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password,  done) => {
         const existUser = await userManager.getUserByEmail(email)
-        console.log(existUser)
         if(!existUser)
         {
-            const newCart = await cartManager.createCart();
+            const newCart = await cartManager.createCart(next);
             const user = { ...req.body, cartId: newCart }
-            const response = await userManager.addUser(user);
+            const response = await userManager.addUser(user, next);
             if (!response.payload) return done(null, false);
             else {
                 return done(null, response.payload);
@@ -46,22 +45,23 @@ const initLocalStrategy = () => {
 
     //GitHub
     passport.use('github', new GithubStrategy({
-        clientID: 'Iv1.b15411c31fe09348',
-        clientSecret: '18669f3cf5f9430de24ec10a5b55469035049775',
+        clientID: ENV.CLIENTID,
+        clientSecret: ENV.CLIENTSECRET,
         callbackURL: 'http://localhost:8080/api/auth/callback',
     }, async (accessToken, refreshToken, profile, done) => {
         const userEmail = profile._json.email;
         const user = await userManager.getUserByEmail(userEmail);
-        console.log(user)
         if (user) return done(null, user)
         else {
+            const newCart = await cartManager.createCart();
             const newUser = await userManager.addUser({
                 first_name: profile._json.name ? profile._json.name.split(" ")[0] : " ",
                 last_name: profile._json.name ? profile._json.name.split(" ")[1] : " ",
                 email: userEmail,
                 age: " ",
                 password: " ",
-                username: profile._json.login
+                username: profile._json.login,
+                cartId: newCart
             })
             done(null, newUser.payload)
         }
@@ -75,7 +75,6 @@ const initLocalStrategy = () => {
             secretOrKey: ENV.SECRET,
         },
         async (payload, done) => {
-            console.log(payload)
             const user = await userManager.getUserById(payload.user.sub);
             if (!user) return done("Invalid credentials!");
             else {

@@ -3,13 +3,14 @@ import ProductsRouter from "./router/products.routers.js";
 import ProductsViewRouter from "./router/productsViews.routers.js";
 import UsersRouter from "./router/users.routers.js";
 import LoggersRouter from "./router/loggers.routers.js";
-import AuthRouter from "./router/auth.routers.js"
 import MockRouter from "./router/mocks.routers.js"
 import ChatRouter from "./router/chat.routers.js";
 import CartsRouter from "./router/carts.routers.js"
 import CartsViewsRouter from "./router/cartsView.routers.js"
 import UsersViewsRouter from "./router/usersViews.routers.js"
 import TicketRouter from "./router/tickets.routers.js"
+import TicketViewRouter from "./router/ticketsViews.routers.js"
+import PaymentsRouter from "./router/payment.routers.js"
 
 //Instanciación de Routers
 //Products
@@ -40,10 +41,6 @@ cartsVWS = cartsVWS.getRouter()
 let logger = new LoggersRouter();
 logger = logger.getRouter();
 
-//Auth
-let auth = new AuthRouter();
-auth = auth.getRouter();
-
 //Mocks
 let mocks = new MockRouter();
 mocks = mocks.getRouter();
@@ -56,18 +53,27 @@ chat = chat.getRouter();
 let tickets = new TicketRouter();
 tickets = tickets.getRouter();
 
-export default class GeneralRauter extends CustomRouter{
-    init(){
+//Tickets Views
+let ticketsVWS = new TicketViewRouter();
+ticketsVWS = ticketsVWS.getRouter();
+
+//Payments
+let payments = new PaymentsRouter();
+payments = payments.getRouter();
+
+export default class GeneralRauter extends CustomRouter {
+    init() {
         this.use('/api/products', products);
         this.use('/', prodVWS);
         this.use('/api/carts', carts);
         this.use('/carts', cartsVWS);
         this.use('/api/auth', users);
-        this.use('/',usersVWS);
+        this.use('/', usersVWS);
         this.use('/api/loggers', logger);
-        this.use('/api/auth', auth);
         this.use('/api', mocks);
         this.use('/chat', chat);
-        this.use('/api/ticket',tickets)
+        this.use('/api/tickets', tickets);
+        this.use('/tickets', ticketsVWS);
+        this.use('/api/payments', payments);
     }
 }

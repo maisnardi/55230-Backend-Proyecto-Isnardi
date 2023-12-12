@@ -1,0 +1,37 @@
+config:
+  pluggins:
+    metrics-by-endpoint: {}
+  target: "http://localhost:8080"
+  phases:
+    - duration: 1
+      arrivalCount: 1
+scenarios:
+  - name: login, create product, delete product and logout
+    flow:
+      - log: log in Admin user
+      - post:
+          url: /api/auth/login
+          json:
+            email: "admin@gmail.com"
+            password: "123456789"
+      - log: create product
+      - post:
+          url: /api/products
+          json:
+            title: "Artillery test"
+            description: Artillery test product"
+            price: 9999
+            code: "ART-TEST"
+            stock: 10
+            status: true
+            category: "Test"
+          capture:
+            json: "$.payload"
+            as: "pid"
+      - log: delete product
+      - delete:
+          url: /api/products/{{pid}}
+      - log: log out
+      - post:
+          url: /api/auth/signout
+

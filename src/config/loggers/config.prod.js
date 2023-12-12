@@ -5,22 +5,32 @@ import { createLogger, format, transports, addColors } from "winston";
 const { simple, colorize } = format;
 
 //Definimos la jerarquía del sistema de niveles
+// const levels = {
+//     FATAL: 1,
+//     ERROR: 2,
+//     WARNING: 3,
+//     INFO: 4,
+//     HTTP: 5
+// }
 const levels = {
-    FATAL: 1,
-    ERROR: 2,
-    WARNING: 3,
-    INFO: 4,
-    HTTP: 5
+    ERROR: 1,
+    INFO: 2,
+    HTTP: 3
 }
 
 //Definimos la jerarquía del sistema de colores para los levels.
+// const colors = {
+//     FATAL: 'red',
+//     ERROR: 'yellow',
+//     WARNING: 'white',
+//     INFO: 'green',
+//     HTTP: 'blue'
+// };
 const colors = {
-    FATAL: 'red',
-    ERROR: 'yellow',
-    WARNING: 'white',
-    INFO: 'green',
-    HTTP: 'blue'
-};
+    ERROR: 'red',
+    INFO: 'blue',
+    HTTP: 'white'
+} 
 
 addColors(colors);
 
@@ -30,11 +40,11 @@ export default createLogger({
     format: colorize(),
     transports: [
         new transports.Console({
-            level: 'HTTP',
+            level: 'INFO',
             format: simple()
         }),
         new transports.File({
-            level: 'WARNING',
+            level: 'ERROR',
             format: simple(),
             filename: "./errors.log"
         }),

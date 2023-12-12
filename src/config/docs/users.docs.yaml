@@ -1,0 +1,414 @@
+components:
+  schemas:
+    Register:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: User first name
+        last_name:
+          type: string
+          description: User last name
+        email:
+          type: string
+          description: User email
+        age:
+          type: integer
+          description: User age
+        password:
+          type: string
+          description: User password
+      example:
+        first_name: Juan
+        last_name: Perez
+        email: juanperez@gmail.com
+        age: 25
+        password: hola123456
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          description: User email
+        password:
+          type: string
+          description: User password
+      example:
+        email: juanperez@gmail.com
+        password: hola123456
+    Updatepassword:
+      type: object
+      properties:
+        password:
+          type: string
+          description: User new password
+        confirmPassword:
+          type: string
+          description: User password confirmation
+      example:
+        password: hola123456
+        confirmPassword: hola123456
+    NewRole:
+      type: object
+      properties:
+        role:
+          type: string
+          description: New user role
+      example:
+        role: premium
+  responses:
+    register:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message
+        payload:
+          type: string
+          description: new User id
+      example:
+        message: success
+        payload": 6571278f7502c7d791468ea3
+    invalid:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message
+        status:
+          type: string
+          description: creation status
+      example:
+        message: invalid credentials
+        status: error
+    login:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error status
+        accessToken:
+          type: string
+          description: access token
+      example:
+        error: false
+        payload": eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InN1YiI6IjY1NjlkNTMwNDFiYjM2M2ZkN2E5MzM5NiIsInVzZXIiOnsiZW1haWwiOiJwcmVtaXVtQGdtYWlsLmNvbSJ9fSwiaWF0IjoxNzAxOTE1NTcwLCJleHAiOjE3MDE5MTkxNzB9.1O2LGlOFbMT-ud1GUp_vkmVbbD4VqJHltHDNZe79sQ0
+    signout:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message
+      example:
+        message: User logged out
+    noauth:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error status
+        message:
+          type: string
+          description: Response message description
+      example:
+        error: true
+        message: No auth token
+    updatedPass:
+      type: object
+      properties:
+        user:
+          type: string
+          description: User email address
+        id:
+          type: string
+          description: User unique ID
+        message:
+          type: string
+          description: Confirmation message
+      example:
+        user: premium@gmail.com
+        id: 6569d53041bb363fd7a93396
+        message: Password changed!
+    match:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error status
+        message:
+          type: string
+          description: Response message description
+      example:
+        error: true
+        message: Passwords do not 
+    conflictPass:
+      type: object
+      properties:
+        user:
+          type: string
+          description: User email address
+        id:
+          type: string
+          description: User unique ID
+        message:
+          type: string
+          description: Information message
+      example:
+        user: premium@gmail.com
+        id: 6569d53041bb363fd7a93396
+        message: The new password you entered is the same as your old password. Enter a different password!
+    expiration:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Information message
+      example:
+        error: true
+        message: jwt expired
+    samerole:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Information message
+      example:
+        error: true
+        message: The user already has user privileges
+    updatedRole:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Information message
+      example:
+        error: true
+        message: User role updated
+    higherlevel:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Information message
+      example:
+        error: true
+        message: No authorization, User is Admin
+    invalidrole:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Information message
+      example:
+        error: true
+        message: Invalid user role
+    notFound:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Information message
+      example:
+        error: true
+        message: No user found with that ID number
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        description: User data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/register'
+        '401':
+          description: Register error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+  
+  /api/auth/login:
+    post:
+      summary: Login a user
+      tags:
+      - Users
+      requestBody:
+        required: true
+        description: User login data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: User logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/login'
+        '401':
+          description: Loggin error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+
+/api/auth/signout:
+  post:
+    summary: Logout a user
+    tags:
+      - Users
+    security:
+      - cookieAuth: []
+    responses:
+      '200':
+        description: user logged out
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/signout'
+      '401':
+        description: User not logued in
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/noauth'
+      '404':
+        description: Logout error, user not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/noauth'
+
+/api/auth:
+  put:
+    summary: Update user password
+    tags:
+      - Users
+    security:
+      - cookieAuth: []
+    requestBody:
+      required: true
+      description: password and confirmation password
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Updatepassword'
+    responses:
+      '200':
+        description: User updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/updatedPass'
+      '400':
+        description: passwords dont match
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/match'
+      '401':
+        description: User not logued in
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/noauth'
+      '404':
+        description: Update a user error, user not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/notFound'
+      '406':
+        description: the password entered is the same as the current one
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/conflictPass'
+
+/api/auth/prem:
+  put:
+    summary: Change user role
+    tags:
+      - Users
+    security:
+      - cookieAuth: []
+    requestBody:
+      required: true
+      description: new user role
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NewRole'
+    responses:
+      '200':
+        description: User updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/updatedRole'
+      '304':
+        description: user has the same role
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/samerole'
+      '400':
+        description: user entered an invalid role
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/invalidrole'
+      '401':
+        description: User not logued in
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/noauth'
+      '403':
+        description: user is admin
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/higherlevel'
+      '404':
+        description: user not foud
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/responses/notFound'

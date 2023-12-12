@@ -10,16 +10,17 @@ form.addEventListener('submit', async (event) => {
     data.forEach((value, key) => obj[key]=value);
     let cid = obj.cartId
     try {
-        const response = await fetch(`/api/carts/${cid}/product/${pid}`, {
-            method: 'POST',
+        const response = await fetch(`/api/carts/${pid}`, {
+            method: 'PUT',
         }).then((res)=>{
+            console.log(res.status)
             if(res.status === 200)
             {
-                window.location.href = `http://localhost:8080/carts/${cid}`
+                window.location.href = `/carts`
             }
             else{
                 window.alert("Something went wrong try again")
-                window.location.href = `http://localhost:8080/product/${pid}`
+                window.location.href = `/product/${pid}`
             }
         })
 
@@ -27,3 +28,8 @@ form.addEventListener('submit', async (event) => {
         console.log(error)
     }
 });
+
+
+function redirectToProducts() {
+    window.location.href = "/products"
+}

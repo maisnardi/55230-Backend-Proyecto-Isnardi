@@ -3,7 +3,7 @@ function redirectToRegister() {
     window.location.href = "/register";
   }
 function redirectToGithub() {
-    window.location.href = "http://localhost:8080/api/auth/github";
+    window.location.href = "/api/auth/github";
   }
 function redirectToRestore() {
   window.location.href = "/restore";
@@ -31,7 +31,7 @@ form.addEventListener('submit', async (event)=>{
         }
         else{
           window.alert("Invalid credentials, please check them");
-          window.location.href = "http://localhost:8080/"
+          window.location.href = "http://localhost:8080/login"
         }
     })
 });

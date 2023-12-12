@@ -1,59 +1,84 @@
-//Formulario para eliminar un producto de un carrito.
+//Remove
+//Boton para eliminar un producto de un carrito.
 
+let removeBtn = document.querySelectorAll(".remove-btn");
+console.log(removeBtn)
+for (let i = 0; i < removeBtn.length; i++) {
+    removeBtn[i].addEventListener("click", async function () {
+        try {
+            const response = await fetch(`/api/carts/${this.id}`, {
+                method: 'DELETE',
+            }).then((res) => {
+                if (res.status === 200) {
+                    window.location.href = `http://localhost:8080/carts`
+                }
+                else {
+                    window.alert("Something went wrong try again")
+                    window.location.href = `http://localhost:8080/carts`
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    });
+}
 
-const form = document.getElementById("removebtn");
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const url = window.location.href;
-    let cid = url.split('/').pop()
-    const data = new FormData(form)
-    const obj = {};
-    data.forEach((value, key) => obj[key]=value);
-    try {
-        const response = await fetch(`/api/carts/${cid}/product/${obj.pid}`, {
-            method: 'DELETE',
-        }).then((res)=>{
-            if(res.status === 200)
-            {
-                window.location.href = `http://localhost:8080/carts/${cid}`
-            }
-            else{
-                window.alert("Something went wrong try again")
-                window.location.href = `http://localhost:8080/product/${pid}`
-            }
-        })
-
-    } catch (error) { 
-        console.log(error)
-    }
-});
-
+//Delete
 //Formulario para eliminar todos los productos del carrito.
 const deleteCart = document.getElementById("empty");
 deleteCart.addEventListener('submit', async (event) => {
     event.preventDefault();
-    
     const data = new FormData(deleteCart)
     const obj = {};
-    data.forEach((value, key) => obj[key]=value);
+    data.forEach((value, key) => obj[key] = value);
     let cid = obj.cid
-    console.log(obj)
     try {
-        const response = await fetch(`/api/carts/${cid}`, {
+        const response = await fetch(`/api/carts/`, {
             method: 'DELETE',
-        }).then((res)=>{
+        }).then((res) => {
             console.log(res);
-            if(res.status === 200)
-            {
-                window.location.href = `http://localhost:8080/carts/${cid}`
+            if (res.status === 200) {
+                window.location.href = `/carts/`
             }
-            else{
+            else {
                 window.alert("Something went wrong try again")
-                window.location.href = `http://localhost:8080/carts/${cid}`
+                window.location.href = `/carts/`
             }
         })
 
-    } catch (error) { 
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+//Continue to checkout
+//Formulario para generar el ticket.
+const ticket = document.getElementById("ticket");
+ticket.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+        const response = await fetch(`/api/tickets`, {
+            method: 'POST',
+        })
+            .then(async (res) => {
+                const response = await res.json()
+                if (res.status === 201) {
+                    window.alert(response.message)
+                    window.location.href = `/tickets/${response.ticket._id}`
+                }else if(200){
+                    window.alert(response.message)
+                    window.location.href = `/carts`
+                }
+                else if (res.status === 404) {
+                    window.alert(response.message)
+                    window.location.href = `/carts`
+                }
+                else {
+                    window.alert("Something went wrong try again")
+                    window.location.href = `/carts`
+                }
+            })
+    } catch (error) {
         console.log(error)
     }
 });

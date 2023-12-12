@@ -1,0 +1,168 @@
+components:
+  schemas:
+  responses:
+    outOfStock:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message description
+      example:
+        message: Product out of stock
+    securitySchemes:
+    newTicket:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message description
+        ticket:
+          type: object
+          properties:
+            code:
+              type: string
+              description: ticket unique code
+            purchase_datetime:
+              type: string
+              description: purchase date and time
+            products:
+              type: array
+              description: array of products in the ticket
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: product id
+                  quantity:
+                    type: string
+                    description: product quantity
+            amount:
+              type: number
+              description: ticket total amount
+            purchaser:
+              type: string
+              description: email address of the purchaser
+            _id:
+              type: string
+              description: ticket id
+    cartEmpty:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message description      
+      example:
+        message: Cart is empty
+    errorTicket:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message description
+      example:
+        message: Something went wrong try again
+    ticketAmount:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message description
+        totalAmount:
+          type: number
+          description: total amount of the ticket
+        products:
+          type: array
+          description: array of products in the ticket
+          items:
+            type: object
+            properties:
+              productID:
+                type: string
+                description: product id
+              quantity:
+                type: string
+                description: product quantity       
+      example:
+        meessage: Total amount calculated successfully
+        totalAmount: 15999
+        products:
+          - productID: 5f9d88b9c4b3f3b3c8d9e6b1
+            quantity: 1
+          - productID: 5f9d88b9c4b3f3b3c8d9e6b2
+            quantity: 1
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+paths:
+  /api/tickets:
+    post:
+      summary: Create a ticket based on a user's cart
+      tags:
+        - Tickets
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Product out of stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/outOfStock'
+        '201':
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/newTicket'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notLoggedIn'
+        '404':
+          description: Cart is empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/cartEmpty'
+        '500':
+          description: Error creating ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/errorTicket'
+    get:
+      summary: Get ticket amout
+      tags:
+        - Tickets
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Ticket amount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ticketAmount'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notLoggedIn'
+        '404':
+          description: Cart is empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/cartEmpty'
+        '500':
+          description: Error calculating ticket amount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/errorTicket'

@@ -1,0 +1,201 @@
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet">
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        section {
+            width: 90%;
+            margin: 70px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        form {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        form input,
+        form select {
+            width: 48%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 90%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            padding: 5px 10px;
+            height: 30px;
+            width: 50px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 2px auto;
+            margin-bottom: 2px;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+
+        .edit-btn {
+            background-color: #27ae60;
+        }
+
+        .filter-btn {
+            background-color: #3498db;
+            padding: 5px 10px;
+            height: 50px;
+            width: 100px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 2px auto;
+            margin-bottom: 2px;
+        }
+
+        .titleProducts {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+    </style>
+
+{{> navbar}}
+<section class="container">
+    <h2>Modify products</h2>
+    <form action="/" method="put" enctype="multipart/form-data" id="updateForm">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="category" placeholder="Category">
+        <input type="text" name="description" placeholder="Description">
+        <input type="number" name="price" placeholder="Price">
+        <input type="text" name="thumbnails" placeholder="Thumbnails">
+        <input type="file" name="photo" accept="image/png, .jpeg, .jpg, .webp" placeholder="Photos">
+        <input type="text" name="code" placeholder="Code">
+        <input type="number" name="stock" placeholder="Stock">
+        <input list="status" name="status" placeholder="Status" required>
+        <datalist id="status">
+            <option value="True">
+            <option value="False">
+        </datalist>
+        <input id="updateButton" type="submit" value="Update">
+    </form>
+    <div class="titleProducts">
+        <h2>Products</h2>
+    </div>
+    <h4>Please select the product you want to update</h4>
+    <table>
+        <tr>
+            <th>Select</th>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Thumbnails</th>
+            <th>Code</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {{#each products}}
+        <tr>
+            <td>
+                <form action="" id="formRadio">
+                    <input type="radio" id="select" name="productId" value="{{_id}}">
+            </td>
+            </form>
+
+            <td>{{_id}}</td>
+            <td>{{category}}</td>
+            <td>{{title}}</td>
+            <td>{{description}}</td>
+            <td>${{price}}</td>
+            <td>{{thumbnails}}</td>
+            <td>{{code}}</td>
+            <td>{{stock}}</td>
+            <td>{{status}}</td>
+            <td>
+                {{!-- <form action="/api/products/{{_id}}" method="DELETE" id="{{_id}}">
+                    <input type="hidden" name="pid" value="{{_id}}">
+                    <input class="delete-btn" value="DELETE" type="submit">
+                </form> --}}
+                <button class="delete-btn" id="{{_id}}">Delete</button>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</section>
+
+</html>
+
+<script src="../public/js/updateProduct.js"></script>

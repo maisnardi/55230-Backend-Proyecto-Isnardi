@@ -15,14 +15,15 @@ form.addEventListener('submit', async (event) => {
             },
         })
             .then((res)=>{
+                console.log(res.status);
                 if(res.status === 201)
                 {
                     window.alert("User created successfully")
-                    window.location.href = "http://localhost:8080/";   
+                    window.location.href = "http://localhost:8080/";
                 }
                 else{
                     window.alert("The user is already registered ")
-                    window.location.href = "http://localhost:8080/";   
+                    window.location.href = "http://localhost:8080/login";   
                 }
             })
     } catch (error) { 

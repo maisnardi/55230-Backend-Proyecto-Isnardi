@@ -1,0 +1,196 @@
+components:
+  schemas:
+  responses:
+    newCart:
+      type: string
+      example: '65724b1c1afaa7be37a23ffb'
+    noauth:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error status
+        message:
+          type: string
+          description: Response message description
+      example:
+        error: true
+        message: No auth token
+    noPrivilages:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error status
+        message:
+          type: string
+          description: Response message description
+      example:
+        error: true
+        message: User has no privileges
+    notCreated:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+      example:
+        error: Cart not created
+    badGateway:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error ocurred
+      example:
+        error: true
+    updatedCart:
+      type: object
+      properties:
+        updated:
+          type: boolean
+          description: update status
+      example:
+        updated: true
+    notFound:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error description
+      example:
+        error: Product not found
+    productDeleted:
+      type: object
+      properties:
+        deleted:
+          type: boolean
+          description: Delete status
+      example:
+        deleted: true
+    
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+paths:
+  /api/carts:
+    post:
+      summary: Create a cart
+      tags:
+        - Carts
+      security:
+        - cookieAuth: []
+      responses:
+        '201':
+          description: Cart created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/newCart'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
+        '403':
+          description: User has no privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noPrivilages'
+        '404':
+          description: Cart culd not be created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notCreated'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badGateway'
+  # /api/carts:
+  #   get:
+
+  /api/carts/{pid}:
+    put:
+      summary: Update product in cart
+      tags:
+        - Carts
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: pid
+          in: path
+          description: product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/updatedCart'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
+        '403':
+          description: User has no privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noPrivilages'
+        '404':
+          description: Product o Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFound'
+    delete:
+      summary: Delete cart
+      tags:
+        - Carts
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: pid
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/productDeleted'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
+        '403':
+          description: User has no privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noPrivilages'
+        '404':
+          description: Cart or Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFound'

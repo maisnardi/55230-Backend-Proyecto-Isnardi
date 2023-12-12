@@ -1,0 +1,30 @@
+{{!-- Handlebar de navbar --}}
+<link rel="stylesheet" href="../../public/css/navbar.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
+    rel="stylesheet">
+
+<div class="navbar">
+    {{#if display.logout}}
+        <a href="/logout">Logout</a>
+        <a href="/profile">Profile</a>
+    {{/if}}
+    {{#if display.login}}
+        <a href="/login">Register/Login</a>
+    {{/if}} 
+    <a href="/products">Products</a>
+    {{#if display.cart}}
+        <a href="/carts">Cart</a>
+    {{/if}}
+    {{#if display.new}}
+        <a href="/new">New</a>
+    {{/if}}
+    {{#if display.update}}
+        <a href="/products/update">Update</a>
+    {{/if}}
+    {{#if display.premium}}
+        <a href="/premium">Premium</a>
+    {{/if}}
+    {{#if display.chat}}
+        <a href="/chat">Chat</a>
+    {{/if}}
+</div>

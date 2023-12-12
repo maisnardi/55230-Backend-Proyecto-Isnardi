@@ -1,17 +1,20 @@
 //Importación de módulos.
-import express from "express";                 //Express.
-import handlebars from 'express-handlebars'     //Motor de plantillas handlebars.
-import { Server as HTTPServer } from "http";     //Para utilizar io dentro de routes.
-import { Server as SocketIO } from "socket.io"; //socket.io.
-
+import express from "express";                                  //Express.
+import handlebars from 'express-handlebars'                     //Motor de plantillas handlebars.
+import { Server as HTTPServer } from "http";                    //Para utilizar io dentro de routes.
+import { Server as SocketIO } from "socket.io";                 //socket.io.
+import cors from "cors";                                        //Cors.
 import mongoose from "mongoose";                                //Mongoose.
-import cookieParser from "cookie-parser";                      //Cookies 
+import cookieParser from "cookie-parser";                       //Cookies 
 import session from "express-session";                          //Sessions
 import MongoStore from "connect-mongo";                         //Mongo Store para guardar sessions data en mongo
 import passport from "passport";                                //Passport general
-import winston from "winston/lib/winston/config/index.js";      //Winston para loggers
+//import winston from "winston/lib/winston/config/index.js";      //Winston para loggers
 import swaggerJSDoc from "swagger-jsdoc";                       //Swagger
-import { serve, setup } from "swagger-ui-express"                  //Swagger
+import { serve, setup } from "swagger-ui-express"               //Swagger
+import compression from "express-compression";                  //Compression
+import cluster from "cluster";                                  //Cluster
+
 
 //Importacion de Router principal (general)
 import GeneralRauter from "./routers/general.router.js";
@@ -51,8 +54,12 @@ const PORT = Commander.ARGS.p;    //Default PORT = 8080;
 
 //Inicializamos el servidor express.
 const app = express();
-app.use(express.urlencoded({ extended: true }));       //para leer query y params
-app.use(express.json());                            //para leer body(json)
+app.use(cors());                                        //para utilizar cors
+app.use(express.urlencoded({ extended: true }));        //para leer query y params
+app.use(express.json());                                //para leer body(json)
+
+//Compression con brotli
+app.use(compression({ brotoli: { enabled: true, zlib: {} } }));
 
 //Implementación de Swagger
 app.use('/api/docs', serve, setup(specs))
@@ -106,8 +113,6 @@ app.set('view engine', 'handlebars');           //espcificamos que motor de plan
 io.on('connection', socket => {
     console.log(`Nuevo cliente conectado ID:${socket.id}`);
     socket.on("message", async (messageData) => {
-        console.log(`Mensage recibido desde el front${messageData.message}`)
-        console.log(messageData)
         await chatManager.addMessages(messageData)
         console.log("Los datos fueron enviados a Atlas")
         socket.broadcast.emit("newMessage", messageData)
@@ -122,12 +127,26 @@ app.use('/public', express.static(__dirname + '/public', {
     }
 }));
 
-//Middleware de manejo de errores
-app.use(ErrorHandlerMiddleware);
+//Middleware para pagina no encontrada
 app.use(NotFoundMiddleware);
 
-//Inicializacion de express
-httpServer.listen(PORT, () => {
-    console.log(`Servidor express iniciado en el puerto ${PORT} `);
-})
+//Middleware de manejo de errores
+app.use(ErrorHandlerMiddleware);
+
+//Habilitacion de cluster
+if (cluster.isPrimary) {
+    for (let i = 0; i < 4; i++) {
+        cluster.fork();
+    }
+}
+else {
+    console.log(`Worker PID: ${process.pid}`);
+    //Inicializacion de express
+    httpServer.listen(PORT, () => {
+        console.log(`Servidor express iniciado en el puerto ${PORT} `);
+    })
+}
+
+
+
 

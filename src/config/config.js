@@ -13,18 +13,20 @@ parameters.parse();
 
 export const ARGS = parameters.opts();
 
-
 //Configuración dotenv
 dotenv.config({
-    path:'.env'
+    path: '.env'
 });
-
 
 export const ENV = {
     MONGO_URI: process.env.MONGO_URI,
     SECRET: process.env.SECRET,
-    PERSISTANCE:ARGS.pers ?? process.env.PERSISTANCE,
+    PERSISTANCE: ARGS.pers ?? process.env.PERSISTANCE,
     ENVIRONMENT: ARGS.pers ?? "DEV",
-    EMAIL:process.env.EMAIL,
-    EMAILPASS:process.env.EMAILPASS,
+    EMAIL: process.env.EMAIL,
+    EMAILPASS: process.env.EMAILPASS,
+    CLIENTID: process.env.CLIENTID,
+    CLIENTSECRET: process.env.CLIENTSECRET,
+    MP_PUBLIC_KEY: process.env.PUBLIC_KEY,
+    MP_ACCESS_TOKEN: process.env.ACCESS_TOKEN,
 }

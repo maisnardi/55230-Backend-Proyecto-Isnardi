@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     height: 100vh;
   }
@@ -15,6 +15,7 @@ body {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 400px;
+    margin-top: 70px;
   }
   
   .profile {
@@ -39,3 +40,20 @@ body {
     border-radius: 5px;
   }
   
+  .restore-button{
+    margin-top: 10px;
+    background-color: #bc93db;
+    color: #fff;
+    font-size: 15px;
+    padding: 13px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #change-password{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

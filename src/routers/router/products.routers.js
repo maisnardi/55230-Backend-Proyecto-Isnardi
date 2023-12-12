@@ -11,19 +11,19 @@ import passportMW from "../../utils/passport.middleware.js"
 export default class ProductsRouter extends CustomRouter {
     init() {
         //Endpoints para express
-        //Endpoint POST con req.body http://localhost:8080/api/products
-        this.create("/",passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.MDWMulter, ProductsApiController.POSTProduct)
+        //Endpoint POST con req.body para crear productos. http://localhost:8080/api/products  -- SOLICITADO
+        this.create("/", passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.MDWMulter, ProductsApiController.POSTProduct);
 
-        //Endpoint GET con req.query http://localhost:8080/api/products
-        this.read('/', JWTCookiesMW, ProductsApiController.GETProductsFilter);
+        //Endpoint GET con req.query para ver todos los productos. http://localhost:8080/api/products  -- SOLICITADO
+        this.read('/', ProductsApiController.GETProductsFilter);        
 
-        //Endpoint GET con req.params http://localhost:8080/api/products/:pid
-        this.read('/:pid', JWTCookiesMW, ProductsApiController.GETProductById);
+        //Endpoint GET con req.params http://localhost:8080/api/products/:pid - ReadOne -- SOLICITADO 
+        this.read('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.GETProductById);
 
-        //Endpoint PUT con req.params http://localhost:8080/api/products/:pid
-        this.update('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.MDWMulter, ProductsApiController.PUTUpdateProductsById)
+        //Endpoint PUT con req.params para actualizar un producto. http://localhost:8080/api/products/:pid  -- SOLICITADO
+        this.update('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.MDWMulter, ProductsApiController.PUTUpdateProductsById);
 
-        //Endpoint DELETE con req.params http://localhost:8080/api/products/:pid
-        this.destroy('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.DELETEProductById)
+        //Endpoint DELETE con req.params para eleminar un producto. http://localhost:8080/api/products/:pid  -- SOLICITADO
+        this.destroy('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.DELETEProductById);
     }
 }

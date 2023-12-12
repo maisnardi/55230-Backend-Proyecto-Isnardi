@@ -16,50 +16,28 @@ const UserDAO = new UsersDAO();
 class UserManager{
     constructor(){}
     
-    getUserById = async (id)=>{
+    getUserById = async (id,next)=>{
         try {
-            //return await UserModel.findById(id)
-            return await UserDAO.findById(id);    
+            return await UserDAO.findById(id, next);    
         } catch (error) {
-            console.log(error)
+            error.from = "service";
+            return next(error);
         }
     }
 
-    getUserByEmail = async (email)=>{
+    getUserByEmail = async (email, next)=>{
         try {
-            //return await UserModel.find({email:email})
-            return await UserDAO.findByEmail(email);
+            return await UserDAO.findByEmail(email, next);
         } catch (error) {
-            console.log(error)
+            error.from = "service";
+            return next(error);
         }
 
     }
-    
-    // addUser = async(user)=>{    //utilizando crypto
-    //     try {
-    //         const dbUser = await UserModel.findOne({email:user.email}).lean();
-    //         if(dbUser)
-    //         {
-    //             return {message:"The entered user is already registered"};
-    //         }else{
-    //             user.salt = crypto.randomBytes(128).toString("base64");     //creo la llave para encriptar
-    //             user.password =crypto.createHmac('sha256',user.salt).update(user.password).digest('hex');   //encripto la clave ingresada por el usuario con la llave generada.
-    //             if(user.email==="adminCoder@coder.com")
-    //             {
-    //                user.role="admin";
-    //             }
-    //             const newUser = await UserModel.insertMany(user)
-    //             return {payload:newUser, message: "user created successfully"};
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
 
-    addUser = async(user)=>{    //utilizando bcrypt
+    addUser = async(user, next)=>{                              //utilizando bcrypt
         try {
-            //const dbUser = await UserModel.findOne({email:user.email}).lean();
-            const dbUser = await UserDAO.findByEmail(user.email);
+            const dbUser = await UserDAO.findByEmail(user.email, next);
             if(dbUser)
             {
                 return {message:"The entered user is already registered"};
@@ -70,51 +48,35 @@ class UserManager{
                 {
                     user.role="admin";
                 }
-                //const newUser = await UserModel.insertMany(user);
-                const newUser = await UserDAO.insertUser(user);
-                //const storedUser = await UserModel.findOne({email:user.email}).lean();
-                const storedUser = await UserDAO.findByEmail(user.email);
+                const newUser = await UserDAO.insertUser(user, next);
+                if(!newUser) return
+                const storedUser = await UserDAO.findByEmail(user.email, next);
                 return {payload:storedUser, message: "user created successfully"};
             }
         } catch (error) {
-            console.log(error);
+            error.from = "service";
+            return next(error);
         }
     }
 
-    getUsers = async()=>{
+    getUsers = async(next)=>{
         try {
-            const users = await UserDAO.findAllUsers();
-            return users;
+            let empty = [];
+            const users = await UserDAO.findAllUsers(next);
+            if(users){
+                return users;
+            }else{
+                return empty;
+            }
         } catch (error) {
-            return [];
+            error.from = "service";
+            return next(error);
         }
     }
 
-    // validateLogin = async (email, password)=>{      //utilizando crypto
-    //     try {
-    //         const user = await UserModel.findOne({email});
-    //         if(!user){
-    //             console.log("no existe el usuario")
-    //             return {message:"plaese check email adress and password"};
-    //         }
-    //         const decrytedPass =crypto.createHmac('sha256',user.salt).update(password).digest('hex');
-    //         if(user.password === decrytedPass)
-    //         {
-    //             return {payload:user.toObject(),message:"Access granted"};
-    //         }
-    //         else{
-    //             console.log("la clave esta mal")
-    //             return {message:"plaese check email adress and password"}
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
-
-     validateLogin = async (email, password)=>{      //utilizando bcrypt
+     validateLogin = async (email, password, next)=>{      //utilizando bcrypt
         try {
-            //const user = await UserModel.findOne({email}).lean();
-            const user = await UserDAO.findByEmail(email)
+            const user = await UserDAO.findByEmail(email, next)
             if(!user){
                 console.log("no existe el usuario")
                 return {message:"plaese check email adress and password"};
@@ -129,23 +91,24 @@ class UserManager{
                 return {message:"plaese check email adress and password"}
             }
         } catch (error) {
-            console.log(error)
+            error.from = "service";
+            return next(error);
         }
     }
 
-    filterData = (user)=>{
+    filterData = (user, next)=>{
         try {
-            const data = new CurrentDTO(user);
+            const data = new CurrentDTO(user,next);
             return data;
         } catch (error) {
-            console.log(error)
+            error.from = "service";
+            return next(error);
         }
-
     }
 
-    updateUserPassword = async (userID, newPassword)=>{
+    updateUserPassword = async (userID, newPassword, next)=>{
         try {
-            const user = await UserDAO.findById(userID);    
+            const user = await UserDAO.findById(userID, next);    
             const isEqual = await bcrypt.compare(newPassword, user.password);       //comparo la clave ingresada con la almacenada.
             if(isEqual) {
                 return {error:true , message:"The new password you entered is the same as your old password. Enter a different password!"}
@@ -153,38 +116,40 @@ class UserManager{
                 const salt = await bcrypt.genSalt(10);    //creo la llave para encriptar
                 const password = await bcrypt.hash(newPassword, salt);   //encripto la clave ingresada por el usuario con la llave generada.
                 try {
-                    await UserDAO.updateUser(userID, {salt:salt, password:password});
+                    await UserDAO.updateUser(userID, {salt:salt, password:password}, next);
                 } catch (error) {
-                    console.log(error)
+                    error.from = "service";
+                    return next(error);
                 }
                 return {error: false , message: "Password changed!"}
             }
         } catch (error) {
-            console.log(error)
+            error.from = "service";
+            return next(error);
         }
     }
 
-    updateUserRole = async (userID, newRole)=>{
+    updateUserRole = async (userID, newRole, next)=>{
         try {
                 if(newRole === "user" || newRole === "premium")
                 {
-                    const user = await UserDAO.findById(userID);
+                    const user = await UserDAO.findById(userID, next);
                     if(user){
                         if (user.role === "user"){
                             if(newRole==="user")return {error:true, code:400 ,message:"The user already has user privileges"}
                             else{
-                                await UserDAO.updateUser(userID, {role:"premium"})
+                                await UserDAO.updateUser(userID, {role:"premium"}, next)
                                 return {error: false, code:200 ,message:"User role updated"}
                             }
                         }else if(user.role === "premium"){
-                            if(newRole==="premium")return {error:true,code:400, message:"The user already has premium privileges"}
+                            if(newRole==="premium")return {error:true,code:304, message:"The user already has premium privileges"}
                             else{
-                                await UserDAO.updateUser(userID, {role:"user"})
+                                await UserDAO.updateUser(userID, {role:"user"}, next)
                                 return {error: false, code:200, message:"User role updated"}
                             }
                         }
                         else{
-                            return {error:true, code:403 ,message: "No authorization: User is Admin"}
+                            return {error:true, code:403 ,message: "No authorization, User is Admin"}
                         }
                     }else{
                         return {error:true, code:404 ,message: "No user found with that ID number"}
@@ -194,8 +159,9 @@ class UserManager{
                 else{
                     return {error:true , code:400 ,message: "Invalid user Role"}; 
                 }
-        } catch (error) {
-            console.log(error)
+            } catch (error) {
+                error.from = "service";
+                return next(error);
         }
     }
 

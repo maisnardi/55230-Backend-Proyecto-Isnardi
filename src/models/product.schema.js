@@ -1,53 +1,53 @@
 //Importaciones
 import { ObjectId } from "mongodb";
-import mongoose, { model } from "mongoose";    //mongoose
+import mongoose, { model } from "mongoose";             //mongoose
 import mongoosePaginate from "mongoose-paginate-v2"     //Paginate
 
 //Schema de product
 const productSchema = new mongoose.Schema({
-    _id:{
-        type:ObjectId
+    _id: {
+        type: ObjectId
     },
-    title:{
-        type:String,
+    title: {
+        type: String,
         required: true
     },
-    code:{
-        type:String,
+    code: {
+        type: String,
         required: true
     },
-    description:{
-        type:String,
+    description: {
+        type: String,
         required: true
     },
-    thumbnails:{
-        type:Array
+    thumbnails: {
+        type: Array
     },
-    price:{
-        type:Number,
+    price: {
+        type: Number,
         required: true
     },
-    category:{
-        type:String,
+    category: {
+        type: String,
         required: true
     },
-    stock:{
-        type:Number,
+    stock: {
+        type: Number,
         required: true
     },
-    status:{
-        type:Boolean,
+    status: {
+        type: Boolean,
         required: true
     },
-    owner:{
-        type:mongoose.Schema.Types.Mixed,
+    owner: {
+        type: mongoose.Schema.Types.Mixed,
         ref: "users",
-        default: "admin",  
+        default: "admin",
     }
 })
 //Agregamos el plugin de paginate
 productSchema.plugin(mongoosePaginate);
 //Model de product
-const ProductModel = mongoose.model('products',productSchema);
+const ProductModel = mongoose.model('products', productSchema);
 
 export default ProductModel;

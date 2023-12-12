@@ -21,7 +21,7 @@ if (changed) {
     document.getElementById("titleChange").style.display = "none";
 
     const button = document.createElement("button");
-    button.textContent = "Sing in";
+    button.textContent = "Sign in";
     button.addEventListener("click", function () {
         window.location.href = "/";
     });
@@ -51,7 +51,7 @@ form.addEventListener('submit', async (event) => {
             if(res.status === 200)
             {
                 window.alert("Passwor changed correctly.")
-                window.location.href = "http://localhost:8080/";  
+                window.location.href = "/";  
             }
             else{
                 window.alert("The password must not be the same as the previous one. Re try it.") 

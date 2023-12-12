@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+}
+
+.sidebar {
+    height: 100vh;
+    background-color: #333;
+    color: #fff;
+    left: 0;
+    margin-top: 40px;
+    padding: 30px;
+    box-sizing: border-box;
+    position: fixed;
+}
+
+.sidebar label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.sidebar select,
+.sidebar input[type="radio"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.sidebar select {
+    background-color: #555;
+    color: #fff;
+    border: none;
+}
+
+.sidebar input[type="radio"] {
+    margin-right: 5px;
+}
+
+.sidebar div {
+    margin-bottom: 15px;
+}
+
+/* Estilos adicionales para mejorar la apariencia */
+h1 {
+    margin-left: 22%;
+    padding: 20px;
+}

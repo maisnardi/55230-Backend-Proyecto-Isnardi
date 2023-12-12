@@ -4,23 +4,26 @@
 import CustomRouter from "../custom.router.js";
 import * as CartApiController from "../../controllers/carts.controllers.js"
 import passportMW from "../../utils/passport.middleware.js";
-import { protectByRole } from "../../utils/secure.middleware.js";
+import { protectByRoleApi } from "../../utils/secure.middleware.js";
 
 //Extendemos la clase CartsRouter de nuestro Customrouter
 export default class CartsRouter extends CustomRouter {
     init() {
         //Endpoints para express
-        //Endpoint POST - Crea un nuevo carrito http://localhost:8080/api/carts
-        this.create("/", CartApiController.POSTCreateNewCart);
+        //Endpoint POST - Crea un nuevo carrito http://localhost:8080/api/carts  -- SOLICITADO
+        this.create("/", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.POSTCreateNewCart);
 
         //Endpoint POST con req.params - Agrega un producto a un carrito. http://localhost:8080/api/carts/:cid/product/:pid
-        this.create("/:cid/product/:pid", passportMW("current"), protectByRole(["user"]), CartApiController.POSTAddProductToCartId);
+        this.create("/:cid/product/:pid", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.POSTAddProductToCartId);
 
-        //Endpoint POST para realizar la compra. http://localhost:8080/api/carts/:cid/purchase
-        this.create("/:cid/purchase", passportMW("current"), CartApiController.POSTPurchaseCart)
+        //Endpoint GET req.params - Devuelve el carrito del ID recibido. http://localhost:8080/api/carts/:cid - ReadOne -- SOLICITADO
+        this.read('/:cid', passportMW("current"), protectByRoleApi(["user", "premium"]),CartApiController.GETCartById);
 
-        //Endpoint GET req.params - Devuelve el carrito del ID recibido. http://localhost:8080/api/carts/:cid
-        this.read('/:cid', CartApiController.GETCartById);
+        //Endpoint GET - Devuelve todos los productos del carrito del usuario logueado paginados. http://localhost:8080/api/carts  -- SOLICITADO
+        this.read("/", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.GETCart)
+
+        //Endpoint PUT con req.params y req.body - Actualiza un producto del carrito. http://localhost:8080/api/carts/:pid --  SOLICITADO
+        this.update('/:pid', passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.PUTUpdateProductById)
 
         //Endpoint PUT con req.params y req.body - Reemplazar por completo un array de productos. http://localhost:8080/api/carts/:cid
         this.update("/:cid", CartApiController.PUTUpadateFullCartbyId)
@@ -31,7 +34,10 @@ export default class CartsRouter extends CustomRouter {
         //Endpoint DELETE con req.params - Elimina del carrito un producto seleccionado. http://localhost:8080/api/:cid/product/:pid
         this.destroy("/:cid/product/:pid", CartApiController.DELETEProductById)
 
-        //Endpoint DELETE con req.params - Eleminina todos los productos de un carrito. http://localhost:8080/api/:cid
-        this.destroy("/:cid", CartApiController.DELETEDeleteProductsById)
+        //Endpoint DELETE con req.params - Elimina del carrito del usuario logueado un producto seleccionado. http://localhost:8080/api/carts/:pid -- SOLICITADO
+        this.destroy("/:pid", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.DELETEUsersProductById)
+
+        //Endpoint DELETE - Eleminina todos los productos del carrito del usuario loggeado. http://localhost:8080/api/carts/
+        this.destroy("/",passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.DELETEDeleteProductsById)
     }
 }
