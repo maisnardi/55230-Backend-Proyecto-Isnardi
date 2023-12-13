@@ -93,15 +93,6 @@ export const GETUserResetPasswordView = async (req, res, next) => {
     }
 }
 
-//Controller GET vista Index.
-export const GETIndex = async (req, res, next) => {
-    try {
-        res.render("index", {display:req.display});
-    } catch (error) {
-        error.from = "controller";
-        return next(error);
-    }
-}
 
 //Controller GET vista Premium.
 export const GETPremiumView = async (req, res, next) => {

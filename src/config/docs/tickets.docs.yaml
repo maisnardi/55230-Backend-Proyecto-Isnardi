@@ -46,22 +46,110 @@ components:
             _id:
               type: string
               description: ticket id
-    cartEmpty:
+      example:
+        message: Ticket generated successfully
+        ticket:
+          code: 323013D51W27
+          purchase_datetime: Wed, 13 Dec 2023 13:57:20 GMT
+          products:
+            - _id: 64c3cc0d06404a4aff717828
+              quantity: 1
+          amount: 39999
+          purchaser: user@gmail.com
+          _id: 6579b8405ef9b9a2293813b2
+    cartEmptyPost:
       type: object
       properties:
+        status:
+          type: number
+          description: Response status code
         message:
           type: string
-          description: Response message description      
+          description: Response message description
+        from:
+          type: string
+          description: Response from      
       example:
+        status: 404
         message: Cart is empty
+        from: POST /api/tickets controller
+    
+    cartEmptyGet:
+      type: object
+      properties:
+        status:
+          type: number
+          description: Response status code
+        message:
+          type: string
+          description: Response message description
+        from:
+          type: string
+          description: Response from      
+      example:
+        status: 404
+        message: Cart is empty
+        from: GET /api/tickets controller
+    
     errorTicket:
       type: object
       properties:
+        status:
+          type: number
+          description: Response status code
+        message:
+          type: string
+          description: Response message description
+        from:
+          type: string
+          description: Response from
+      example:
+        status: 500
+        message: Something went wrong
+        from: POST /api/tickets controller
+    
+    errorTicketGET:
+      type: object
+      properties:
+        status:
+          type: number
+          description: Response status code
+        message:
+          type: string
+          description: Response message description
+        from:
+          type: string
+          description: Response from
+      example:
+        status: 500
+        message: Something went wrong
+        from: GET /api/tickets controller
+    
+    noAuth:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
         message:
           type: string
           description: Response message description
       example:
-        message: Something went wrong try again
+        error: true
+        message: No authorization
+
+    notLoggedIn:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: error status
+        message:
+          type: string
+          description: Response message description
+      example:
+        error: true
+        message: Error no auth token
     ticketAmount:
       type: object
       properties:
@@ -123,12 +211,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/notLoggedIn'
+        '403':
+          description: No authorization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noAuth'
         '404':
           description: Cart is empty
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/cartEmpty'
+                $ref: '#/components/responses/cartEmptyPost'
         '500':
           description: Error creating ticket
           content:
@@ -154,15 +248,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/notLoggedIn'
+        '403':
+          description: No authorization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noAuth'
         '404':
           description: Cart is empty
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/cartEmpty'
+                $ref: '#/components/responses/cartEmptyGet'
         '500':
           description: Error calculating ticket amount
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/errorTicket'
+                $ref: '#/components/responses/errorTicketGET'

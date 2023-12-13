@@ -27,11 +27,11 @@ form.addEventListener('submit', async (event)=>{
     .then((res)=>{
         if(res.status === 200)
         {
-          window.location.href = "http://localhost:8080/products"
+          window.location.href = "/products"
         }
         else{
           window.alert("Invalid credentials, please check them");
-          window.location.href = "http://localhost:8080/login"
+          window.location.href = "/login"
         }
     })
 });

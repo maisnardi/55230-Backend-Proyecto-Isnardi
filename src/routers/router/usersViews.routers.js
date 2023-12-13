@@ -25,19 +25,16 @@ export default class UsersViewsRouter extends CustomRouter {
         this.read('/logout', protectView, UserViewsController.GETLogoutView)
 
         //Endoint GET para restaurar la clave del usuario no logueado. http://localhost:8080/restore
-        this.read('/restore', UserViewsController.GETRestoreView)
+        this.read('/restore', isLogged, UserViewsController.GETRestoreView)
 
         //Endpoint GET para cambiar la clave de un usuario ya logeado. http://localhost:8080/password
-        this.read('/password', navbarView, UserViewsController.GETChangePasswordView)
+        this.read('/password', protectView, navbarView, UserViewsController.GETChangePasswordView)
 
         //Endoint GET para restaurar la clave del usuario no logueado. http://localhost:8080/restore/:userID
-        this.read('/restore/:userID', UserViewsController.GETUserResetPasswordView)
+        this.read('/restore/:userID',isLogged, UserViewsController.GETUserResetPasswordView)
 
         //Endoint GET para cambiar la clave de un usuario ya logeado.. http://localhost:8080/password/:userID
         this.read('/password/:userID', UserViewsController.GETLoggedUserResetPasswordView)
-
-        //Endoint GET para mostrar la vista de la pagina principal. http://localhost:8080/
-        this.read('/', navbarView, UserViewsController.GETIndex)
 
         //Endoint GET para mostrar la vista de la pagina premium. http://localhost:8080/premium
         this.read('/premium', protectView, navbarView, UserViewsController.GETPremiumView)

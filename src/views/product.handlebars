@@ -13,7 +13,7 @@
         <p class="product-price">Price: ${{product.price}}</p>
         <p class="product-stock">Stock: {{product.stock}}</p>
         {{#if display.buy}}
-        <form action="http://localhost:8080/api/carts/{{product._id}}" method="PUT" id="addProductToCart">
+        <form action="/api/carts/{{product._id}}" method="PUT" id="addProductToCart">
             <input type="submit" class="add-to-cart-btn" id="addProductButton" value="Add product to cart!">
         </form>
         {{/if}}

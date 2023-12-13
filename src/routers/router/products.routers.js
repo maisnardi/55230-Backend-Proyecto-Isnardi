@@ -18,7 +18,7 @@ export default class ProductsRouter extends CustomRouter {
         this.read('/', ProductsApiController.GETProductsFilter);        
 
         //Endpoint GET con req.params http://localhost:8080/api/products/:pid - ReadOne -- SOLICITADO 
-        this.read('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.GETProductById);
+        this.read('/:pid', passportMW('current'), protectByRoleApi(["user", "admin", "premium"]), ProductsApiController.GETProductById);
 
         //Endpoint PUT con req.params para actualizar un producto. http://localhost:8080/api/products/:pid  -- SOLICITADO
         this.update('/:pid', passportMW('current'), protectByRoleApi(["admin", "premium"]), ProductsApiController.MDWMulter, ProductsApiController.PUTUpdateProductsById);

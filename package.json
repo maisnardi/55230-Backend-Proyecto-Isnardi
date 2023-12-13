@@ -7,7 +7,6 @@
   "scripts": {
     "start": "node ./src/app.js -env PROD",
     "dev": "nodemon ./src/app.js -env DEV",
-    "mocha": "mocha test/mocha",
     "supertest": "mocha test/supertest",
     "performance": "artillery run ./test/artillery/config.yaml --output ./test/crd.json",
     "report": "artillery report ./test/crd.json"

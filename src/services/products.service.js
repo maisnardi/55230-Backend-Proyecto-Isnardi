@@ -130,7 +130,6 @@ class ProductManager {
             if (uSort) {
                 option.sort = { price: uSort }
                 try {
-                    //data = await ProductModel.paginate(query,option);
                     data = await ProductDAO.productPaginate(query, option, next);
                     const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = data;
                     result = {
@@ -155,7 +154,6 @@ class ProductManager {
             }
             else {
                 try {
-                    //data = await ProductModel.paginate(query,option);
                     data = await ProductDAO.productPaginate(query, option, next);
                     const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = data;
                     result = {

@@ -10,11 +10,11 @@ for (let i = 0; i < removeBtn.length; i++) {
                 method: 'DELETE',
             }).then((res) => {
                 if (res.status === 200) {
-                    window.location.href = `http://localhost:8080/carts`
+                    window.location.href = `/carts`
                 }
                 else {
                     window.alert("Something went wrong try again")
-                    window.location.href = `http://localhost:8080/carts`
+                    window.location.href = `/carts`
                 }
             })
         } catch (error) {

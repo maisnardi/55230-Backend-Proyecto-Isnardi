@@ -16,7 +16,7 @@ export const GETProductsFilter = async (req, res, next) => {
     const { limit = 10, page = 1, sort, category, stock } = req.query;
     try {
         const products = await productManager.getProductsQuery(limit, page, sort, category, stock, next);               //Para uso con mongoProductManager
-        if(products){
+        if(products.aaaa){
             if (products.payload.length > 0) {
                 res.status(200).send({ error: false, message: "products found", payload: products })
             } else {
@@ -134,7 +134,6 @@ export const PUTUpdateProductsById = async (req, res, next) => {
             }
         }
         const response = await productManager.updateProduct(pid, body, next);
-        console.log(response)
         if(response){
             if(response === "updated"){
                 res.status(200).send({ update: true })
@@ -164,7 +163,6 @@ export const PUTUpdateProductsById = async (req, res, next) => {
 //Controller DELETE Product
 export const DELETEProductById = async (req, res, next) => {
     try {
-        console.log("entro en borrar productos")
         const { pid } = req.params;
         const response = await productManager.deleteProduct(pid, next);
         console.log(response)

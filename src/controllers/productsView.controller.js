@@ -143,6 +143,21 @@ export const GETProductByIdViewUpdate = async (req, res, next) => {
 //Controller Multer Middleware
 export const MDWMulter = upload.array('photo');
 
+//Controller GET vista Index.
+export const GETIndex = async (req, res, next) => {
+    try {
+        const limit = 4
+        const products = await productManager.getProductsQuery( limit, next);
+        const dataToRender = {
+            products: products.payload.map(product => product.toObject()),
+            display:req.display,
+        }
+        res.render("index", dataToRender);
+    } catch (error) {
+        error.from = "controller";
+        return next(error);
+    }
+}
 
 //Controller GET Product by owner
 export const GETProductByOwner = async (req, res, next) => {
@@ -171,4 +186,6 @@ export const GETProductByOwner = async (req, res, next) => {
         error.from = "controller";
         return next(error);
     }
+
+    
 }

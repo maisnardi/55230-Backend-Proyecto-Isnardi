@@ -19,20 +19,20 @@ export default class CartsRouter extends CustomRouter {
         //Endpoint GET req.params - Devuelve el carrito del ID recibido. http://localhost:8080/api/carts/:cid - ReadOne -- SOLICITADO
         this.read('/:cid', passportMW("current"), protectByRoleApi(["user", "premium"]),CartApiController.GETCartById);
 
-        //Endpoint GET - Devuelve todos los productos del carrito del usuario logueado paginados. http://localhost:8080/api/carts  -- SOLICITADO
+        //Endpoint GET - Devuelve todos los productos del carrito del usuario logueado. http://localhost:8080/api/carts  -- SOLICITADO
         this.read("/", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.GETCart)
 
         //Endpoint PUT con req.params y req.body - Actualiza un producto del carrito. http://localhost:8080/api/carts/:pid --  SOLICITADO
         this.update('/:pid', passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.PUTUpdateProductById)
 
         //Endpoint PUT con req.params y req.body - Reemplazar por completo un array de productos. http://localhost:8080/api/carts/:cid
-        this.update("/:cid", CartApiController.PUTUpadateFullCartbyId)
+        this.update("/:cid", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.PUTUpadateFullCartbyId)
 
         //Endpoint PUT con req.params - Aumenta el valor de quantity de un producto de un carrito. http://localhost:8080/api/:cid/products/:pid
         this.update("/:cid/products/:pid", CartApiController.PUTIncrementQuantityById)
 
         //Endpoint DELETE con req.params - Elimina del carrito un producto seleccionado. http://localhost:8080/api/:cid/product/:pid
-        this.destroy("/:cid/product/:pid", CartApiController.DELETEProductById)
+        this.destroy("/:cid/product/:pid", passportMW("current"), protectByRoleApi(["user", "premium"]),CartApiController.DELETEProductById)
 
         //Endpoint DELETE con req.params - Elimina del carrito del usuario logueado un producto seleccionado. http://localhost:8080/api/carts/:pid -- SOLICITADO
         this.destroy("/:pid", passportMW("current"), protectByRoleApi(["user", "premium"]), CartApiController.DELETEUsersProductById)

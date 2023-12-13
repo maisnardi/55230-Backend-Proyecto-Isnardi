@@ -1,6 +1,107 @@
 components:
   schemas:
+    Files:
+      description: thumbnail file
+      type: string
+      format: binary
+    Thumbnails:
+      description: thumbnail file name or link
+      type: string
+    Products:
+      type: object
+      properties:
+        _id:
+          description: Product ID
+          type: string
+        title:
+          description: Name of the product.
+          type: string
+        code:
+          description: Unique product code.
+          type: string
+        description:
+          description: Brief description of the product.
+          type: string
+        thumbnails:
+          description: Product image, can be a file or a link.
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/Files'
+            - $ref: '#/components/schemas/Thumbnails'
+        price:
+          description: Product price.
+          type: number
+          format: float
+          minimum: 0
+          exclusiveMinimum: true
+        category:
+          description: Product category, type of product.
+          type: string
+        stock:
+          description: Number of that product in stock.
+          type: integer
+          format: int64
+          minimum: 0
+        status:
+          description: Product status.
+          type: boolean
+        owner:
+          description: Product owner.
+          type: string
+      example:
+        _id: 64c3cc0d06404a4aff717827  
+        title: Camiseta Argentina
+        code: 266-2372
+        description: Camiseta Oficial Adidas Afa 3 Estrellas Campeones Del Mundo De Fútbol Para Hombre
+        thumbnails: [Argentina 22 3 estrellas_1.webp]
+        price: 35000
+        category: camisetas futbol 
+        stock: 25
+        status: true
+        owner: admin
+    
+    Product:
+      descritpion: Product object from cart
+      type: object
+      properties:
+        _id:
+          type: object
+          properties:
+            - $ref: '#/components/schemas/Products'
+        quantity:
+          description: Product quantity
+          type: number
+          format: int64
+          minimum: 0
+      example:
+        {
+          _id: {
+            _id: 64c3cc0d06404a4aff717827,
+            title: CAMISETA ALTERNATIVA PUMA ITALIA,
+            description: Camiseta Alternativa Puma Italia De Fútbol Para Hombre,
+            price: 15999,
+            thumbnails: [
+                "Italia alternativa_1.webp"
+            ],
+            code: 962-2127,
+            stock: 1,
+            status: true,
+            category: Camisetas,
+            owner: admin
+          },
+          quantity: 1
+        }
+
   responses:
+    productsFromCart:
+      type: array
+      description: Array of products
+      items:
+        $ref: '#/components/schemas/Product'
+    
+    
+    
     newCart:
       type: string
       example: '65724b1c1afaa7be37a23ffb'
@@ -31,19 +132,35 @@ components:
     notCreated:
       type: object
       properties:
-        error:
+        status:
+          type: number
+          description: status code
+        message:
           type: string
-          description: Error message
+          description: Error description
+        from:
+          type: string
+          description: Error origin
       example:
-        error: Cart not created
-    badGateway:
+        status: 404
+        message: Cart not created
+        from: POST /api/carts controller
+    internal:
       type: object
       properties:
-        error:
-          type: boolean
-          description: Error ocurred
+        status:
+          type: number
+          description: status code
+        message:
+          type: string
+          description: Error description
+        from:
+          type: string
+          description: Error origin
       example:
-        error: true
+        status: 500
+        message: Cart is not defined
+        from": POST /api/carts controller
     updatedCart:
       type: object
       properties:
@@ -52,6 +169,15 @@ components:
           description: update status
       example:
         updated: true
+
+    notFoundPut:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error description
+      example:
+        error: Product not found
     notFound:
       type: object
       properties:
@@ -103,19 +229,89 @@ paths:
               schema:
                 $ref: '#/components/responses/noPrivilages'
         '404':
-          description: Cart culd not be created
+          description: Cart could not be created
           content:
             application/json:
               schema:
                 $ref: '#/components/responses/notCreated'
-        '502':
-          description: Bad gateway
+        '500':
+          description: inrernal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/badGateway'
-  # /api/carts:
-  #   get:
+                $ref: '#/components/responses/internal'
+
+    get:
+      summary: Get all product from loged user cart
+      tags:
+        - Carts
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Carts found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/productsFromCart'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
+        '403':
+          description: User has no privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noPrivilages'
+        '500':
+          description: inrernal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/internal'
+
+  /api/carts/{cid}:
+    get:
+      summary: Get product from specific cart
+      tags:
+        - Carts
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: cid
+          in: path
+          description: cart ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carts found
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/responses/productsFromCart'
+        '401':
+          description: No user logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
+        '403':
+          description: User has no privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noPrivilages'
+        '500':
+          description: inrernal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/internal'
 
   /api/carts/{pid}:
     put:
@@ -155,7 +351,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/notFound'
+                $ref: '#/components/responses/notFoundPut'
+        '500':
+          description: inrernal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/internal'
+        
     delete:
       summary: Delete cart
       tags:
@@ -193,4 +396,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/notFound'
+                $ref: '#/components/responses/notFoundPut'
+        '500':
+          description: inrernal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/internal'

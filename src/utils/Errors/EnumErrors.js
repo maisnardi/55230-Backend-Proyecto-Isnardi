@@ -14,6 +14,7 @@ const errorsDictionary = {
     notCreated: { status: 404, message: "Cart not created"},
     idNotFound: { status: 404, message: "That cart ID does not exist"},
     notFound: { status: 404, message: "Not found" },
+    internalError: { status: 500, message: "Something went wrong" },
 
     //users
     userNotCreated: { status: 500, message: "User not created" },
@@ -27,7 +28,7 @@ const errorsDictionary = {
     //tickets
     notFoundTicket: { status: 404, message: "Not found ticket" },
     cartEmpty: { status: 404, message: "Cart is empty" },
-    internalError: { status: 500, message: "Something went wrong try again" },
+    internalError: { status: 500, message: "Something went wrong" },
     //payments
     errorPayment: { status: 500, message: "MP error" },
 };

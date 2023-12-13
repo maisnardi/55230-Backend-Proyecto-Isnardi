@@ -46,7 +46,6 @@ class CartManager {
     //Función asíncrona que recibe el ID de un carrito y devuelve el contenido del array de productos en el.Trabaja con persistencia en ATLAS.
     getCartProductsById = async (id, next) => {
         try {
-            //const cart = await CartModel.findById(id).populate("products._id");
             const cart = await CartDAO.findCartById(id, next);
             const result = cart ? cart : false;
             return result.products;

@@ -95,8 +95,12 @@ components:
         error:
           type: string
           description: petition status
+        message:
+          type: string
+          description: error message
       example:
-        error: No authorization.
+        error: true.
+        message: No authorization.
     
     deleted:
       type: object
@@ -110,20 +114,36 @@ components:
     notfound:
       type: object
       properties:
-        error:
-        type: string
-        description: param ID not found
+        status:
+          type: number
+          description: status code
+        message:
+          type: string
+          description: error message
+        from:
+          type: string
+          description: error origin path
       example:
-        error: ID not found
+        status: 404
+        message: Not found product
+        from: DELETE /api/products/657992077be94c792218f498 controller
     
     notmodify:
       type: object
       properties:
-        error:
-        type: boolean
-        description: db not modify
+        status:
+          type: number
+          description: status code
+        message:
+          type: string
+          description: error message
+        from:
+          type: string
+          description: error origin path
       example:
-        error: true
+        status: 502
+        message: Invalid params
+        from: DELETE /api/products/657992077be94c792218f498 controller
     
     updated:
       type: object
@@ -134,24 +154,85 @@ components:
       example:
         update: true
     
+    notfoundProduct:
+      type: object
+      properties:
+        status: 
+          type: number
+          description: status code.
+        message:
+          type: string
+          description: search response message.
+        from:
+          type: string
+          description: error origin path.
+      example:
+        status: 404,
+        message: Not found product
+        from: GET /api/products/64c3cc0d06404a4aff717823 controller
+
     notfoundupdated:
       type: object
       properties:
-        error: 
+        status: 
+          type: number
+          description: status code.
+        message:
           type: string
-          description: product not updated message, ID not found
+          description: search response message.
+        from:
+          type: string
+          description: error origin path.
       example:
-        error: ID not found
+        status: 404,
+        message: Not found product
+        from: PUT /api/products/657995f07072da3f093d69c9 controller
     
     notupdated:
       type: object
       properties:
+        status:
+          type: number
+          description: status code
+        message:
+          type: string
+          description: error message
+        from:
+          type: string
+          description: error origin path
+      example:
+        status: 502
+        message: Invalid params
+        form: PUT /api/products/657995f07072da3f093d69c9 controller
+    internalservererror:
+      type: object
+      properties:
+        status:
+          type: number
+          description: status code
+        message:
+          type: string
+          description: error message
+        from:
+          type: string
+          description: error origin path
+      example:
+        status: 500
+        message: Product not created
+        from: POST /api/products controller
+    unauthorized:
+      type: object
+      properties:
         error:
           type: boolean
-          description: if true, product not updated
+          description: true if error occurred
+        message:
+          type: string
+          description: message description
       example:
         error: true
-    
+        message: Error No auth token
+  
     productsfound:
       type: object
       properties:
@@ -282,15 +363,73 @@ components:
     productsnotfoundquery:
       type: object
       properties:
-        error: 
-          type: boolean
-          description: search status.
+        status: 
+          type: number
+          description: status code.
         message:
           type: string
           description: search response message.
+        from:
+          type: string
+          description: error origin path.
       example:
-        error: false
-        message: No matching products
+        status: 404,
+        message: Not found
+      from: GET /api/products?category=lamparas controller
+    
+    oneProduct:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: product unique id
+        title:
+          type: string
+          description: product title
+        description:
+          type: string
+          description: product description
+        price:
+          type: number
+          description: product price
+        thumbnails:
+          type: array
+          description: product photos
+          items:
+            type: string
+            description: photo name or photo link
+        code:
+          type: string
+          description: product unic code
+        stock:
+          type: integer
+          description: product stock number
+          minimum: 0
+        status:
+          type: boolean
+          description: product status
+        category:
+          type: string
+          description: product category
+        owner:
+          type: string
+          description: product owner user id
+        __v:
+          type: integer
+          description: product version
+          minimum: 0
+      example:
+        _id: 64c3cc0d06404a4aff717824
+        title: CAMISETA OFICIAL ADIDAS BOCA JUNIORS TITULAR 22/23
+        description: Camiseta Oficial Adidas Boca Juniors Titular 22/23 De Futbol Para Niño
+        price: 24999
+        thumbnails: ["Boca juniors 23_1.webp"]
+        code: 266-2695
+        stock: 77
+        status: true
+        category: Camisetas
+        __v: 2
+        owner: admin
 
     noresultquery:
       type: object
@@ -302,8 +441,9 @@ components:
           type: string
           description: search response message.
       example:
-        error: true
-        message: Invalid request
+        status: 502
+        message: Invalid params
+        from: GET /api/products controller
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -349,6 +489,12 @@ paths:
             aplication/json:
               schema:
                 $ref: '#/components/responses/noauthorization'
+        '500':
+          description: Internal server error.
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/internalservererror'
     get:
       summary: Get all products
       tags:
@@ -427,14 +573,26 @@ paths:
             aplication/json:
               schema:
                 $ref: '#/components/responses/updated'
+        '401':
+          description: Unauthorized
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'        
+        '403':
+          description: no authorization
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/noauthorization'
         '404':
-          description: product not updated
+          description: product not found
           content:
             aplication/json:
               schema:
                 $ref: '#/components/responses/notfoundupdated'
         '502':
-          description: product not updated
+          description: internal error
           content:
             aplication/json:
               schema:
@@ -459,6 +617,12 @@ paths:
             aplication/json:
               schema:
                 $ref: '#/components/responses/deleted'
+        '401':
+          description: Unauthorized
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
         '404':
           description: product ID not found
           content:
@@ -467,6 +631,44 @@ paths:
                 $ref: '#/components/responses/notfound'
         '502':
           description: could not modify database
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/notmodify'
+    get:
+      summary: Get one product from DB
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: product from db
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/oneProduct'
+        '401':
+          description: Unauthorized
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: product ID not found
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/responses/notfoundProduct'
+        '502':
+          description: could not find the product
           content:
             aplication/json:
               schema:

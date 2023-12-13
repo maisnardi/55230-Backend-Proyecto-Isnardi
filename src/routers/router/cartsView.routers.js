@@ -11,6 +11,6 @@ export default class CartsViewsRouter extends CustomRouter {
     init() {
         //Endpoints para express        
         //Endpoint GET req.params. http://localhost:8080/carts
-        this.read('/',passportMW("current"),navbarView, CartsViewController.GETCartById)
+        this.read('/',passportMW("current"),navbarView, protectByRole(["user", "premium"]),CartsViewController.GETCartById)
     }
 }

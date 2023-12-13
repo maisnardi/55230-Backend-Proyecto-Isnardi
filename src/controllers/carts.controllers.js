@@ -1,28 +1,24 @@
 //Controller de API Carts
 //Importaciones
-import CartManager from "../services/cart.service.js";
-import TicketManager from "../services/ticket.service.js";
+import CartManager from "../services/cart.service.js";;
 import CustomError from "../utils/Errors/CustomError.js";
 import errorsDictionary from "../utils/Errors/EnumErrors.js";
 
 //Instanciamos un nuevo productManager.
 const cartManager = new CartManager("carts");
-//Instanciamos un nuevo ticketManager.
-const ticketManger = new TicketManager();
 
 //Controller POST create new cart.
 export const POSTCreateNewCart = async (req, res, next) => {
     try {
-        const cart = await cartManager.createCart(next)
+        //const cart = await cartManager.createCart(next)
         if (cart){
             cart.length != 0 ? res.status(201).send(cart) : CustomError.new(errorsDictionary.notCreated);
         }else{
-            return CustomError.new(errorsDictionary.notCreated);
+            return CustomError.new(errorsDictionary.internalError);
         }
     } catch (error) {
         error.from = "controller"
         return next(error);
-        // res.status(502).send({ error: true });
     }
 }
 
@@ -39,7 +35,6 @@ export const GETCartById = async (req, res, next) => {
     } catch (error) {
         error.from = "controller"
         return next(error);
-        // res.status(404).send({ error: true });
     }
 }
 
@@ -58,7 +53,6 @@ export const GETCart = async (req, res, next) => {
     } catch (error) {
         error.from = "controller"
         return next(error);
-        //res.status(404).send({ error: true });
     }
 }
 
@@ -76,7 +70,6 @@ export const POSTAddProductToCartId = async (req, res, next) => {
     } catch (error) {
         error.from = "controller"
         return next(error);
-        //res.status(500).send({ error: true });
     }
 }
 
@@ -97,7 +90,6 @@ export const DELETEProductById = async (req, res, next) => {
     } catch (error) {
         error.from = "controller";
         next(error);
-        //res.status(404).send({ error: true });
     }
 }
 
@@ -116,12 +108,11 @@ export const DELETEUsersProductById = async (req, res, next) => {
                 res.status(404).send({ error: response.message });
             }
         }else{
-            return CustomError.new(errorsDictionary.notFound);
+            return CustomError.new(errorsDictionary.internalError);
         }
     } catch (error) {
         error.from = "controller";
         next(error);
-        //res.status(500).send({ error: true });
     }
 }
 
@@ -139,12 +130,11 @@ export const PUTUpdateProductById = async(req, res, next)=>{
                 res.status(404).send({ error: response.message });
             }
         }else{
-            return CustomError.new(errorsDictionary.notFoundOne);
+            return CustomError.new(errorsDictionary.internalError);
         }
     } catch (error) {
         error.from = "controller"
         return next(error);
-        //res.status(500).send({ error: true });
     }
 }
 
@@ -166,7 +156,6 @@ export const PUTUpadateFullCartbyId = async (req, res,next) => {
     } catch (error) {
         error.from = "controller"
         return next(error);
-        //res.status(404).send({ error: true });
     }
 }
 
@@ -189,7 +178,6 @@ export const PUTIncrementQuantityById = async (req, res, next) => {
     } catch (error) {
         error.from = "controller";
         next(error);
-        //res.status(404).send({ error: true });
     }
 }
 

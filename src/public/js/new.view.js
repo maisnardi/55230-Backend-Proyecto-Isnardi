@@ -15,7 +15,7 @@ form.addEventListener('submit', async (event) => {
             return alert(responseData.error);
         }
         alert("Product created successfully")
-        window.location.href = "http://localhost:8080/new";    
+        window.location.href = "/new";    
     } catch (error) { 
         console.log(error)
     }

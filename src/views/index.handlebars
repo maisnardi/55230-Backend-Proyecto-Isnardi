@@ -2,11 +2,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap"
     rel="stylesheet">
 
-    {{> navbar}}
-    <div class="welcome-message">
-        <h2>Welcome to our online store</h2>
+{{> navbar}}
+<div class="welcome-message">
+    <h2>Welcome to Fuchibol.com</h2>
+</div>
+
+    <h3 class="title">Feature products</h3>
+<div class="containerTemplate">
+        {{#each products}}
+        <div class="product-container">
+            <img class="product-thumbnail" src="../public/img/{{this.thumbnails}}" alt="Producto">
+            <div class="product-details">
+                <h2 class="product-title">{{this.title}}</h2>
+                <p class="product-description">Description:{{this.description}}</p>
+                <p class="product-category">Category: {{this.category}}</p>
+                <p class="product-code">Code: {{this.code}}</p>
+                <p class="product-price">Price: ${{this.price}}</p>
+                <p class="product-stock">Stock: {{this.stock}}</p>
+                <p class="product-status">Status: {{this.status}}</p>
+                <form action="/product/{{this._id}}" method="GET">
+                    <button class="add-to-cart-btn" value="" type="submit">View product</button>
+                </form>
+            </div>
+        </div>
+        {{/each}}
     </div>
 
 <script src="../public/js/index.js"></script>
-
-

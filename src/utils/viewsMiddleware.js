@@ -73,7 +73,6 @@ export const navbarView = (req, res, next) => {
                             chat: true,
                             buy: true,
                             realtime: false,
-                            premium: false,
                             logged: true,
                         }
                     }

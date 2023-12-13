@@ -19,11 +19,11 @@ form.addEventListener('submit', async (event) => {
                 if(res.status === 201)
                 {
                     window.alert("User created successfully")
-                    window.location.href = "http://localhost:8080/";
+                    window.location.href = "/";
                 }
                 else{
                     window.alert("The user is already registered ")
-                    window.location.href = "http://localhost:8080/login";   
+                    window.location.href = "/login";   
                 }
             })
     } catch (error) { 

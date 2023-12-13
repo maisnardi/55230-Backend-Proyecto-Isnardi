@@ -40,14 +40,14 @@ form.addEventListener('submit', async (event) => {
                 document.getElementById("email").style.display = "none";
 
                 let newButton = document.createElement("a");
-                newButton.setAttribute("href", "http://localhost:8080/")
+                newButton.setAttribute("href", "/")
                 newButton.innerHTML = "Go back to login";
                 let container = document.getElementById("buttons")
                 container.appendChild(newButton)
             }
             else{
                 window.alert("User not found, try again")
-                window.location.href = "http://localhost:8080/restore";  
+                window.location.href = "/restore";  
             }
         })
         

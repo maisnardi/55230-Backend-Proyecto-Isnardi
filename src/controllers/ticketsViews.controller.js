@@ -1,15 +1,12 @@
 //Controller de Tickets view
 //Importaciones
 import TicketManager from "../services/ticket.service.js";
-import CartManager from "../services/cart.service.js";
 import CustomError from "../utils/Errors/CustomError.js";
 import errorsDictionary from "../utils/Errors/EnumErrors.js";
 
 //Instanciamos un nuevo TicketManager.
 const ticketManager = new TicketManager();
 
-//Instanciamos un nuevo CartManager.
-const cartManager = new CartManager();
 
 //Controller GET ticket by id
 export const GETTicketById = async (req, res, next) => {

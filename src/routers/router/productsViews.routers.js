@@ -28,7 +28,9 @@ export default class ProductsViewRouter extends CustomRouter {
 
         //Endpoint GET con la vista http://localhost:8080/products/update
         this.read('/products/update', navbarView, protectByRole(["admin", "premium"]), ProductsViewController.GETProductByOwner);
+
+        //Endoint GET para mostrar la vista de la pagina principal. http://localhost:8080/
+        this.read('/', navbarView, ProductsViewController.GETIndex)
     }
 }
 
-//nota antes el primer validation era passportMW("current") se reemplaza por protecView
