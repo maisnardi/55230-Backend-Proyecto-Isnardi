@@ -127,7 +127,12 @@ export const PUTLogedUserRole = async (req, res, next) => {
         } else {
             const response = await userManager.updateUserRole(id, newRole, next);
             if(response){
-                response.error ? res.status(response.code).send({ error: true, message: response.message }) : res.status(200).send({ error: false, message: response.message })
+                if(response.error){
+                    res.status(response.code).send({ error: true, message: response.message });
+                }
+                else{
+                    res.status(response.code).send({ error: false, message: response.message })
+                }
             }
             else{
                 return CustomError.new(errorsDictionary.internalError)
@@ -142,6 +147,7 @@ export const PUTLogedUserRole = async (req, res, next) => {
 //Post user para /register
 export const POSTNone = async (req, res, next) => {
     try {
+        console.log("Entro al POSTNone");
         res.status(201).send({ message: "success", payload: req.user._id })
     } catch (error) {
         error.from = "controller";

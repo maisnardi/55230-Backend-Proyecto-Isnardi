@@ -142,7 +142,7 @@ class UserManager{
                                 return {error: false, code:200 ,message:"User role updated"}
                             }
                         }else if(user.role === "premium"){
-                            if(newRole==="premium")return {error:true,code:304, message:"The user already has premium privileges"}
+                            if(newRole==="premium")return {error:true,code:400, message:"The user already has premium privileges"}
                             else{
                                 await UserDAO.updateUser(userID, {role:"user"}, next)
                                 return {error: false, code:200, message:"User role updated"}

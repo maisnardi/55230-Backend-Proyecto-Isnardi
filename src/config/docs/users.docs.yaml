@@ -126,21 +126,25 @@ components:
           type: string
           description: Confirmation message
       example:
-        user: premium@gmail.com
-        id: 6569d53041bb363fd7a93396
+        user: juanperez@gmail.com
+        id: 6578e2b625f1caee34187cb7
         message: Password changed!
     match:
       type: object
       properties:
-        error:
-          type: boolean
+        status:
+          type: number
           description: Error status
         message:
           type: string
           description: Response message description
+        from:
+          type: string
+          description: Error method and source path
       example:
-        error: true
-        message: Passwords do not 
+        status: 400
+        message: Password not match
+        from: PUT /api/auth controller 
     conflictPass:
       type: object
       properties:
@@ -150,13 +154,13 @@ components:
         id:
           type: string
           description: User unique ID
-        message:
+        errorMessage:
           type: string
           description: Information message
       example:
         user: premium@gmail.com
         id: 6569d53041bb363fd7a93396
-        message: The new password you entered is the same as your old password. Enter a different password!
+        errorMessage: The new password you entered is the same as your old password. Enter a different password!
     expiration:
       type: object
       properties:
@@ -229,6 +233,12 @@ components:
       example:
         error: true
         message: No user found with that ID number
+    invalidPassport:
+      type: string
+      description: passport authorization error
+    example:
+      Unauthorized
+        
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -256,11 +266,11 @@ paths:
               schema:
                 $ref: '#/components/responses/register'
         '401':
-          description: Register error
+          description: Registration error
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/invalid'
+                $ref: '#/components/responses/invalidPassport'
   
   /api/auth/login:
     post:
@@ -286,129 +296,123 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/invalid'
+                $ref: '#/components/responses/invalidPassport'
 
-/api/auth/signout:
-  post:
-    summary: Logout a user
-    tags:
-      - Users
-    security:
-      - cookieAuth: []
-    responses:
-      '200':
-        description: user logged out
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/signout'
-      '401':
-        description: User not logued in
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/noauth'
-      '404':
-        description: Logout error, user not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/noauth'
+  /api/auth/signout:
+    post:
+      summary: Logout a user
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: user logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/signout'
+        '401':
+          description: User not logued in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalidPassport'
+        '404':
+          description: Logout error, user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
 
-/api/auth:
-  put:
-    summary: Update user password
-    tags:
-      - Users
-    security:
-      - cookieAuth: []
-    requestBody:
-      required: true
-      description: password and confirmation password
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Updatepassword'
-    responses:
-      '200':
-        description: User updated
+  /api/auth:
+    put:
+      summary: Update user password
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        description: Password and confirmation password.
         content:
           application/json:
             schema:
-              $ref: '#/components/responses/updatedPass'
-      '400':
-        description: passwords dont match
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/match'
-      '401':
-        description: User not logued in
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/noauth'
-      '404':
-        description: Update a user error, user not found
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/notFound'
-      '406':
-        description: the password entered is the same as the current one
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/conflictPass'
+              $ref: '#/components/schemas/Updatepassword'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/updatedPass'
+        '400':
+          description: Password and confirmation password dont match.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/match'
+        '401':
+          description: User not logued in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalidPassport'
+        '404':
+          description: Update a user error/user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFound'
+        '406':
+          description: The password entered is the same as the current one
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/conflictPass'
 
-/api/auth/prem:
-  put:
-    summary: Change user role
-    tags:
-      - Users
-    security:
-      - cookieAuth: []
-    requestBody:
-      required: true
-      description: new user role
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NewRole'
-    responses:
-      '200':
-        description: User updated
+  /api/auth/prem:
+    put:
+      summary: Change user role
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        description: new user role
         content:
           application/json:
             schema:
-              $ref: '#/components/responses/updatedRole'
-      '304':
-        description: user has the same role
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/samerole'
-      '400':
-        description: user entered an invalid role
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/invalidrole'
-      '401':
-        description: User not logued in
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/noauth'
-      '403':
-        description: user is admin
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/higherlevel'
-      '404':
-        description: user not foud
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/responses/notFound'
+              $ref: '#/components/schemas/NewRole'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/updatedRole'
+        '400':
+          description: user entered an invalid role/User have the same role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/samerole'
+        '401':
+          description: User not logued in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/noauth'
+        '403':
+          description: user is admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/higherlevel'
+        '404':
+          description: user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFound'

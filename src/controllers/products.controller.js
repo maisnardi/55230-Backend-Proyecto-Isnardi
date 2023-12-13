@@ -134,6 +134,7 @@ export const PUTUpdateProductsById = async (req, res, next) => {
             }
         }
         const response = await productManager.updateProduct(pid, body, next);
+        console.log(response)
         if(response){
             if(response === "updated"){
                 res.status(200).send({ update: true })
@@ -144,14 +145,11 @@ export const PUTUpdateProductsById = async (req, res, next) => {
             return CustomError.new(errorsDictionary.invalid)
         }
 
-        //Emit de datos socket.io     
+        // //Emit de datos socket.io     
         
         try {
             const products = await productManager.getProducts(next);
-            if (products){
-                req.io.emit("products", products);
-            }
-            return CustomError.new(errorsDictionary.notFound)
+            req.io.emit("products", products);
         } catch (error) {
             error.from = "controller"
             return next(error);

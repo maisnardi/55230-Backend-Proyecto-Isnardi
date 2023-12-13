@@ -26,13 +26,13 @@ const initLocalStrategy = () => {
     }))
 
     //Register
-    passport.use('register', new local.Strategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password,  done) => {
+    passport.use('register', new local.Strategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
         const existUser = await userManager.getUserByEmail(email)
         if(!existUser)
         {
-            const newCart = await cartManager.createCart(next);
+            const newCart = await cartManager.createCart();
             const user = { ...req.body, cartId: newCart }
-            const response = await userManager.addUser(user, next);
+            const response = await userManager.addUser(user);
             if (!response.payload) return done(null, false);
             else {
                 return done(null, response.payload);

@@ -21,8 +21,8 @@ dotenv.config({
 export const ENV = {
     MONGO_URI: process.env.MONGO_URI,
     SECRET: process.env.SECRET,
-    PERSISTANCE: ARGS.pers ?? process.env.PERSISTANCE,
-    ENVIRONMENT: ARGS.pers ?? "DEV",
+    PERSISTANCE: ARGS.Pers ?? process.env.PERSISTANCE,
+    ENVIRONMENT: ARGS.Env ?? "DEV",
     EMAIL: process.env.EMAIL,
     EMAILPASS: process.env.EMAILPASS,
     CLIENTID: process.env.CLIENTID,
