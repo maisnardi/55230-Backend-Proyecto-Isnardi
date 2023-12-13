@@ -1,7 +1,6 @@
 //Configuración de logger para el ambiente de desarrollo.
 
 import { createLogger, format, transports, addColors } from "winston";
-
 const { simple, colorize } = format;
 
 //Definimos la jerarquía del sistema de niveles
@@ -37,13 +36,12 @@ addColors(colors);
 
 //Exportamos el creador de registro con sus propiedades
 export default createLogger({
-    levels,
+    levels: levels,
     format: colorize(),
     transports: [
         new transports.Console({
-            
-            level: 'HTTP',
-            format: simple()
+            level: "HTTP",
+            format: simple(),
         }),
     ],
 });

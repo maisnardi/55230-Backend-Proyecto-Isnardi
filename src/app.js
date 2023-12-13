@@ -14,7 +14,7 @@ import swaggerJSDoc from "swagger-jsdoc";                       //Swagger
 import { serve, setup } from "swagger-ui-express"               //Swagger
 import compression from "express-compression";                  //Compression
 import cluster from "cluster";                                  //Cluster
-
+import { GETLoggers } from "./controllers/loggers.controller.js";
 
 //Importacion de Router principal (general)
 import GeneralRauter from "./routers/general.router.js";
@@ -64,8 +64,7 @@ app.use(compression({ brotoli: { enabled: true, zlib: {} } }));
 //Implementación de Swagger
 app.use('/api/docs', serve, setup(specs))
 
-//Middleware de Winstone
-app.use(winstonHTTPMiddleware);
+
 
 const httpServer = HTTPServer(app);
 //Wrapper socketio
@@ -126,6 +125,9 @@ app.use('/public', express.static(__dirname + '/public', {
         }
     }
 }));
+
+//Middleware de Winstone
+app.use(winstonHTTPMiddleware);
 
 //Middleware para pagina no encontrada
 app.use(NotFoundMiddleware);
