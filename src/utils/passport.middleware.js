@@ -1,9 +1,9 @@
 import passport from "passport";
-
+import logger from "../config/loggers/factory.js";
 // middleware para usar con distintas estrategias.
 const passportMW = (strategy, options) => async (req, res, next) => {
   passport.authenticate(strategy, options, (err, user, info) => {
-    console.log("Entro al passportMW");
+    logger.INFO("Entro al passportMW");
     if (err) next(err);
     if (!user) {
       //return res.status(403).redirect("/");

@@ -2,7 +2,6 @@
 //Importaciones
 import ProductManager from "../services/products.service.js";
 import { upload } from "../config/multer.js"
-//import generateProduct from "../utils/genereateProducts.Faker.js"
 
 //Imports de creación de errores
 import CustomError from "../utils/Errors/CustomError.js";

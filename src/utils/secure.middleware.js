@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ENV } from "../config/config.js";
+import logger from "../config/loggers/factory.js";
 
 //Key de JWT
 export const SECRET = ENV.SECRET;
@@ -8,7 +9,7 @@ export const SECRET = ENV.SECRET;
 //Middleware para proteger las vistas si hay un usuario logueado si no hay lo devuele al login.
 export const protectView = (req, res, next) => {
     const token = req.cookies.accessToken;
-    console.log(token)
+    logger.INFO(token)
     if (!token) res.redirect("/")
     else {
         try {
