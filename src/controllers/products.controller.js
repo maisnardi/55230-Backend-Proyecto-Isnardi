@@ -16,7 +16,7 @@ export const GETProductsFilter = async (req, res, next) => {
     const { limit = 10, page = 1, sort, category, stock } = req.query;
     try {
         const products = await productManager.getProductsQuery(limit, page, sort, category, stock, next);               //Para uso con mongoProductManager
-        if(products.aaaa){
+        if(products){
             if (products.payload.length > 0) {
                 res.status(200).send({ error: false, message: "products found", payload: products })
             } else {

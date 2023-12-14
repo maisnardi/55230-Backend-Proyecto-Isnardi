@@ -1,11 +1,9 @@
 //Configuracion logger para el ambiente de produccion
 import { createLogger, format, transports, addColors } from "winston";
 
-
 const { simple, colorize } = format;
 
 //Definimos la jerarquía del sistema de niveles
-
 const levels = {
     ERROR: 1,
     INFO: 2,
@@ -13,12 +11,11 @@ const levels = {
 }
 
 //Definimos la jerarquía del sistema de colores para los levels.
-
 const colors = {
     ERROR: 'red',
     INFO: 'blue',
     HTTP: 'white'
-} 
+}; 
 
 addColors(colors);
 
@@ -37,6 +34,4 @@ export default createLogger({
             filename: "./errors.log"
         }),
     ]
-
-
 })

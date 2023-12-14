@@ -4,7 +4,6 @@
 import CustomRouter from "../custom.router.js";
 import * as ProductsApiController from "../../controllers/products.controller.js"
 import { protectByRoleApi } from "../../utils/secure.middleware.js";
-import { JWTCookiesMW } from "../../utils/jwt.js"
 import passportMW from "../../utils/passport.middleware.js"
 
 //Extendemos la clase ProductsRouter de nuestro Customrouter
